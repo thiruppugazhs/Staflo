@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production builds
+dist/
+build/
+*/dist/
+
+# Environment and databases
+.env
+*.env
+hrms.db
+hrms.db-journal
+hrms.db-wal
+hrms.db-shm
+server/hrms.db*
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
