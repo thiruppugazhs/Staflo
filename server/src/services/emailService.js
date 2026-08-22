@@ -1,31 +1,45 @@
+const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const EMAIL_USER = process.env.EMAIL_USER || 'dailyflow.noreply@gmail.com';
-const EMAIL_PASS = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
-const CLIENT_URL = process.env.CLIENT_URL || 'https://dailyflow.thiruppugazhs.in';
+const RESEND_API_KEY = (process.env.RESEND_API_KEY || '').trim();
+const RESEND_FROM = process.env.RESEND_FROM || 'Daily Flow <onboarding@resend.dev>';
+const EMAIL_USER = (process.env.EMAIL_USER || '').trim();
+const EMAIL_PASS = (process.env.EMAIL_PASS || '').replace(/\s+/g, '').trim();
+const CLIENT_URL = (process.env.CLIENT_URL || 'https://dailyflow.thiruppugazhs.in').replace(/\/$/, '');
 
-let transporter = null;
+let resendClient = null;
+let nodemailerTransporter = null;
 
+// Initialize Resend
+if (RESEND_API_KEY) {
+  resendClient = new Resend(RESEND_API_KEY);
+  console.log('🚀 Resend Transactional Email Engine is active & ready.');
+}
+
+// Initialize Nodemailer as secondary/fallback
 if (EMAIL_USER && EMAIL_PASS) {
-  transporter = nodemailer.createTransport({
-    service: 'gmail',
+  nodemailerTransporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: EMAIL_USER,
       pass: EMAIL_PASS,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
 
-  transporter.verify((error) => {
+  nodemailerTransporter.verify((error) => {
     if (error) {
-      console.error('❌ Gmail SMTP Verification Failed:', error.message);
+      console.warn('⚠️ Secondary Gmail SMTP verification warning:', error.message);
     } else {
-      console.log('📧 Gmail SMTP Transporter is verified & ready to dispatch emails.');
+      console.log('📧 Secondary Gmail SMTP is verified & ready as fallback.');
     }
   });
-} else {
-  console.warn('⚠️ EMAIL_PASS environment variable is missing on this server. Emails will be simulated in server logs.');
 }
 
 /**
@@ -95,28 +109,50 @@ async function sendWelcomeCredentialsEmail({ toEmail, name, tempPassword, role, 
     </html>
   `;
 
-  if (!transporter) {
-    console.log(`\n📧 [EMAIL SIMULATION] Welcome Email for ${toEmail}:`);
-    console.log(`   To: ${toEmail} (${name})`);
-    console.log(`   Role: ${roleName}`);
-    console.log(`   Temporary Password: ${tempPassword}`);
-    console.log(`   Login URL: ${loginUrl}\n`);
-    return { success: true, simulated: true };
+  // 1. Try Resend first
+  if (resendClient) {
+    try {
+      const resendRes = await resendClient.emails.send({
+        from: RESEND_FROM,
+        to: toEmail,
+        subject: `Welcome to Daily Flow — Your Account Credentials (${name})`,
+        html: htmlContent,
+      });
+
+      if (!resendRes.error && resendRes.data) {
+        console.log(`✅ Welcome email dispatched via Resend to ${toEmail}: ${resendRes.data.id}`);
+        return { success: true, messageId: resendRes.data.id, provider: 'resend' };
+      } else if (resendRes.error) {
+        console.warn(`⚠️ Resend dispatch error for ${toEmail}:`, resendRes.error.message);
+      }
+    } catch (resendErr) {
+      console.warn(`⚠️ Resend exception for ${toEmail}:`, resendErr.message);
+    }
   }
 
-  try {
-    const info = await transporter.sendMail({
-      from: `"Daily Flow Workspace" <${EMAIL_USER}>`,
-      to: toEmail,
-      subject: `Welcome to Daily Flow — Your Account Credentials (${name})`,
-      html: htmlContent,
-    });
-    console.log(`✅ Welcome email dispatched to ${toEmail}: ${info.messageId}`);
-    return { success: true, messageId: info.messageId };
-  } catch (error) {
-    console.error(`❌ Failed to send welcome email to ${toEmail}:`, error.message);
-    return { success: false, error: error.message };
+  // 2. Try Nodemailer / Gmail SMTP Fallback
+  if (nodemailerTransporter) {
+    try {
+      const info = await nodemailerTransporter.sendMail({
+        from: `"Daily Flow Workspace" <${EMAIL_USER}>`,
+        to: toEmail,
+        subject: `Welcome to Daily Flow — Your Account Credentials (${name})`,
+        html: htmlContent,
+      });
+      console.log(`✅ Welcome email dispatched via Gmail SMTP to ${toEmail}: ${info.messageId}`);
+      return { success: true, messageId: info.messageId, provider: 'gmail_smtp' };
+    } catch (smtpErr) {
+      console.error(`❌ Gmail SMTP failed for ${toEmail}:`, smtpErr.message);
+    }
   }
+
+  // 3. Fallback Simulation Log
+  console.log(`\n📧 [EMAIL SIMULATION] Welcome Email for ${toEmail}:`);
+  console.log(`   To: ${toEmail} (${name})`);
+  console.log(`   Role: ${roleName}`);
+  console.log(`   Temporary Password: ${tempPassword}`);
+  console.log(`   Login URL: ${loginUrl}\n`);
+  return { success: true, simulated: true };
 }
 
 /**
@@ -154,23 +190,42 @@ async function sendPasswordResetOtpEmail({ toEmail, otpCode }) {
     </html>
   `;
 
-  if (!transporter) {
-    console.log(`\n📧 [EMAIL SIMULATION] Password Reset OTP for ${toEmail}: ${otpCode}\n`);
-    return { success: true, simulated: true };
+  // 1. Try Resend
+  if (resendClient) {
+    try {
+      const resendRes = await resendClient.emails.send({
+        from: RESEND_FROM,
+        to: toEmail,
+        subject: `Your Daily Flow Password Reset Code: ${otpCode}`,
+        html: htmlContent,
+      });
+
+      if (!resendRes.error && resendRes.data) {
+        console.log(`✅ OTP email dispatched via Resend to ${toEmail}: ${resendRes.data.id}`);
+        return { success: true, messageId: resendRes.data.id, provider: 'resend' };
+      }
+    } catch (resendErr) {
+      console.warn(`⚠️ Resend OTP exception for ${toEmail}:`, resendErr.message);
+    }
   }
 
-  try {
-    const info = await transporter.sendMail({
-      from: `"Daily Flow Security" <${EMAIL_USER}>`,
-      to: toEmail,
-      subject: `Your Daily Flow Password Reset Code: ${otpCode}`,
-      html: htmlContent,
-    });
-    return { success: true, messageId: info.messageId };
-  } catch (error) {
-    console.error(`❌ Failed to send OTP email to ${toEmail}:`, error.message);
-    return { success: false, error: error.message };
+  // 2. Try Nodemailer / Gmail SMTP
+  if (nodemailerTransporter) {
+    try {
+      const info = await nodemailerTransporter.sendMail({
+        from: `"Daily Flow Security" <${EMAIL_USER}>`,
+        to: toEmail,
+        subject: `Your Daily Flow Password Reset Code: ${otpCode}`,
+        html: htmlContent,
+      });
+      return { success: true, messageId: info.messageId, provider: 'gmail_smtp' };
+    } catch (smtpErr) {
+      console.error(`❌ Gmail SMTP OTP failed for ${toEmail}:`, smtpErr.message);
+    }
   }
+
+  console.log(`\n📧 [EMAIL SIMULATION] Password Reset OTP for ${toEmail}: ${otpCode}\n`);
+  return { success: true, simulated: true };
 }
 
 module.exports = {

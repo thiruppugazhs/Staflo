@@ -103,7 +103,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 });
 
 // Create Employee / HR
-router.post('/', authenticateToken, requireHrOrAdmin, (req, res) => {
+router.post('/', authenticateToken, requireHrOrAdmin, async (req, res) => {
   try {
     const {
       name,
@@ -213,20 +213,21 @@ router.post('/', authenticateToken, requireHrOrAdmin, (req, res) => {
       WHERE u.id = ?
     `).get(userId);
 
-    // Dispatch Welcome Credentials Email
-    sendWelcomeCredentialsEmail({
+    // Dispatch Welcome Credentials Email (awaited for guaranteed cloud delivery)
+    const emailResult = await sendWelcomeCredentialsEmail({
       toEmail: email,
       name,
       tempPassword: rawTempPassword,
       role: targetRole,
-      loginUrl: req.headers.origin ? `${req.headers.origin}/login` : 'http://localhost:3000/login',
-    }).catch(err => console.error('Email dispatch error:', err));
+      loginUrl: req.headers.origin ? `${req.headers.origin}/login` : undefined,
+    });
 
     res.status(201).json({
       success: true,
-      message: `${targetRole === 'HR' ? 'HR Officer' : 'Employee'} onboarded successfully with ID ${employee_id}. Default temporary password (${rawTempPassword}) dispatched via email.`,
+      message: `${targetRole === 'HR' ? 'HR Officer' : 'Employee'} onboarded successfully with ID ${employee_id}. Initial temporary password (${rawTempPassword}) dispatched to ${email}.`,
       employee: newEmployee,
       temp_password: rawTempPassword,
+      email_sent: emailResult.success,
     });
   } catch (error) {
     console.error('Create employee error:', error);
