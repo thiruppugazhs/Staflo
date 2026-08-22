@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const EMAIL_USER = process.env.EMAIL_USER || 'dailyflow.noreply@gmail.com';
-const EMAIL_PASS = process.env.EMAIL_PASS || '';
+const EMAIL_PASS = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
+const CLIENT_URL = process.env.CLIENT_URL || 'https://dailyflow.thiruppugazhs.in';
 
 let transporter = null;
 
@@ -15,12 +16,22 @@ if (EMAIL_USER && EMAIL_PASS) {
       pass: EMAIL_PASS,
     },
   });
+
+  transporter.verify((error) => {
+    if (error) {
+      console.error('❌ Gmail SMTP Verification Failed:', error.message);
+    } else {
+      console.log('📧 Gmail SMTP Transporter is verified & ready to dispatch emails.');
+    }
+  });
+} else {
+  console.warn('⚠️ EMAIL_PASS environment variable is missing on this server. Emails will be simulated in server logs.');
 }
 
 /**
  * Send Welcome Email with Temporary Credentials
  */
-async function sendWelcomeCredentialsEmail({ toEmail, name, tempPassword, role, loginUrl = 'http://localhost:3000/login' }) {
+async function sendWelcomeCredentialsEmail({ toEmail, name, tempPassword, role, loginUrl = `${CLIENT_URL}/login` }) {
   const roleName = role === 'HR' ? 'HR Officer' : role === 'ADMIN' ? 'Administrator' : 'Team Member';
 
   const htmlContent = `
