@@ -163,6 +163,48 @@ function initSchema() {
   `);
 }
 
+function ensureAdminExists() {
+  try {
+    const bcrypt = require('bcryptjs');
+    const admin = db.prepare('SELECT * FROM users WHERE email = ?').get('admin@dayflow.com');
+    if (!admin) {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync('Admin@1234', salt);
+
+      const insertUser = db.prepare(`
+        INSERT INTO users (employee_id, name, email, password, role, department, designation, phone, address, status, is_verified, must_change_password)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      const result = insertUser.run(
+        'ADM-001',
+        'Sarah Jenkins',
+        'admin@dayflow.com',
+        hashedPassword,
+        'ADMIN',
+        'Executive Leadership',
+        'HR Director & System Administrator',
+        '9876543210',
+        '100 Innovation Way, Suite 500',
+        'ACTIVE',
+        1,
+        0
+      );
+
+      db.prepare(`
+        INSERT INTO salary_structures (user_id, basic_salary, hra, allowances, deductions, net_salary, effective_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(result.lastInsertRowid, 120000, 45000, 25000, 15000, 175000, '2026-01-01');
+
+      console.log('✅ Master Admin (admin@dayflow.com / Admin@1234) initialized successfully.');
+    }
+  } catch (err) {
+    console.error('Admin initialization warning:', err.message);
+  }
+}
+
 initSchema();
+ensureAdminExists();
 
 module.exports = db;
+
