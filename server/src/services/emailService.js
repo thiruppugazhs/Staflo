@@ -1,24 +1,15 @@
-const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config();
 
 const RESEND_API_KEY = (process.env.RESEND_API_KEY || '').trim();
-const RESEND_FROM = process.env.RESEND_FROM || 'Daily Flow <onboarding@resend.dev>';
+const RESEND_FROM = (process.env.RESEND_FROM || 'Daily Flow <noreply@dailyflow.thiruppugazhs.in>').trim();
 const EMAIL_USER = (process.env.EMAIL_USER || '').trim();
 const EMAIL_PASS = (process.env.EMAIL_PASS || '').replace(/\s+/g, '').trim();
 const CLIENT_URL = (process.env.CLIENT_URL || 'https://dailyflow.thiruppugazhs.in').replace(/\/$/, '');
 
-let resendClient = null;
 let nodemailerTransporter = null;
 
-// Initialize Resend
-if (RESEND_API_KEY) {
-  resendClient = new Resend(RESEND_API_KEY);
-  console.log('🚀 Resend Transactional Email Engine is active & ready.');
-}
-
-// Initialize Nodemailer as secondary/fallback
 if (EMAIL_USER && EMAIL_PASS) {
   nodemailerTransporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -32,14 +23,41 @@ if (EMAIL_USER && EMAIL_PASS) {
       rejectUnauthorized: false,
     },
   });
+}
 
-  nodemailerTransporter.verify((error) => {
-    if (error) {
-      console.warn('⚠️ Secondary Gmail SMTP verification warning:', error.message);
+/**
+ * Dispatch Email via Resend REST API
+ */
+async function sendViaResend({ to, subject, html }) {
+  if (!RESEND_API_KEY) return null;
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: RESEND_FROM,
+        to: Array.isArray(to) ? to : [to],
+        subject,
+        html,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data?.id) {
+      console.log(`✅ Email dispatched via Resend to ${to} (ID: ${data.id})`);
+      return { success: true, messageId: data.id, provider: 'resend' };
     } else {
-      console.log('📧 Secondary Gmail SMTP is verified & ready as fallback.');
+      console.warn(`⚠️ Resend API returned error for ${to}:`, data?.message || data?.error || JSON.stringify(data));
+      return null;
     }
-  });
+  } catch (err) {
+    console.warn(`⚠️ Resend network exception for ${to}:`, err.message);
+    return null;
+  }
 }
 
 /**
@@ -109,28 +127,15 @@ async function sendWelcomeCredentialsEmail({ toEmail, name, tempPassword, role, 
     </html>
   `;
 
-  // 1. Try Resend first
-  if (resendClient) {
-    try {
-      const resendRes = await resendClient.emails.send({
-        from: RESEND_FROM,
-        to: toEmail,
-        subject: `Welcome to Daily Flow — Your Account Credentials (${name})`,
-        html: htmlContent,
-      });
+  // 1. Try Resend
+  const resendResult = await sendViaResend({
+    to: toEmail,
+    subject: `Welcome to Daily Flow — Your Account Credentials (${name})`,
+    html: htmlContent,
+  });
+  if (resendResult) return resendResult;
 
-      if (!resendRes.error && resendRes.data) {
-        console.log(`✅ Welcome email dispatched via Resend to ${toEmail}: ${resendRes.data.id}`);
-        return { success: true, messageId: resendRes.data.id, provider: 'resend' };
-      } else if (resendRes.error) {
-        console.warn(`⚠️ Resend dispatch error for ${toEmail}:`, resendRes.error.message);
-      }
-    } catch (resendErr) {
-      console.warn(`⚠️ Resend exception for ${toEmail}:`, resendErr.message);
-    }
-  }
-
-  // 2. Try Nodemailer / Gmail SMTP Fallback
+  // 2. Try Gmail SMTP Fallback
   if (nodemailerTransporter) {
     try {
       const info = await nodemailerTransporter.sendMail({
@@ -142,7 +147,7 @@ async function sendWelcomeCredentialsEmail({ toEmail, name, tempPassword, role, 
       console.log(`✅ Welcome email dispatched via Gmail SMTP to ${toEmail}: ${info.messageId}`);
       return { success: true, messageId: info.messageId, provider: 'gmail_smtp' };
     } catch (smtpErr) {
-      console.error(`❌ Gmail SMTP failed for ${toEmail}:`, smtpErr.message);
+      console.error(`❌ Gmail SMTP fallback failed for ${toEmail}:`, smtpErr.message);
     }
   }
 
@@ -191,25 +196,14 @@ async function sendPasswordResetOtpEmail({ toEmail, otpCode }) {
   `;
 
   // 1. Try Resend
-  if (resendClient) {
-    try {
-      const resendRes = await resendClient.emails.send({
-        from: RESEND_FROM,
-        to: toEmail,
-        subject: `Your Daily Flow Password Reset Code: ${otpCode}`,
-        html: htmlContent,
-      });
+  const resendResult = await sendViaResend({
+    to: toEmail,
+    subject: `Your Daily Flow Password Reset Code: ${otpCode}`,
+    html: htmlContent,
+  });
+  if (resendResult) return resendResult;
 
-      if (!resendRes.error && resendRes.data) {
-        console.log(`✅ OTP email dispatched via Resend to ${toEmail}: ${resendRes.data.id}`);
-        return { success: true, messageId: resendRes.data.id, provider: 'resend' };
-      }
-    } catch (resendErr) {
-      console.warn(`⚠️ Resend OTP exception for ${toEmail}:`, resendErr.message);
-    }
-  }
-
-  // 2. Try Nodemailer / Gmail SMTP
+  // 2. Try Gmail SMTP
   if (nodemailerTransporter) {
     try {
       const info = await nodemailerTransporter.sendMail({
