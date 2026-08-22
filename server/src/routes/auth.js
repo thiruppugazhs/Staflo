@@ -229,7 +229,6 @@ router.post('/forgot-password', (req, res) => {
     res.json({
       success: true,
       message: `A 6-digit verification OTP has been sent to ${email}`,
-      demo_otp: otpCode, // For convenient testing/demo display
       phone_preview: user.phone ? `***-***-${user.phone.slice(-4)}` : null,
     });
   } catch (error) {
@@ -238,7 +237,38 @@ router.post('/forgot-password', (req, res) => {
   }
 });
 
-// Verify OTP & Reset Password
+// Step 2: Verify OTP
+router.post('/verify-otp', (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and 6-digit OTP are required' });
+    }
+
+    const record = db.prepare(`
+      SELECT * FROM otp_verifications
+      WHERE email = ? AND otp_code = ? AND is_used = 0
+      ORDER BY id DESC LIMIT 1
+    `).get(email, otp.toString().trim());
+
+    if (!record) {
+      return res.status(400).json({ success: false, message: 'Invalid or incorrect OTP code. Please check your email.' });
+    }
+
+    const now = new Date().toISOString();
+    if (record.expires_at < now) {
+      return res.status(400).json({ success: false, message: 'OTP code has expired. Please request a new code.' });
+    }
+
+    res.json({ success: true, message: 'OTP verified successfully! Please choose your new password.' });
+  } catch (error) {
+    console.error('Verify OTP error:', error);
+    res.status(500).json({ success: false, message: 'Failed to verify OTP' });
+  }
+});
+
+// Step 3: Reset Password with Verified OTP
 router.post('/reset-password-otp', (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;

@@ -55,6 +55,7 @@ export const api = {
   getMe: () => request('/auth/me'),
   changePassword: (data) => request('/auth/change-password', { method: 'POST', body: JSON.stringify(data) }),
   forgotPassword: (data) => request('/auth/forgot-password', { method: 'POST', body: JSON.stringify(data) }),
+  verifyOtp: (data) => request('/auth/verify-otp', { method: 'POST', body: JSON.stringify(data) }),
   resetPasswordWithOtp: (data) => request('/auth/reset-password-otp', { method: 'POST', body: JSON.stringify(data) }),
 
   // Employees Directory & Profile
@@ -65,6 +66,7 @@ export const api = {
   getEmployee: (id) => request(`/employees/${id}`),
   createEmployee: (data) => request('/employees', { method: 'POST', body: JSON.stringify(data) }),
   updateEmployee: (id, data) => request(`/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteEmployee: (id) => request(`/employees/${id}`, { method: 'DELETE' }),
   addDocument: (id, data) => request(`/employees/${id}/documents`, { method: 'POST', body: JSON.stringify(data) }),
 
   // Attendance

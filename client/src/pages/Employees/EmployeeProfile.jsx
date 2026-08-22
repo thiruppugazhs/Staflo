@@ -32,7 +32,7 @@ import { Camera } from 'lucide-react';
 export function EmployeeProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user: currentUser, isAdmin, isHr, isPrivileged } = useAuth();
+  const { user: currentUser, isAdmin, isHr, isPrivileged, updateUserState } = useAuth();
   const { showToast } = useNotification();
 
   const [employee, setEmployee] = useState(null);
@@ -158,7 +158,10 @@ export function EmployeeProfile() {
                           const res = await api.updateEmployee(employee.id, { avatar: reader.result });
                           if (res.success) {
                             setEmployee(res.employee);
-                            showToast('Profile photo updated successfully', 'success');
+                            if (isSelf && updateUserState) {
+                              updateUserState(res.employee);
+                            }
+                            showToast('Profile photo updated and saved to database', 'success');
                           }
                         } catch (err) {
                           showToast(err.message, 'error');

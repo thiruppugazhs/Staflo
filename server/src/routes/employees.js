@@ -267,6 +267,7 @@ router.put('/:id', authenticateToken, (req, res) => {
 
     const {
       name,
+      email,
       phone,
       address,
       avatar,
@@ -277,6 +278,7 @@ router.put('/:id', authenticateToken, (req, res) => {
     } = req.body;
 
     let updatedName = currentTarget.name;
+    let updatedEmail = currentTarget.email;
     let updatedPhone = phone !== undefined ? phone : currentTarget.phone;
     let updatedAddress = address !== undefined ? address : currentTarget.address;
     let updatedAvatar = avatar !== undefined ? avatar : currentTarget.avatar;
@@ -287,6 +289,13 @@ router.put('/:id', authenticateToken, (req, res) => {
 
     if (isAdmin) {
       if (name) updatedName = name;
+      if (email && email.trim() !== currentTarget.email) {
+        const existing = db.prepare('SELECT id FROM users WHERE email = ? AND id != ?').get(email.trim(), targetId);
+        if (existing) {
+          return res.status(400).json({ success: false, message: 'This email address is already in use by another user' });
+        }
+        updatedEmail = email.trim();
+      }
       if (department) updatedDept = department;
       if (designation) updatedDesig = designation;
       if (status) updatedStatus = status;
@@ -304,10 +313,11 @@ router.put('/:id', authenticateToken, (req, res) => {
 
     db.prepare(`
       UPDATE users
-      SET name = ?, phone = ?, address = ?, avatar = ?, department = ?, designation = ?, status = ?, role = ?, updated_at = CURRENT_TIMESTAMP
+      SET name = ?, email = ?, phone = ?, address = ?, avatar = ?, department = ?, designation = ?, status = ?, role = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).run(
       updatedName,
+      updatedEmail,
       updatedPhone,
       updatedAddress,
       updatedAvatar,
@@ -324,6 +334,54 @@ router.put('/:id', authenticateToken, (req, res) => {
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({ success: false, message: 'Failed to update employee' });
+  }
+});
+
+// Delete Employee Record
+router.delete('/:id', authenticateToken, (req, res) => {
+  try {
+    const targetId = parseInt(req.params.id, 10);
+    const isAdmin = req.user.role === 'ADMIN';
+    const isHr = req.user.role === 'HR';
+
+    if (!isAdmin && !isHr) {
+      return res.status(403).json({ success: false, message: 'Unauthorized. Only Administrators and HR Officers can delete employee records.' });
+    }
+
+    // Prevent deleting oneself
+    if (req.user.id === targetId) {
+      return res.status(400).json({ success: false, message: 'You cannot delete your own active account.' });
+    }
+
+    const targetUser = db.prepare('SELECT * FROM users WHERE id = ?').get(targetId);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'User record not found.' });
+    }
+
+    // HR restrictions
+    if (isHr && !isAdmin) {
+      if (targetUser.role === 'ADMIN' || targetUser.role === 'HR') {
+        return res.status(403).json({ success: false, message: 'HR Officers cannot delete Administrator or HR accounts.' });
+      }
+      if (req.user.department && targetUser.department !== req.user.department) {
+        return res.status(403).json({
+          success: false,
+          message: `Permission denied: As HR for ${req.user.department}, you can only delete records in your department.`,
+        });
+      }
+    }
+
+    // Cascade delete user
+    db.prepare('DELETE FROM users WHERE id = ?').run(targetId);
+
+    res.json({
+      success: true,
+      message: `Record for ${targetUser.name} (${targetUser.employee_id}) has been permanently deleted.`,
+      deletedId: targetId,
+    });
+  } catch (error) {
+    console.error('Delete employee error:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete employee record' });
   }
 });
 
