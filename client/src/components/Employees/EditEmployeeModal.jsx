@@ -4,7 +4,7 @@ import { api } from '../../services/api';
 import { useNotification } from '../../context/NotificationContext';
 import { useAuth } from '../../context/AuthContext';
 import { Avatar } from '../Common/Avatar';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Mail } from 'lucide-react';
 
 export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
   const { isAdmin, isHr, user, updateUserState } = useAuth();
@@ -13,6 +13,7 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
 
   const [form, setForm] = useState({
     name: '',
+    email: '',
     phone: '',
     address: '',
     avatar: '',
@@ -26,10 +27,11 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
     if (employee) {
       setForm({
         name: employee.name || '',
+        email: employee.email || '',
         phone: employee.phone || '',
         address: employee.address || '',
         avatar: employee.avatar || '',
-        department: employee.department || 'Engineering',
+        department: employee.department || 'General',
         designation: employee.designation || 'Staff',
         status: employee.status || 'ACTIVE',
         role: employee.role || 'EMPLOYEE',
@@ -68,7 +70,7 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
     try {
       const res = await api.updateEmployee(employee.id, form);
       if (res.success) {
-        showToast('Profile updated successfully', 'success');
+        showToast('Profile updated successfully in database', 'success');
         if (isSelf) {
           updateUserState(res.employee);
         }
@@ -123,28 +125,83 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
 
         {!isPrivileged && (
           <div className="p-3 bg-amber-50 text-amber-900 border border-amber-200 rounded-xl text-xs">
-            <b>Self-Service Note:</b> You can update your contact phone, residential address, and profile photo. Role and designation changes require HR/Admin approval.
+            <b>Self-Service Note:</b> You can update your contact phone, residential address, and profile photo. Email and role changes require Administrator access.
           </div>
         )}
 
+        {/* Name and Role */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
+              Full Name
+            </label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
+              Work Email Address {isAdmin && <span className="text-amber-700 font-semibold normal-case">(Admin Editable)</span>}
+            </label>
+            {isAdmin ? (
+              <div className="relative">
+                <Mail className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-2.5" />
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="admin@dayflow.com"
+                  className="w-full pl-8 pr-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white font-medium"
+                  required
+                />
+              </div>
+            ) : (
+              <div className="px-3 py-2 bg-stone-100 border border-stone-200 rounded-xl text-stone-700 font-mono">
+                {employee.email}
+              </div>
+            )}
+          </div>
+        </div>
+
         {isPrivileged && (
           <>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
-                  Full Name
+                  Department
                 </label>
                 <input
                   type="text"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  value={form.department}
+                  onChange={(e) => setForm({ ...form, department: e.target.value })}
                   className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
                   required
                 />
               </div>
+
               <div>
                 <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
-                  Role
+                  Designation / Job Title
+                </label>
+                <input
+                  type="text"
+                  value={form.designation}
+                  onChange={(e) => setForm({ ...form, designation: e.target.value })}
+                  className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
+                  Role Permission
                 </label>
                 {isAdmin ? (
                   <select
@@ -162,48 +219,21 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
                   </div>
                 )}
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
-                  Department
+                  Employment Status
                 </label>
-                <input
-                  type="text"
-                  value={form.department}
-                  onChange={(e) => setForm({ ...form, department: e.target.value })}
+                <select
+                  value={form.status}
+                  onChange={(e) => setForm({ ...form, status: e.target.value })}
                   className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
-                  required
-                />
+                >
+                  <option value="ACTIVE">Active</option>
+                  <option value="PROBATION">Probation</option>
+                  <option value="INACTIVE">Inactive</option>
+                </select>
               </div>
-              <div>
-                <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
-                  Designation / Job Title
-                </label>
-                <input
-                  type="text"
-                  value={form.designation}
-                  onChange={(e) => setForm({ ...form, designation: e.target.value })}
-                  className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
-                Employment Status
-              </label>
-              <select
-                value={form.status}
-                onChange={(e) => setForm({ ...form, status: e.target.value })}
-                className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
-              >
-                <option value="ACTIVE">Active</option>
-                <option value="PROBATION">Probation</option>
-                <option value="INACTIVE">Inactive</option>
-              </select>
             </div>
           </>
         )}
@@ -214,7 +244,7 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
           </label>
           <input
             type="text"
-            placeholder="+1 (555) 000-0000"
+            placeholder="e.g. 9876543210"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="w-full px-3 py-2 text-xs border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
@@ -238,7 +268,7 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 font-semibold text-stone-600 hover:bg-stone-100 rounded-xl"
+            className="px-4 py-2 font-semibold text-stone-600 hover:bg-stone-100 rounded-xl cursor-pointer"
           >
             Cancel
           </button>

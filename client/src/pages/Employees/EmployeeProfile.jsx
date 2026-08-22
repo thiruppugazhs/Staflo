@@ -19,7 +19,10 @@ import {
   Upload,
   Download,
   ShieldCheck,
-  ArrowLeft
+  ArrowLeft,
+  Trash2,
+  AlertTriangle,
+  Camera
 } from 'lucide-react';
 import { Card } from '../../components/Common/Card';
 import { Badge } from '../../components/Common/Badge';
@@ -27,7 +30,6 @@ import { Avatar } from '../../components/Common/Avatar';
 import { Modal } from '../../components/Common/Modal';
 import { EditEmployeeModal } from '../../components/Employees/EditEmployeeModal';
 import { EditSalaryModal } from '../../components/Payroll/EditSalaryModal';
-import { Camera } from 'lucide-react';
 
 export function EmployeeProfile() {
   const { id } = useParams();
@@ -46,6 +48,8 @@ export function EmployeeProfile() {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isEditSalaryOpen, setIsEditSalaryOpen] = useState(false);
   const [isUploadDocOpen, setIsUploadDocOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [docForm, setDocForm] = useState({ title: '', type: 'Contract', url: 'https://example.com/docs/file.pdf' });
 
   const targetId = id || currentUser?.id;
@@ -203,15 +207,28 @@ export function EmployeeProfile() {
             </div>
           </div>
 
-          {canEdit && (
-            <button
-              onClick={() => setIsEditProfileOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer self-start md:self-auto"
-            >
-              <Edit2 className="w-3.5 h-3.5" />
-              <span>{isPrivileged ? 'Edit Record' : 'Edit Contact Details'}</span>
-            </button>
-          )}
+          <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
+            {canEdit && (
+              <button
+                onClick={() => setIsEditProfileOpen(true)}
+                className="px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>{isPrivileged ? 'Edit Record' : 'Edit Contact Details'}</span>
+              </button>
+            )}
+
+            {isPrivileged && employee && employee.id !== currentUser?.id && (isAdmin || (isHr && employee.role !== 'ADMIN' && employee.role !== 'HR' && (!currentUser?.department || employee.department === currentUser?.department))) && (
+              <button
+                onClick={() => setIsDeleteOpen(true)}
+                className="px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                title="Delete Record"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                <span>Delete Record</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Tab Navigation */}
@@ -572,6 +589,61 @@ export function EmployeeProfile() {
               </button>
             </div>
           </form>
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteOpen && employee && (
+        <Modal
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          title="Confirm Record Deletion"
+          maxWidth="max-w-md"
+        >
+          <div className="space-y-4 text-xs">
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-900 flex items-start gap-2.5">
+              <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold block">Permanent Deletion Warning</span>
+                <p className="text-[11px] text-rose-800 mt-0.5 leading-relaxed">
+                  Are you sure you want to permanently delete the profile for <b>{employee.name}</b> ({employee.employee_id})?
+                  All associated attendance, leaves, tickets, documents, and payroll records will be erased.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsDeleteOpen(false)}
+                className="px-3.5 py-2 font-semibold text-stone-600 hover:bg-stone-100 rounded-xl cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deleteLoading}
+                onClick={async () => {
+                  setDeleteLoading(true);
+                  try {
+                    const res = await api.deleteEmployee(employee.id);
+                    if (res.success) {
+                      showToast(res.message || 'Record deleted successfully', 'success');
+                      navigate('/employees');
+                    }
+                  } catch (err) {
+                    showToast(err.message || 'Failed to delete record', 'error');
+                  } finally {
+                    setDeleteLoading(false);
+                  }
+                }}
+                className="px-4 py-2 font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{deleteLoading ? 'Deleting...' : 'Confirm Delete'}</span>
+              </button>
+            </div>
+          </div>
         </Modal>
       )}
     </div>
