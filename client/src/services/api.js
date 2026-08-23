@@ -69,6 +69,11 @@ export const api = {
   deleteEmployee: (id) => request(`/employees/${id}`, { method: 'DELETE' }),
   addDocument: (id, data) => request(`/employees/${id}/documents`, { method: 'POST', body: JSON.stringify(data) }),
 
+  // Departments (Dynamic Management)
+  getDepartments: () => request('/departments'),
+  createDepartment: (data) => request('/departments', { method: 'POST', body: JSON.stringify(data) }),
+  deleteDepartment: (id) => request(`/departments/${id}`, { method: 'DELETE' }),
+
   // Attendance
   getAttendance: (params = {}) => {
     const query = new URLSearchParams(params).toString();
@@ -87,6 +92,8 @@ export const api = {
     return request(`/leaves${query ? `?${query}` : ''}`);
   },
   getLeaveBalances: (employeeId) => request(`/leaves/balances${employeeId ? `?employeeId=${employeeId}` : ''}`),
+  getLeaveLimits: () => request('/leaves/limits'),
+  updateLeaveLimits: (data) => request('/leaves/limits', { method: 'PUT', body: JSON.stringify(data) }),
   applyLeave: (data) => request('/leaves', { method: 'POST', body: JSON.stringify(data) }),
   updateLeaveStatus: (id, data) => request(`/leaves/${id}/status`, { method: 'PUT', body: JSON.stringify(data) }),
 

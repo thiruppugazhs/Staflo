@@ -30,9 +30,11 @@ const analyticsRoutes = require('./routes/analytics');
 const notificationRoutes = require('./routes/notifications');
 const announcementRoutes = require('./routes/announcements');
 const helpdeskRoutes = require('./routes/helpdesk');
+const departmentRoutes = require('./routes/departments');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/departments', departmentRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/leaves', leaveRoutes);
 app.use('/api/payroll', payrollRoutes);

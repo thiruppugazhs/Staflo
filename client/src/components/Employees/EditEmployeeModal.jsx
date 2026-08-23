@@ -23,6 +23,24 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
     role: 'EMPLOYEE',
   });
 
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    async function fetchDepts() {
+      try {
+        const res = await api.getDepartments();
+        if (res.success && res.departments) {
+          setDepartments(res.departments);
+        }
+      } catch (err) {
+        console.error('Failed to fetch departments in edit modal:', err);
+      }
+    }
+    if (isAdmin) {
+      fetchDepts();
+    }
+  }, [isAdmin]);
+
   useEffect(() => {
     if (employee) {
       setForm({
@@ -175,13 +193,27 @@ export function EditEmployeeModal({ isOpen, onClose, employee, onSuccess }) {
                 <label className="block font-bold text-stone-700 uppercase tracking-wider mb-1">
                   Department
                 </label>
-                <input
-                  type="text"
-                  value={form.department}
-                  onChange={(e) => setForm({ ...form, department: e.target.value })}
-                  className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
-                  required
-                />
+                {isAdmin && departments.length > 0 ? (
+                  <select
+                    value={form.department}
+                    onChange={(e) => setForm({ ...form, department: e.target.value })}
+                    className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white font-medium"
+                  >
+                    {departments.map((d) => (
+                      <option key={d.id || d.name} value={d.name}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={form.department}
+                    onChange={(e) => setForm({ ...form, department: e.target.value })}
+                    className="w-full px-3 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white"
+                    required
+                  />
+                )}
               </div>
 
               <div>

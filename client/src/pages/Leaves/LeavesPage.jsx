@@ -4,12 +4,14 @@ import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import {
   CalendarCheck,
-  Plus
+  Plus,
+  Sliders
 } from 'lucide-react';
 import { Card } from '../../components/Common/Card';
 import { Badge } from '../../components/Common/Badge';
 import { ApplyLeaveModal } from '../../components/Leaves/ApplyLeaveModal';
 import { LeaveApprovalModal } from '../../components/Leaves/LeaveApprovalModal';
+import { LeaveLimitsModal } from '../../components/Leaves/LeaveLimitsModal';
 
 export function LeavesPage() {
   const { user, isAdmin, isHr, isPrivileged } = useAuth();
@@ -22,6 +24,7 @@ export function LeavesPage() {
   const [tab, setTab] = useState('all');
 
   const [isApplyOpen, setIsApplyOpen] = useState(false);
+  const [isLimitsOpen, setIsLimitsOpen] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
 
   const loadLeaves = async () => {
@@ -71,13 +74,26 @@ export function LeavesPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsApplyOpen(true)}
-          className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-stone-950 font-bold text-xs shadow-xs transition flex items-center gap-2 cursor-pointer self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4 text-stone-950" />
-          <span>Apply for Time-Off</span>
-        </button>
+        <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+          {isAdmin && (
+            <button
+              onClick={() => setIsLimitsOpen(true)}
+              className="px-3.5 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-xs transition flex items-center gap-2 cursor-pointer"
+              title="Configure Annual Leave Limits & Quotas"
+            >
+              <Sliders className="w-4 h-4 text-amber-400" />
+              <span>Leave Quota Policy</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => setIsApplyOpen(true)}
+            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-stone-950 font-bold text-xs shadow-xs transition flex items-center gap-2 cursor-pointer"
+          >
+            <Plus className="w-4 h-4 text-stone-950" />
+            <span>Apply for Time-Off</span>
+          </button>
+        </div>
       </div>
 
       {/* Leave Balances Cards */}
@@ -257,6 +273,15 @@ export function LeavesPage() {
           isOpen={!!selectedLeave}
           onClose={() => setSelectedLeave(null)}
           leave={selectedLeave}
+          onSuccess={loadLeaves}
+        />
+      )}
+
+      {/* Admin Leave Limits Modal */}
+      {isLimitsOpen && (
+        <LeaveLimitsModal
+          isOpen={isLimitsOpen}
+          onClose={() => setIsLimitsOpen(false)}
           onSuccess={loadLeaves}
         />
       )}

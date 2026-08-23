@@ -20,6 +20,7 @@ import { Badge } from '../../components/Common/Badge';
 import { Avatar } from '../../components/Common/Avatar';
 import { Modal } from '../../components/Common/Modal';
 import { AddEmployeeModal } from '../../components/Employees/AddEmployeeModal';
+import { ManageDepartmentsModal } from '../../components/Departments/ManageDepartmentsModal';
 import { useNavigate } from 'react-router-dom';
 
 export function EmployeeList() {
@@ -28,17 +29,30 @@ export function EmployeeList() {
   const navigate = useNavigate();
 
   const [employees, setEmployees] = useState([]);
+  const [departmentsList, setDepartmentsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [department, setDepartment] = useState('ALL');
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [viewMode, setViewMode] = useState('table'); // Default to list/table view
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
 
   // Delete modal state
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const loadDepartments = async () => {
+    try {
+      const res = await api.getDepartments();
+      if (res.success && res.departments) {
+        setDepartmentsList(res.departments);
+      }
+    } catch (err) {
+      console.error('Fetch departments error:', err);
+    }
+  };
 
   const fetchEmployees = async () => {
     setLoading(true);
@@ -58,6 +72,10 @@ export function EmployeeList() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDepartments();
+  }, []);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -122,7 +140,18 @@ export function EmployeeList() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {isAdmin && (
+            <button
+              onClick={() => setIsDeptModalOpen(true)}
+              className="px-3.5 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+              title="Manage Organizational Departments"
+            >
+              <Building className="w-4 h-4 text-amber-400" />
+              <span>Departments</span>
+            </button>
+          )}
+
           {isPrivileged && (
             <button
               onClick={() => setIsAddOpen(true)}
@@ -191,9 +220,10 @@ export function EmployeeList() {
             onChange={(e) => setDepartment(e.target.value)}
             className="px-3 py-1.5 text-xs font-semibold border border-stone-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
-            {departments.map((d) => (
-              <option key={d} value={d}>
-                {d === 'ALL' ? 'All Departments' : d}
+            <option value="ALL">All Departments</option>
+            {departmentsList.map((d) => (
+              <option key={d.id || d.name} value={d.name}>
+                {d.name}
               </option>
             ))}
           </select>
@@ -408,6 +438,18 @@ export function EmployeeList() {
           isOpen={isAddOpen}
           onClose={() => setIsAddOpen(false)}
           onSuccess={fetchEmployees}
+        />
+      )}
+
+      {/* Manage Departments Modal */}
+      {isDeptModalOpen && (
+        <ManageDepartmentsModal
+          isOpen={isDeptModalOpen}
+          onClose={() => setIsDeptModalOpen(false)}
+          onUpdated={() => {
+            loadDepartments();
+            fetchEmployees();
+          }}
         />
       )}
     </div>

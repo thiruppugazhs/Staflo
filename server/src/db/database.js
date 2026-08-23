@@ -160,7 +160,62 @@ function initSchema() {
       is_used INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS departments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT DEFAULT '',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS leave_limits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      leave_type TEXT UNIQUE NOT NULL,
+      annual_limit INTEGER NOT NULL,
+      description TEXT DEFAULT '',
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
+}
+
+function initDefaults() {
+  try {
+    // 1. Pre-seed Default Departments
+    const deptCount = db.prepare('SELECT count(*) as count FROM departments').get().count;
+    if (deptCount === 0) {
+      const defaultDepts = [
+        { name: 'Engineering', description: 'Software development, cloud infrastructure, and QA' },
+        { name: 'Product & Design', description: 'UI/UX design, product strategy, and user experience' },
+        { name: 'Human Resources', description: 'People operations, talent acquisition, and compliance' },
+        { name: 'Finance', description: 'Accounting, corporate payroll, and fiscal planning' },
+        { name: 'Marketing', description: 'Growth marketing, branding, and communications' },
+        { name: 'Sales', description: 'Business development and client accounts' },
+        { name: 'Executive Management', description: 'Executive leadership and company administration' },
+        { name: 'General', description: 'General administration and support' },
+      ];
+      const insertDept = db.prepare('INSERT OR IGNORE INTO departments (name, description) VALUES (?, ?)');
+      for (const d of defaultDepts) {
+        insertDept.run(d.name, d.description);
+      }
+    }
+
+    // 2. Pre-seed Default Leave Limits
+    const limitCount = db.prepare('SELECT count(*) as count FROM leave_limits').get().count;
+    if (limitCount === 0) {
+      const defaultLimits = [
+        { leave_type: 'PAID', annual_limit: 18, description: 'Annual Paid Vacation & Earned Leave' },
+        { leave_type: 'SICK', annual_limit: 12, description: 'Medical, Health & Wellness Leave' },
+        { leave_type: 'CASUAL', annual_limit: 10, description: 'Personal, Family & Casual Emergency Leave' },
+        { leave_type: 'UNPAID', annual_limit: 30, description: 'Extended Unpaid Leave of Absence' },
+      ];
+      const insertLimit = db.prepare('INSERT OR IGNORE INTO leave_limits (leave_type, annual_limit, description) VALUES (?, ?, ?)');
+      for (const l of defaultLimits) {
+        insertLimit.run(l.leave_type, l.annual_limit, l.description);
+      }
+    }
+  } catch (err) {
+    console.warn('Defaults initialization warning:', err.message);
+  }
 }
 
 function ensureAdminExists() {
@@ -182,7 +237,7 @@ function ensureAdminExists() {
         'admin@dayflow.com',
         hashedPassword,
         'ADMIN',
-        'Executive Leadership',
+        'Executive Management',
         'HR Director & System Administrator',
         '9876543210',
         '100 Innovation Way, Suite 500',
@@ -204,6 +259,7 @@ function ensureAdminExists() {
 }
 
 initSchema();
+initDefaults();
 ensureAdminExists();
 
 module.exports = db;

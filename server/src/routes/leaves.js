@@ -142,17 +142,67 @@ router.put('/:id/status', authenticateToken, requireHrOrAdmin, (req, res) => {
   }
 });
 
-// Leave balances
+// Get configured leave limits
+router.get('/limits', authenticateToken, (req, res) => {
+  try {
+    const limits = db.prepare('SELECT * FROM leave_limits ORDER BY id ASC').all();
+    res.json({ success: true, limits });
+  } catch (error) {
+    console.error('Fetch leave limits error:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch leave limits' });
+  }
+});
+
+// Update configured leave limits (Admin only)
+router.put('/limits', authenticateToken, (req, res) => {
+  try {
+    if (req.user.role !== 'ADMIN') {
+      return res.status(403).json({ success: false, message: 'Unauthorized. Only System Administrators can configure leave limits.' });
+    }
+
+    const { limits } = req.body;
+    if (!limits) {
+      return res.status(400).json({ success: false, message: 'Limits data is required' });
+    }
+
+    const updateStmt = db.prepare('UPDATE leave_limits SET annual_limit = ?, updated_at = CURRENT_TIMESTAMP WHERE leave_type = ?');
+
+    if (Array.isArray(limits)) {
+      for (const item of limits) {
+        if (item.leave_type && item.annual_limit !== undefined) {
+          updateStmt.run(parseInt(item.annual_limit, 10), item.leave_type);
+        }
+      }
+    } else if (typeof limits === 'object') {
+      for (const [code, val] of Object.entries(limits)) {
+        updateStmt.run(parseInt(val, 10), code);
+      }
+    }
+
+    const updated = db.prepare('SELECT * FROM leave_limits ORDER BY id ASC').all();
+    res.json({ success: true, message: 'Annual leave limits updated successfully', limits: updated });
+  } catch (error) {
+    console.error('Update leave limits error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update leave limits' });
+  }
+});
+
+// Leave balances (calculated using configured limits)
 router.get('/balances', authenticateToken, (req, res) => {
   try {
     const targetUserId = req.query.employeeId ? parseInt(req.query.employeeId, 10) : req.user.id;
 
-    const quotas = {
+    // Load limits dynamically from leave_limits table
+    const limitRows = db.prepare('SELECT * FROM leave_limits ORDER BY id ASC').all();
+    const quotaMap = {
       PAID: 18,
       SICK: 12,
-      CASUAL: 6,
+      CASUAL: 10,
       UNPAID: 30,
     };
+    limitRows.forEach(row => {
+      quotaMap[row.leave_type] = row.annual_limit;
+    });
 
     const usedLeaves = db.prepare(`
       SELECT leave_type, SUM(total_days) as used_days
@@ -170,35 +220,36 @@ router.get('/balances', authenticateToken, (req, res) => {
       {
         type: 'Paid Leave',
         code: 'PAID',
-        total: quotas.PAID,
+        total: quotaMap.PAID || 18,
         used: usedMap.PAID || 0,
-        remaining: Math.max(0, quotas.PAID - (usedMap.PAID || 0)),
+        remaining: Math.max(0, (quotaMap.PAID || 18) - (usedMap.PAID || 0)),
       },
       {
         type: 'Sick Leave',
         code: 'SICK',
-        total: quotas.SICK,
+        total: quotaMap.SICK || 12,
         used: usedMap.SICK || 0,
-        remaining: Math.max(0, quotas.SICK - (usedMap.SICK || 0)),
+        remaining: Math.max(0, (quotaMap.SICK || 12) - (usedMap.SICK || 0)),
       },
       {
         type: 'Casual Leave',
         code: 'CASUAL',
-        total: quotas.CASUAL,
+        total: quotaMap.CASUAL || 10,
         used: usedMap.CASUAL || 0,
-        remaining: Math.max(0, quotas.CASUAL - (usedMap.CASUAL || 0)),
+        remaining: Math.max(0, (quotaMap.CASUAL || 10) - (usedMap.CASUAL || 0)),
       },
       {
         type: 'Unpaid Leave',
         code: 'UNPAID',
-        total: quotas.UNPAID,
+        total: quotaMap.UNPAID || 30,
         used: usedMap.UNPAID || 0,
-        remaining: Math.max(0, quotas.UNPAID - (usedMap.UNPAID || 0)),
+        remaining: Math.max(0, (quotaMap.UNPAID || 30) - (usedMap.UNPAID || 0)),
       },
     ];
 
     res.json({ success: true, balances });
   } catch (error) {
+    console.error('Calculate balances error:', error);
     res.status(500).json({ success: false, message: 'Failed to calculate leave balances' });
   }
 });

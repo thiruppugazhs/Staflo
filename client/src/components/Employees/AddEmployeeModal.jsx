@@ -27,6 +27,25 @@ export function AddEmployeeModal({ isOpen, onClose, onSuccess }) {
     deductions: 800,
   });
 
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    async function fetchDepts() {
+      try {
+        const res = await api.getDepartments();
+        if (res.success && res.departments) {
+          setDepartments(res.departments);
+          if (isAdmin && res.departments.length > 0 && !form.department) {
+            setForm((prev) => ({ ...prev, department: res.departments[0].name }));
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch departments:', err);
+      }
+    }
+    fetchDepts();
+  }, [isAdmin]);
+
   useEffect(() => {
     if (isHr && user?.department) {
       setForm((prev) => ({ ...prev, department: user.department }));
@@ -111,15 +130,13 @@ export function AddEmployeeModal({ isOpen, onClose, onSuccess }) {
               <select
                 value={form.department}
                 onChange={(e) => setForm({ ...form, department: e.target.value })}
-                className="w-full px-3 py-2 text-xs border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white font-semibold"
+                className="w-full px-3 py-2 text-xs border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white font-medium"
               >
-                <option value="Engineering">Engineering</option>
-                <option value="Product & Design">Product & Design</option>
-                <option value="Human Resources">Human Resources</option>
-                <option value="Finance">Finance</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Sales">Sales</option>
-                <option value="Operations">Operations</option>
+                {departments.map((d) => (
+                  <option key={d.id || d.name} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
               </select>
             ) : (
               <div className="px-3 py-2 text-xs bg-stone-100 border border-stone-200 rounded-xl text-stone-800 font-bold flex items-center justify-between">
