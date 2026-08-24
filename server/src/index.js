@@ -62,7 +62,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
+// Start Server and Cloud Persistence Sync
+const { startPeriodicSync } = require('./db/syncEngine');
+
 app.listen(PORT, () => {
   console.log(`🚀 Daily Flow HRMS backend server running at http://localhost:${PORT}`);
+  startPeriodicSync();
 });

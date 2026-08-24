@@ -1,75 +1,75 @@
-# Dayflow — Human Resource Management System (HRMS)
+# Daily Flow — Human Resource Management System (HRMS)
 > *Every workday, perfectly aligned.*
 
-A full-stack, enterprise-grade Human Resource Management System (HRMS) built with React, Vite, Tailwind CSS, Lucide Icons, Recharts, Express.js, SQLite, and JWT RBAC authentication.
+🔗 **Live Demo**: [https://dailyflow.thiruppugazhs.in](https://dailyflow.thiruppugazhs.in)
+
+A full-stack, enterprise-grade Human Resource Management System (HRMS) built with React, Vite, Tailwind CSS, Lucide Icons, Recharts, Express.js, Supabase Cloud PostgreSQL, SQLite caching, Resend Transactional Email Engine, and JWT Role-Based Access Control (RBAC).
+
+---
+
+## 🔑 Master Admin Credentials
+
+| Role | Work Email | Password | Access & Permissions |
+| :--- | :--- | :--- | :--- |
+| **System Administrator** | `admin@dayflow.com` | `Admin@1234` | Master Administrative Access (Onboard HR & Employees, Manage Departments, Configure Leave Policies) |
+
+> ℹ️ **Note on Employee Accounts**: Staff and HR Officer accounts are onboarded directly by the Administrator or HR. Newly onboarded members automatically receive their temporary login credentials and welcome pack via official transactional email.
 
 ---
 
 ## 🌟 Key Features
 
 ### 1. Authentication & Security
-- **JWT & Role-Based Access Control (RBAC)**: Distinct permissions for **Admin / HR Officers** vs **Employees**.
-- **Sign Up & Sign In**: Input validation, password security rules, and email activation workflow.
-- **One-Click Demo Switcher**: Instant fast login toggles for testing Admin and Employee roles.
+- **JWT & Role-Based Access Control (RBAC)**: Distinct permission boundaries for **System Administrator**, **HR Officers**, and **Employees**.
+- **Transactional Welcome Emails**: Powered by **Resend** with direct automated credential dispatch.
+- **3-Stage Forgot Password Flow**: Secure verification via 6-digit email OTP before unlocking password resets.
+- **First-Time Login Security**: Mandatory temporary password reset on initial sign-in.
+- **Interactive Password Visibility**: One-click view/hide toggle for password inputs.
 
 ### 2. Workforce Directory & Profiles
-- **Full Employee Directory**: Filter by department (Engineering, HR, Product, Finance, Marketing, Sales), search by name/title/ID, and toggle between Card and Table views.
-- **Comprehensive Profile Tabs**:
-  - Personal Details & Contact Info (self-service editing for phone, address, profile photo).
-  - Job & Hierarchy Info (department, designation, manager, joining date, active status).
+- **Dynamic Table & Card Views**: Sortable table with employee IDs, role badges, departments, job designations, status, net compensation, and quick profile inspection.
+- **Comprehensive Profile Management**:
+  - Personal Details & Contact Info (self-service profile edits with permanent cloud persistence).
+  - Job & Department Hierarchy (department classification, job title, joining date).
   - Compensation & Salary Structure (Basic, HRA, Allowances, Deductions, Net Salary).
-  - Document Management (employment contracts, ID proofs, NDAs with preview/download).
-  - Historical Attendance & Leave Activity logs.
-- **Onboarding Modal**: HR Admins can onboard new employees directly with compensation setup.
+  - Document Management (contracts, IDs, NDAs with live upload and preview).
+- **Admin Record Deletion**: Delete records with confirmation modals and permission safeguards.
 
-### 3. Attendance & Time Tracking
-- **Live Punch Clock**: Real-time timer, Check-In and Check-Out buttons, dynamic status indicator (Present, Working, Checked Out), and duration computation.
+### 3. Department Management (Admin)
+- **Custom Business Units**: Create new organizational departments with dedicated names and descriptions.
+- **Real-Time Staff Counts**: Live employee tally badges per department.
+- **Deletion Safeguards**: Prevents accidental deletion of departments that have active staff assigned.
+
+### 4. Time-Off & Leave Quota Policy
+- **Configurable Annual Limits**: Admins can customize annual day quotas for **Paid Leave**, **Sick Leave**, **Casual Leave**, and **Unpaid Leave**.
+- **Dynamic Balance Engine**: Automatic calculation of used vs. remaining leave days based on organization policy.
+- **Approval Workflow**: Dedicated HR/Admin review inbox with Approve/Reject actions and remarks.
+
+### 5. Attendance & Time Tracking
+- **Live Punch Clock**: Real-time timer, Check-In and Check-Out actions, and dynamic duration computation.
 - **Daily & Historical Views**: Date pickers, status filters (Present, Half-Day, Leave, Absent).
-- **Admin Overrides & Manual Entries**: Manual attendance log modal and record adjustments.
+- **Hardware Integration Ready**: Architecture prepared for biometric and RFID card punch machine sync.
 
-### 4. Time-Off & Leave Management
-- **Apply for Leave**: Automatic duration calculation between start and end dates, leave category selection (Paid, Sick, Casual, Unpaid), and reason submission.
-- **Quota Tracking**: Real-time balance meters (Paid: 18, Sick: 12, Casual: 6, Unpaid: 30).
-- **HR Approval Inbox**: Pending queue, one-click review modal with Approve/Reject actions, and reviewer remarks.
-- **Immediate Reflection**: Approved leaves update employee records and attendance sheets automatically.
+### 6. Payroll & Compensation
+- **Printable Salary Slips**: Official PDF-ready monthly pay stubs with tax deductions and net take-home pay.
+- **Batch Monthly Disbursement**: One-click organization-wide payroll processing.
 
-### 5. Payroll & Salary Slips
-- **Employee Pay Stub Viewer**: View and print official monthly pay slips with earnings breakdown, tax deductions, and take-home pay.
-- **Printable & PDF-Ready Statements**: Formatted for print or export directly from the browser.
-- **Admin Compensation Engine**: Configure basic salary, HRA, allowances, and tax deductions per employee.
-- **Batch Payroll Generator**: Process and disburse monthly payroll for the entire organization in one click.
-
-### 6. Analytics & Intelligence
-- **Executive KPI Dashboard**: Live attendance rate, active headcount, monthly payroll burn, and pending review counts.
-- **Interactive Recharts Visualizations**:
-  - Weekly Attendance Volume (Present, Half-Day, Leave, Absent).
-  - Department Headcount & Payroll Expenditure bar charts.
-  - Leave Types Breakdown.
-- **CSV Data Export**: One-click download of organization analytics.
+### 7. Cloud Persistence & Reliability
+- **Supabase Cloud PostgreSQL**: Full cloud database persistence guaranteeing zero data loss across deployments.
+- **High-Speed Cache**: Sub-millisecond queries with automatic background delta sync.
 
 ---
 
-## 🔑 Pre-Seeded Demo Credentials
-
-| Role | Email | Password | Description |
-| :--- | :--- | :--- | :--- |
-| **Admin / HR Officer** | `admin@dayflow.com` | `Admin@1234` | Sarah Jenkins (HR Director) — full administrative access |
-| **Employee** | `employee@dayflow.com` | `Employee@1234` | Alex Rivera (Senior Full Stack Engineer) — standard access |
-
-*(Quick switch buttons are also provided directly on the Login screen and Sidebar)*
-
----
-
-## 🚀 Getting Started
+## 🚀 Getting Started Locally
 
 ### Prerequisites
 - Node.js (v18+)
 - npm
 
 ### 1. Installation
-Install root, server, and client dependencies:
+Install all dependencies:
 ```bash
-# In the repository root:
+# In repository root:
 npm run install:all
 ```
 *Or manually:*
@@ -78,17 +78,18 @@ cd server && npm install
 cd ../client && npm install
 ```
 
-### 2. Running Locally in Development Mode
-Start both backend (Port 5000) and frontend (Port 3000) concurrently:
+### 2. Running in Development Mode
+Start backend (Port 5000) and frontend (Port 3000) concurrently:
 ```bash
 npm run dev
 ```
 
 - **Frontend App**: `http://localhost:3000`
 - **Backend API**: `http://localhost:5000`
+- **Live Production URL**: `https://dailyflow.thiruppugazhs.in`
 
-### 3. Automated Test Suite
-Run the backend integration test suite verifying all 11 API endpoints:
+### 3. Automated Verification Test Suite
+Run the full backend integration test suite verifying all 15 endpoints:
 ```bash
 cd server
 node tests/api.test.js

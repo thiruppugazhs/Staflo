@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const { pushTableToSupabase, deleteRecordFromSupabase } = require('../db/syncEngine');
 
 // Get all departments (with employee counts)
 router.get('/', authenticateToken, (req, res) => {
@@ -45,6 +46,9 @@ router.post('/', authenticateToken, requireAdmin, (req, res) => {
 
     const newDept = db.prepare('SELECT * FROM departments WHERE id = ?').get(result.lastInsertRowid);
 
+    // Push to Supabase Cloud
+    pushTableToSupabase('departments');
+
     res.status(201).json({
       success: true,
       message: `Department '${trimmedName}' created successfully`,
@@ -76,6 +80,9 @@ router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
     }
 
     db.prepare('DELETE FROM departments WHERE id = ?').run(deptId);
+
+    // Remove from Supabase Cloud
+    deleteRecordFromSupabase('departments', deptId);
 
     res.json({
       success: true,

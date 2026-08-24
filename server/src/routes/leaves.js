@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
 const { authenticateToken, requireHrOrAdmin } = require('../middleware/auth');
+const { pushTableToSupabase } = require('../db/syncEngine');
 
 // Get Leaves
 router.get('/', authenticateToken, (req, res) => {
@@ -80,6 +81,10 @@ router.post('/', authenticateToken, (req, res) => {
       WHERE l.id = ?
     `).get(newLeaveId);
 
+    // Push to Supabase Cloud
+    pushTableToSupabase('leaves');
+    pushTableToSupabase('notifications');
+
     res.status(201).json({ success: true, message: 'Leave application submitted successfully', leave });
   } catch (error) {
     console.error('Apply leave error:', error);
@@ -113,6 +118,7 @@ router.put('/:id/status', authenticateToken, requireHrOrAdmin, (req, res) => {
         INSERT OR REPLACE INTO attendance (user_id, date, status, notes)
         VALUES (?, ?, 'LEAVE', ?)
       `).run(leave.user_id, leave.start_date, `Approved ${leave.leave_type} Leave: ${leave.reason}`);
+      pushTableToSupabase('attendance');
     }
 
     // Send notification to employee
@@ -125,6 +131,10 @@ router.put('/:id/status', authenticateToken, requireHrOrAdmin, (req, res) => {
       `Your ${leave.leave_type} leave request from ${leave.start_date} to ${leave.end_date} has been ${status.toLowerCase()}.${admin_comment ? ` Remarks: ${admin_comment}` : ''}`,
       status === 'APPROVED' ? 'SUCCESS' : 'ALERT'
     );
+
+    // Push to Supabase Cloud
+    pushTableToSupabase('leaves');
+    pushTableToSupabase('notifications');
 
     const updated = db.prepare(`
       SELECT l.*, u.name as employee_name, u.employee_id, u.department, u.avatar,
@@ -178,6 +188,9 @@ router.put('/limits', authenticateToken, (req, res) => {
         updateStmt.run(parseInt(val, 10), code);
       }
     }
+
+    // Push to Supabase Cloud
+    pushTableToSupabase('leave_limits');
 
     const updated = db.prepare('SELECT * FROM leave_limits ORDER BY id ASC').all();
     res.json({ success: true, message: 'Annual leave limits updated successfully', limits: updated });

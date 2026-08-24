@@ -155,14 +155,51 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Seed Initial Master Admin Account
+-- 12. Departments
+CREATE TABLE IF NOT EXISTS departments (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL,
+  description TEXT DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 13. Leave Policy Limits
+CREATE TABLE IF NOT EXISTS leave_limits (
+  id BIGSERIAL PRIMARY KEY,
+  leave_type TEXT UNIQUE NOT NULL,
+  annual_limit INTEGER NOT NULL,
+  description TEXT DEFAULT '',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed Default Departments
+INSERT INTO departments (name, description) VALUES
+('Engineering', 'Software development, cloud infrastructure, and QA'),
+('Product & Design', 'UI/UX design, product strategy, and user experience'),
+('Human Resources', 'People operations, talent acquisition, and compliance'),
+('Finance', 'Accounting, corporate payroll, and fiscal planning'),
+('Marketing', 'Growth marketing, branding, and communications'),
+('Sales', 'Business development and client accounts'),
+('Executive Management', 'Executive leadership and company administration'),
+('General', 'General administration and support')
+ON CONFLICT (name) DO NOTHING;
+
+-- Seed Default Leave Limits
+INSERT INTO leave_limits (leave_type, annual_limit, description) VALUES
+('PAID', 18, 'Annual Paid Vacation & Earned Leave'),
+('SICK', 12, 'Medical, Health & Wellness Leave'),
+('CASUAL', 10, 'Personal, Family & Casual Emergency Leave'),
+('UNPAID', 30, 'Extended Unpaid Leave of Absence')
+ON CONFLICT (leave_type) DO NOTHING;
+
+-- Seed Initial Master Admin Account (admin@dayflow.com / Admin@1234)
 INSERT INTO users (
   employee_id, name, email, password, role, department, designation, phone, status, is_verified, must_change_password
 ) VALUES (
   'ADM-001',
   'Sarah Jenkins',
   'admin@dayflow.com',
-  '$2a$10$Q7eY45J36F6Zq1gRfZ6C6OPZk/6L6Ncf1M0wL2R8v3H4jI2w8wL6G', -- Admin@1234
+  '$2a$10$Q7eY45J36F6Zq1gRfZ6C6OPZk/6L6Ncf1M0wL2R8v3H4jI2w8wL6G',
   'ADMIN',
   'Executive Management',
   'System Administrator & HR Director',
@@ -180,5 +217,6 @@ ON CONFLICT (user_id) DO NOTHING;
 
 -- Welcome Announcement
 INSERT INTO announcements (title, content, category, target_department, author_id)
-SELECT 'Welcome to Daily Flow', 'Welcome to the Daily Flow organizational workspace powered by Supabase.', 'IMPORTANT', 'ALL', id
-FROM users WHERE email = 'admin@dayflow.com';
+SELECT 'Welcome to Daily Flow', 'Welcome to the Daily Flow organizational workspace powered by Supabase Cloud.', 'IMPORTANT', 'ALL', id
+FROM users WHERE email = 'admin@dayflow.com'
+ON CONFLICT DO NOTHING;

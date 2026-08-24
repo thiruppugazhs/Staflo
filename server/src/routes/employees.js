@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db/database');
 const { authenticateToken, requireHrOrAdmin } = require('../middleware/auth');
 const { sendWelcomeCredentialsEmail } = require('../services/emailService');
+const { pushTableToSupabase, deleteRecordFromSupabase } = require('../db/syncEngine');
 
 // Get Employees Directory
 router.get('/', authenticateToken, (req, res) => {
@@ -213,6 +214,11 @@ router.post('/', authenticateToken, requireHrOrAdmin, async (req, res) => {
       WHERE u.id = ?
     `).get(userId);
 
+    // Push to Supabase Cloud
+    pushTableToSupabase('users');
+    pushTableToSupabase('salary_structures');
+    pushTableToSupabase('notifications');
+
     // Dispatch Welcome Credentials Email (awaited for guaranteed cloud delivery)
     const emailResult = await sendWelcomeCredentialsEmail({
       toEmail: email,
@@ -330,6 +336,10 @@ router.put('/:id', authenticateToken, (req, res) => {
 
     const updatedUser = db.prepare('SELECT id, employee_id, name, email, role, department, designation, phone, address, avatar, status, must_change_password FROM users WHERE id = ?').get(targetId);
 
+    // Push to Supabase Cloud
+    pushTableToSupabase('users');
+    pushTableToSupabase('salary_structures');
+
     res.json({ success: true, message: 'Profile updated successfully', employee: updatedUser });
   } catch (error) {
     console.error('Update profile error:', error);
@@ -373,6 +383,9 @@ router.delete('/:id', authenticateToken, (req, res) => {
 
     // Cascade delete user
     db.prepare('DELETE FROM users WHERE id = ?').run(targetId);
+
+    // Remove from Supabase Cloud
+    deleteRecordFromSupabase('users', targetId);
 
     res.json({
       success: true,
