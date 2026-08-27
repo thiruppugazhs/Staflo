@@ -11,8 +11,8 @@ interface LogoProps extends React.SVGProps<SVGSVGElement> {
 }
 
 /**
- * Exact Staflo 3D Isometric Ribbon & Prism Emblem
- * Matching the exact reference artwork in Image 2.
+ * Modern Geometric "S" Flow Emblem for Staflo
+ * Pure vector typography-based "S" with smooth curves and dynamic theme color support.
  */
 export function StafloIcon({
   size = 32,
@@ -24,125 +24,94 @@ export function StafloIcon({
   const { themeId, isDark } = useThemeStore()
   const activePalette = THEME_PALETTES.find((p) => p.id === themeId) || THEME_PALETTES[0]
 
-  const backColor = primaryColor || activePalette.primary
-  const frontColor = accentColor || (isDark ? '#FFFFFF' : '#0B192C')
+  const topColor = primaryColor || activePalette.primary
+  const bottomColor = accentColor || (isDark ? '#FFFFFF' : activePalette.accent)
 
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 120 120"
+      viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`shrink-0 transition-all duration-200 ${className}`}
+      className={`shrink-0 transition-all duration-300 ${className}`}
       role="img"
-      aria-label="staflo icon"
+      aria-label="staflo S emblem"
       {...props}
     >
-      {/* Back Layer (Primary Theme Colored Curved Spine / Arch) */}
+      <defs>
+        <linearGradient id="staflo-s-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={topColor} />
+          <stop offset="100%" stopColor={bottomColor} />
+        </linearGradient>
+      </defs>
+
+      {/* Upper Flowing 'S' Loop */}
       <path
-        d="M 32 30
-           C 40 18 56 16 68 24
-           L 72 27
-           C 76 30 78 35 76 40
-           C 74 44 69 46 64 43
-           L 60 40
-           C 53 35 44 36 39 42
-           C 34 48 34 57 39 63
-           L 44 68
-           C 47 72 47 77 43 81
-           C 39 85 34 84 30 80
-           L 26 75
-           C 16 64 16 46 28 34
-           Z"
-        fill={backColor}
+        d="M 68 16
+           C 74 16 78 20 78 26
+           C 78 32 74 36 68 36
+           L 44 36
+           C 36 36 30 42 30 50
+           C 30 58 36 64 44 64
+           L 56 64
+           C 68 64 78 74 78 86
+           C 78 98 68 108 56 108
+           L 32 108"
+        fill="none"
+        stroke="url(#staflo-s-gradient)"
+        strokeWidth="14"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="hidden"
       />
 
-      {/* Front Layer (Folded Prism / Ribbon Facet) */}
+      {/* Solid Geometric 'S' Wave Form */}
       <path
-        d="M 52 38
-           C 56 34 63 35 67 39
-           L 84 57
-           C 92 65 92 78 84 86
-           L 70 100
-           C 66 104 59 104 55 100
-           L 46 91
-           C 43 88 43 83 46 79
-           C 49 76 54 76 57 79
-           L 62 84
-           C 64 86 67 86 69 84
-           L 78 75
-           C 80 73 80 69 78 67
-           L 65 54
-           C 62 51 62 46 65 43
-           C 67 40 70 40 73 43
-           L 58 48
-           C 54 49 50 46 49 42
-           C 48 38 50 35 52 38
+        d="M 68 14
+           C 80 14 88 23 88 34
+           C 88 45 80 54 68 54
+           L 48 54
+           C 42 54 38 58 38 64
+           C 38 70 42 74 48 74
+           L 72 74
+           C 77 74 81 78 81 83
+           C 81 88 77 92 72 92
+           L 32 92
+           C 20 92 12 83 12 72
+           C 12 61 20 52 32 52
+           L 52 52
+           C 58 52 62 48 62 42
+           C 62 36 58 32 52 32
+           L 28 32
+           C 23 32 19 28 19 23
+           C 19 18 23 14 28 14
+           L 68 14
            Z"
-        fill={frontColor}
+        fill="url(#staflo-s-gradient)"
       />
 
-      {/* Clean Combined Solid Path matching Image 2 perfectly */}
-      <g fillRule="evenodd" clipRule="evenodd">
-        {/* Back curved spine (Theme Primary) */}
-        <path
-          d="M 28 42
-             C 28 26 41 14 57 14
-             C 65 14 73 17 78 23
-             C 81 26 81 31 77 34
-             C 74 37 69 36 66 33
-             C 63 29 58 27 53 27
-             C 42 27 34 35 34 46
-             L 34 74
-             C 34 85 42 93 53 93
-             L 56 93
-             C 61 93 65 97 65 102
-             C 65 107 61 111 56 111
-             L 53 111
-             C 37 111 24 98 24 82
-             L 24 54
-             C 24 49 25 45 28 42
-             Z"
-          fill={backColor}
-        />
-
-        {/* Front folded facet & notch (Front Color / Accent) */}
-        <path
-          d="M 48 46
-             C 48 38 54 32 62 32
-             L 86 46
-             C 93 50 97 58 97 66
-             L 97 86
-             C 97 94 92 101 84 105
-             L 66 114
-             C 61 116 55 113 54 107
-             L 54 62
-             C 54 58 57 55 61 55
-             C 65 55 68 58 68 62
-             L 68 98
-             L 83 91
-             C 84 90 85 88 85 86
-             L 85 68
-             C 85 65 83 62 80 60
-             L 66 52
-             C 62 50 60 48 60 46
-             C 60 44 61 43 63 43
-             L 76 39
-             C 79 38 82 40 83 43
-             C 84 46 82 49 79 50
-             L 48 46
-             Z"
-          fill={frontColor}
-        />
-      </g>
+      {/* Dynamic Inner Contrast Dot */}
+      <circle
+        cx="72"
+        cy="34"
+        r="4.5"
+        fill="#FFFFFF"
+        opacity="0.9"
+      />
+      <circle
+        cx="28"
+        cy="72"
+        r="4.5"
+        fill="#FFFFFF"
+        opacity="0.9"
+      />
     </svg>
   )
 }
 
 /**
- * Full Staflo Logo & Thin Geometric Wordmark
- * Displays the exact emblem and thin/clean `staflo` wordmark as shown in Image 2.
+ * Full Staflo Logo & Thin Wordmark
  */
 export default function StafloLogo({
   size = 32,
@@ -169,7 +138,7 @@ export default function StafloLogo({
           }`}
           style={{
             fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif",
-            fontWeight: 500, // Thin / Regular weight as requested (Image 2)
+            fontWeight: 500,
             fontSize: '1.45rem',
             letterSpacing: '-0.03em',
           }}

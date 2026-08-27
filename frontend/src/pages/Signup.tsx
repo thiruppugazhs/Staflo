@@ -82,10 +82,13 @@ export default function Signup(){
     setLoading(true)
     try{
       await signupCompany({
+        companyName: form.companyName.trim(),
         name: form.companyName.trim(),
-        email: form.email.trim(),
+        adminFirstName: form.firstName.trim(),
         first_name: form.firstName.trim(),
+        adminLastName: form.lastName.trim(),
         last_name: form.lastName.trim(),
+        email: form.email.trim(),
         phone: form.phone.trim() || undefined,
         password: form.password,
         industry: form.industry || undefined,
@@ -102,8 +105,16 @@ export default function Signup(){
         try{ await api.post('/companies/logo', fd)} catch(e){ console.warn('logo upload failed', e)}
       }
       nav('/dashboard')
-    }catch(ex:any){ setErr(ex.response?.data?.detail || 'Signup failed — try a different email or company name.')}
-    finally{ setLoading(false)}
+    }catch(ex:any){
+      const detail = ex.response?.data?.detail
+      if (Array.isArray(detail)) {
+        setErr(detail.map((d:any) => d.msg || JSON.stringify(d)).join(', '))
+      } else if (typeof detail === 'string') {
+        setErr(detail)
+      } else {
+        setErr(ex.response?.data?.message || ex.message || 'Signup failed — please check your information and try again.')
+      }
+    }finally{ setLoading(false)}
   }
 
   const steps = [

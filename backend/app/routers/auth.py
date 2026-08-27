@@ -37,9 +37,13 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     # check email exists
     existing = await db.execute(select(User).where(User.email == payload.email))
     if existing.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=400, detail="This email is already registered. Please Sign In or use a different email.")
 
-    slug = slugify(payload.companyName)
+    company_name = payload.resolved_company_name or "My Company"
+    first_name = payload.resolved_first_name or "Admin"
+    last_name = payload.resolved_last_name or "User"
+
+    slug = slugify(company_name)
     # ensure unique slug
     base_slug = slug
     counter = 1
@@ -50,20 +54,20 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
         slug = f"{base_slug}-{counter}"
         counter += 1
 
-    company = Company(name=payload.companyName, slug=slug)
+    company = Company(name=company_name, slug=slug)
     db.add(company)
     await db.flush()
 
     # first admin is OS0001
-    emp_id = generate_employee_id(payload.companyName, 1)
+    emp_id = generate_employee_id(company_name, 1)
     user = User(
         company_id=company.id,
         employee_id=emp_id,
         email=payload.email,
         password_hash=hash_password(payload.password),
         role=UserRole.admin,
-        first_name=payload.adminFirstName,
-        last_name=payload.adminLastName,
+        first_name=first_name,
+        last_name=last_name,
         phone=payload.phone,
         job_title=payload.jobTitle or "Administrator",
         department=payload.department or "Administration",
