@@ -84,7 +84,7 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: 'dailyflow-theme-store',
+      name: 'staflo-theme-store',
       onRehydrateStorage: () => (state) => {
         if (state) {
           applyThemeToDOM(state.themeId, state.isDark)

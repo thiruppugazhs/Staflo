@@ -34,7 +34,7 @@ function ThemeInit(){
   // ensure saved theme is applied even on pages without ThemeToggle
   // (Landing is white-only visually, but underlying html class still dictates app theme)
   if(typeof window !== 'undefined'){
-    const saved = localStorage.getItem('dailyflow-theme')
+    const saved = localStorage.getItem('staflo-theme')
     if(saved === 'dark') document.documentElement.classList.add('dark')
     else if(saved === 'light') document.documentElement.classList.remove('dark')
   }

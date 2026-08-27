@@ -28,7 +28,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: DailyFlow
+      POSTGRES_DB: Staflo
     volumes:
       - pgdata:/var/lib/postgresql/data
 

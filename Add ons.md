@@ -1,7 +1,7 @@
-# DailyFlow — Add-On Features & Integrations
+# Staflo — Add-On Features & Integrations
 ## Complete Ideation Document
 
-**Project:** DailyFlow (DailyFlow HRMS)
+**Project:** Staflo (Staflo HRMS)
 **Hackathon:** Odoo Hackathon — August 2026
 **Role:** Add-on / Integration Specialist
 **Base Stack:** React + TypeScript + Tailwind (Frontend) | FastAPI + PostgreSQL + Supabase (Backend)
@@ -33,7 +33,7 @@ HR teams constantly schedule meetings — interviews, one-on-ones, team standups
 
 ### What We're Building
 
-A meeting scheduling system built directly into the HRMS that uses the Google Calendar API to create events and auto-generate Google Meet video call links. When an admin or HR officer schedules a meeting from within DailyFlow, the system creates a Google Calendar event behind the scenes, attaches a Meet link, saves the meeting record in our database, and sends email invites to all selected attendees with the join link. No one needs to leave the app.
+A meeting scheduling system built directly into the HRMS that uses the Google Calendar API to create events and auto-generate Google Meet video call links. When an admin or HR officer schedules a meeting from within Staflo, the system creates a Google Calendar event behind the scenes, attaches a Meet link, saves the meeting record in our database, and sends email invites to all selected attendees with the join link. No one needs to leave the app.
 
 ### How Google Meet Link Generation Actually Works
 

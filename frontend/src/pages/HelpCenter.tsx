@@ -15,7 +15,7 @@ const faqs = [
   {q:'How do I create my company workspace?', a:'Click Create Company, enter your company name and admin details. Your workspace is ready in under a minute.'},
   {q:'How do invites work?', a:'Admins invite by email. Teammates receive a secure link and set their own password. No self-registration sprawl.'},
   {q:'Is my data isolated from other companies?', a:'Yes. Every workspace is fully separate and private — isolated by design, not just by filter.'},
-  {q:'Can I customize payroll components?', a:'Yes. Add earnings and deductions, set formulas, and DailyFlow calculates accurate breakdowns for each person.'},
+  {q:'Can I customize payroll components?', a:'Yes. Add earnings and deductions, set formulas, and Staflo calculates accurate breakdowns for each person.'},
 ]
 
 export default function HelpCenter(){
@@ -25,7 +25,7 @@ export default function HelpCenter(){
     <div className="min-h-screen bg-[#F9F9F9] text-zinc-900">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#004E72] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span><span className="text-xs text-zinc-500 ml-1 hidden sm:inline">Help Center</span></Link>
+          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#004E72] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">Staflo</span><span className="text-xs text-zinc-500 ml-1 hidden sm:inline">Help Center</span></Link>
           <Link to="/contact"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white">Contact Support <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
         </div>
       </header>
@@ -35,7 +35,7 @@ export default function HelpCenter(){
         <div className="relative mx-auto max-w-[720px] px-4 sm:px-6 py-12 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/20 px-3 py-1 text-xs"><HelpCircle className="h-3.5 w-3.5" /> How can we help?</div>
           <h1 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">Answers, right when you need them</h1>
-          <p className="mt-3 text-sm text-white/80">Search guides, tutorials, and best practices from the DailyFlow team.</p>
+          <p className="mt-3 text-sm text-white/80">Search guides, tutorials, and best practices from the Staflo team.</p>
           <div className="mt-6 relative max-w-[560px] mx-auto">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search help — e.g., payroll, attendance, leave" className="w-full h-11 rounded-full bg-white text-zinc-900 pl-10 pr-4 text-sm shadow-lg placeholder:text-zinc-500" />
@@ -77,7 +77,7 @@ export default function HelpCenter(){
         </div>
       </section>
 
-      <footer className="border-t border-zinc-200 bg-white"><div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-6 text-xs text-zinc-500 flex justify-between"><span>© 2026 DailyFlow</span><Link to="/" className="hover:text-zinc-700">← Back to home</Link></div></footer>
+      <footer className="border-t border-zinc-200 bg-white"><div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-6 text-xs text-zinc-500 flex justify-between"><span>© 2026 Staflo</span><Link to="/" className="hover:text-zinc-700">← Back to home</Link></div></footer>
     </div>
   )
 }

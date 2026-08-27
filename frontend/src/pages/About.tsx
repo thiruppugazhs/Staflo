@@ -7,8 +7,8 @@ export default function About(){
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src="/logo.svg" alt="DailyFlow logo" className="h-8 w-8 rounded-lg" />
-            <span className="font-bold text-[18px] tracking-tight">DailyFlow</span>
+            <img src="/logo.svg" alt="Staflo logo" className="h-8 w-8 rounded-lg" />
+            <span className="font-bold text-[18px] tracking-tight">Staflo</span>
           </Link>
           <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white hover:bg-[#FF6E42]">Create Company <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
         </div>
@@ -21,9 +21,9 @@ export default function About(){
         </div>
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white border border-zinc-200 px-3 py-1 text-xs text-zinc-600 shadow-sm"><Building2 className="h-3.5 w-3.5 text-[#004E72]" /> About DailyFlow</div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white border border-zinc-200 px-3 py-1 text-xs text-zinc-600 shadow-sm"><Building2 className="h-3.5 w-3.5 text-[#004E72]" /> About Staflo</div>
             <h1 className="mt-4 text-[36px] sm:text-[46px] font-bold tracking-tight leading-[0.95] text-zinc-900">People operations,<br/><span className="text-[#FF6E42]">perfectly aligned.</span></h1>
-            <p className="mt-4 text-[16px] leading-relaxed text-zinc-600 max-w-[640px]">DailyFlow was built for leaders who believe HR should be clear, calm, and confident. We help growing teams manage people, time, and pay — without complexity.</p>
+            <p className="mt-4 text-[16px] leading-relaxed text-zinc-600 max-w-[640px]">Staflo was built for leaders who believe HR should be clear, calm, and confident. We help growing teams manage people, time, and pay — without complexity.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-10">
             {[
@@ -44,7 +44,7 @@ export default function About(){
       <section className="mx-auto max-w-[1280px] px-4 sm:px-6 pb-16">
         <div className="rounded-2xl border border-zinc-200 bg-white p-8">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-[#004E72]"><Sparkles className="h-3.5 w-3.5" /> OUR STORY</div>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-600 max-w-3xl">Founded in Bengaluru in 2024, DailyFlow began as a simple idea: HR software should feel like a calm, well-run office — not a maze of spreadsheets. Today we support 2,400+ teams who run attendance, leave and payroll on DailyFlow every day. We’re a small team obsessed with reliability, privacy, and craft.</p>
+          <p className="mt-3 text-sm leading-relaxed text-zinc-600 max-w-3xl">Founded in Bengaluru in 2024, Staflo began as a simple idea: HR software should feel like a calm, well-run office — not a maze of spreadsheets. Today we support 2,400+ teams who run attendance, leave and payroll on Staflo every day. We’re a small team obsessed with reliability, privacy, and craft.</p>
           <div className="mt-6 grid sm:grid-cols-3 gap-4 text-center">
             <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-4"><div className="text-2xl font-bold">2,400+</div><div className="text-xs text-zinc-500">teams worldwide</div></div>
             <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-4"><div className="text-2xl font-bold">99.9%</div><div className="text-xs text-zinc-500">uptime commitment</div></div>
@@ -55,7 +55,7 @@ export default function About(){
 
       <footer className="border-t border-zinc-200 bg-white">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500">
-          <span>© 2026 DailyFlow Technologies Pvt. Ltd.</span>
+          <span>© 2026 Staflo Technologies Pvt. Ltd.</span>
           <Link to="/" className="hover:text-zinc-700">← Back to home</Link>
         </div>
       </footer>

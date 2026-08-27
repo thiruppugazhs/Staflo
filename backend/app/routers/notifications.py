@@ -30,12 +30,12 @@ def add_notification(company_id: str, title: str, message: str, type: str = "inf
         f"<div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border:1px solid #e5e7eb; border-radius:8px; padding:24px;\">"
         f"<h2 style=\"color:#a855f7;\">{title}</h2>"
         f"<p>{message}</p>"
-        f"<p style=\"color:#6b7280; font-size:12px; margin-top:24px;\">DailyFlow — Every workday, perfectly aligned.</p>"
+        f"<p style=\"color:#6b7280; font-size:12px; margin-top:24px;\">Staflo — Every workday, perfectly aligned.</p>"
         f"</div>"
     )
     for recipient in recipients:
         try:
-            send_email(recipient, f"DailyFlow: {title}", html, message)
+            send_email(recipient, f"Staflo: {title}", html, message)
         except Exception as e:
             logger.error(f"[MAIL ERROR] notification '{title}' to {recipient}: {e}")
 

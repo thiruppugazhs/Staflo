@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../stores/auth'
 import ThemeToggle from '../components/ThemeToggle'
+import { openRazorpayCheckout } from '../lib/razorpay'
 
 const BRAND = '#004E72'
 
@@ -21,8 +22,8 @@ export default function Landing() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="/logo.svg" alt="DailyFlow logo" className="h-8 w-8 rounded-lg" />
-              <span className="font-bold text-[18px] tracking-tight text-zinc-900">DailyFlow</span>
+              <img src="/logo.svg" alt="Staflo logo" className="h-8 w-8 rounded-lg" />
+              <span className="font-bold text-[18px] tracking-tight text-zinc-900">Staflo</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-1 text-sm">
               <a href="#features" className="px-3 py-2 text-zinc-600 hover:text-zinc-900 transition">Features</a>
@@ -109,7 +110,7 @@ export default function Landing() {
                   <span className="text-[#FF6E42]">perfectly aligned.</span>
                 </h1>
                 <p className="text-[14px] sm:text-[15px] leading-relaxed text-[#5A6B7A] max-w-[520px]">
-                  DailyFlow is a powerful HRMS that simplifies employee management, attendance, leave, payroll and more — so your team can focus on what truly matters.
+                  Staflo is a powerful HRMS that simplifies employee management, attendance, leave, payroll and more — so your team can focus on what truly matters.
                 </p>
               </div>
 
@@ -184,10 +185,10 @@ export default function Landing() {
                 {/* employees */}
                 <div className="relative grid grid-cols-2 gap-2.5 sm:gap-3 mt-3.5">
                   {[
-                    { n: 'Aarav Sharma', id: 'OS0002', role: 'Engineering', email: 'aarav.sharma@dayflow.com', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=11' },
-                    { n: 'Priya Nair', id: 'OS0003', role: 'Design', email: 'priya.nair@dayflow.com', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=5' },
-                    { n: 'Kenji Tanaka', id: 'OS0004', role: 'HR', email: 'kenji.tanaka@dayflow.com', color: 'bg-amber-500', ring: 'ring-amber-100', dotBg: 'bg-amber-500', img: 'https://i.pravatar.cc/100?img=8' },
-                    { n: 'Sofia Lee', id: 'OS0005', role: 'Sales', email: 'sofia.lee@dayflow.com', color: 'bg-rose-500', ring: 'ring-rose-100', dotBg: 'bg-rose-500', img: 'https://i.pravatar.cc/100?img=9' },
+                    { n: 'Aarav Sharma', id: 'OS0002', role: 'Engineering', email: 'aarav.sharma@staflo.io', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=11' },
+                    { n: 'Priya Nair', id: 'OS0003', role: 'Design', email: 'priya.nair@staflo.io', color: 'bg-emerald-500', ring: 'ring-emerald-100', dotBg: 'bg-emerald-500', img: 'https://i.pravatar.cc/100?img=5' },
+                    { n: 'Kenji Tanaka', id: 'OS0004', role: 'HR', email: 'kenji.tanaka@staflo.io', color: 'bg-amber-500', ring: 'ring-amber-100', dotBg: 'bg-amber-500', img: 'https://i.pravatar.cc/100?img=8' },
+                    { n: 'Sofia Lee', id: 'OS0005', role: 'Sales', email: 'sofia.lee@staflo.io', color: 'bg-rose-500', ring: 'ring-rose-100', dotBg: 'bg-rose-500', img: 'https://i.pravatar.cc/100?img=9' },
                   ].map(e => (
                     <div key={e.id} className="group relative rounded-[16px] border border-zinc-200 bg-white p-3 flex gap-3 items-start hover:border-zinc-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all">
                       <span className={`absolute top-3 right-3 h-2.5 w-2.5 rounded-full ${e.dotBg} ring-4 ${e.ring} shadow-sm`} />
@@ -268,7 +269,7 @@ export default function Landing() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center space-y-3">
           <h2 className="text-[28px] sm:text-4xl font-bold tracking-tight text-zinc-900">One platform for every HR need</h2>
-          <p className="text-sm sm:text-[15px] text-zinc-600">From welcoming new hires to running payroll — DailyFlow keeps your records accurate, your team informed, and your people happy.</p>
+          <p className="text-sm sm:text-[15px] text-zinc-600">From welcoming new hires to running payroll — Staflo keeps your records accurate, your team informed, and your people happy.</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mt-10">
@@ -316,7 +317,7 @@ export default function Landing() {
               <div className="h-10 w-10 rounded-xl bg-[#004E72] flex items-center justify-center shrink-0"><Layers className="h-5 w-5 text-white" /></div>
               <div>
                 <h3 className="font-semibold text-zinc-900">Built to grow with you</h3>
-                <p className="text-sm text-zinc-600 mt-1">Whether you run one company or many, each workspace stays fully separate and secure. Add teams, offices and employees — DailyFlow scales as you do, without complexity.</p>
+                <p className="text-sm text-zinc-600 mt-1">Whether you run one company or many, each workspace stays fully separate and secure. Add teams, offices and employees — Staflo scales as you do, without complexity.</p>
                 <div className="flex flex-wrap gap-2 mt-3 text-xs">
                   <span className="px-2.5 py-1 rounded-full bg-white border border-zinc-200 shadow-sm">Ready for 5 to 5,000+ employees</span>
                   <span className="px-2.5 py-1 rounded-full bg-white border border-zinc-200 shadow-sm">Secure document storage</span>
@@ -353,7 +354,7 @@ export default function Landing() {
               <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs text-zinc-600 shadow-sm">How it works • 3 simple steps</div>
               <h2 className="mt-3 text-[28px] sm:text-4xl font-bold tracking-tight text-zinc-900">From setup to payroll in minutes</h2>
             </div>
-            <p className="text-sm text-zinc-600 max-w-md">No spreadsheets. No manual work. DailyFlow handles the busywork so you can focus on your people.</p>
+            <p className="text-sm text-zinc-600 max-w-md">No spreadsheets. No manual work. Staflo handles the busywork so you can focus on your people.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10 relative">
@@ -425,9 +426,9 @@ export default function Landing() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-10 max-w-5xl mx-auto">
             {[
-              { name: 'Starter', price: 'Free', sub: 'Up to 5 employees', cta: 'Create Free Company', featured: false, features: ['Team directory & profiles', 'Attendance tracking', 'Time off (vacation, sick, unpaid)', 'Payroll & payslips', 'Secure invites & alerts'] },
-              { name: 'Growth', price: '₹199', sub: 'per employee / month', cta: 'Start Growth', featured: true, features: ['Everything in Starter', 'Advanced reports & exports', '100GB secure storage', 'Priority support', 'Custom payroll setup'] },
-              { name: 'Enterprise', price: 'Custom', sub: 'Unlimited employees', cta: 'Contact Sales', featured: false, features: ['Everything in Growth', 'Single sign-on & detailed audit trail', 'Dedicated support & SLA', 'On-premise option available', 'Custom branding & domain'] },
+              { name: 'Starter', price: 'Free', sub: 'Up to 5 employees', cta: 'Create Free Company', featured: false, isPaid: false, amount: 0, features: ['Team directory & profiles', 'Attendance tracking', 'Time off (vacation, sick, unpaid)', 'Payroll & payslips', 'Secure invites & alerts'] },
+              { name: 'Growth', price: '₹199', sub: 'per employee / month', cta: 'Pay with Razorpay', featured: true, isPaid: true, amount: 199, features: ['Everything in Starter', 'Advanced reports & exports', '100GB secure storage', 'Priority support', 'Custom payroll setup'] },
+              { name: 'Enterprise', price: 'Custom', sub: 'Unlimited employees', cta: 'Contact Sales', featured: false, isPaid: false, amount: 0, features: ['Everything in Growth', 'Single sign-on & detailed audit trail', 'Dedicated support & SLA', 'On-premise option available', 'Custom branding & domain'] },
             ].map(p => (
               <div key={p.name} className={`rounded-xl border bg-white p-6 flex flex-col relative shadow-sm ${p.featured ? 'border-[#004E72]/30 bg-gradient-to-b from-[#004E72]/[0.06] to-white shadow-[0_12px_32px_rgba(0,78,114,0.12)]' : 'border-zinc-200'}`}>
                 {p.featured && <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-[#004E72] text-white px-3 py-1 rounded-full">Most popular</div>}
@@ -437,9 +438,31 @@ export default function Landing() {
                 <ul className="mt-6 space-y-2 flex-1">
                   {p.features.map(f => <li key={f} className="flex gap-2 text-sm text-zinc-700"><Check className="h-4 w-4 text-green-600 shrink-0" /> {f}</li>)}
                 </ul>
-                <Link to="/signup" className="mt-6">
-                  <button className={`w-full inline-flex items-center justify-center rounded-full h-10 px-4 font-medium ${p.featured ? 'bg-[#004E72] text-white hover:bg-[#FF6E42] shadow' : 'border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-900'}`}>{p.cta}</button>
-                </Link>
+                {p.isPaid ? (
+                  <button
+                    onClick={() => {
+                      openRazorpayCheckout({
+                        planName: p.name,
+                        amountInINR: p.amount,
+                        onSuccess: (res) => {
+                          alert(`Payment successful! Payment ID: ${res.payment_id}. Welcome to Staflo ${p.name}!`)
+                        },
+                        onError: (err) => {
+                          if (err !== 'Payment modal closed by user') {
+                            alert(`Payment error: ${err}`)
+                          }
+                        }
+                      })
+                    }}
+                    className="mt-6 w-full inline-flex items-center justify-center rounded-full h-10 px-4 font-medium bg-[#004E72] text-white hover:bg-[#FF6E42] shadow transition cursor-pointer"
+                  >
+                    {p.cta}
+                  </button>
+                ) : (
+                  <Link to="/signup" className="mt-6">
+                    <button className="w-full inline-flex items-center justify-center rounded-full h-10 px-4 font-medium border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-900">{p.cta}</button>
+                  </Link>
+                )}
               </div>
             ))}
           </div>
@@ -481,9 +504,9 @@ export default function Landing() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2"><img src="/logo.svg" alt="DailyFlow logo" className="h-7 w-7 rounded-lg" /><span className="font-bold text-zinc-900">DailyFlow</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
+              <div className="flex items-center gap-2"><img src="/logo.svg" alt="Staflo logo" className="h-7 w-7 rounded-lg" /><span className="font-bold text-zinc-900">Staflo</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
               <p className="mt-3 text-sm text-zinc-600 max-w-sm">The complete HR platform for modern teams. Secure, reliable, and loved by HR leaders everywhere.</p>
-              <div className="mt-4 text-xs text-zinc-500">© 2026 DailyFlow Technologies Pvt. Ltd. All rights reserved.</div>
+              <div className="mt-4 text-xs text-zinc-500">© 2026 Staflo Technologies Pvt. Ltd. All rights reserved.</div>
             </div>
             <div>
               <div className="text-sm font-semibold text-zinc-900">Product</div>

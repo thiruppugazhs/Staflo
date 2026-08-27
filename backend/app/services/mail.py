@@ -57,13 +57,13 @@ async def send_email_async(to_email: str, subject: str, html_body: str, text_bod
 def verification_email_html(name: str, verify_url: str, employee_id: str) -> str:
     return f"""
     <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border:1px solid #e5e7eb; border-radius:8px; padding:24px;\">
-      <h2 style=\"color:#a855f7;\">Welcome to DailyFlow — DailyFlow</h2>
+      <h2 style=\"color:#a855f7;\">Welcome to Staflo — Staflo</h2>
       <p>Hi {name},</p>
       <p>Your account has been created. <b>Employee ID: {employee_id}</b></p>
       <p>Please verify your email to activate your account:</p>
       <a href=\"{verify_url}\" style=\"display:inline-block; background:#a855f7; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;\">Verify Email</a>
       <p style=\"margin-top:16px;\">Or copy: <a href=\"{verify_url}\">{verify_url}</a></p>
-      <p style=\"color:#6b7280; font-size:12px; margin-top:24px;\">Every workday, perfectly aligned. — DailyFlow Team</p>
+      <p style=\"color:#6b7280; font-size:12px; margin-top:24px;\">Every workday, perfectly aligned. — Staflo Team</p>
     </div>
     """
 
@@ -78,7 +78,7 @@ def invite_email_html(name: str, employee_id: str, email: str, temp_password: st
         """
     return f"""
     <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border:1px solid #e5e7eb; border-radius:8px; padding:24px;\">
-      <h2 style=\"color:#a855f7;\">You've been invited to {company} on DailyFlow</h2>
+      <h2 style=\"color:#a855f7;\">You've been invited to {company} on Staflo</h2>
       <p>Hi {name},</p>
       <p>You have been added to <b>{company}</b> HRMS.</p>{verify_section}
       <table style=\"background:#f9fafb; padding:12px; border-radius:6px; width:100%; margin:12px 0;\">
@@ -101,6 +101,6 @@ def leave_status_html(name: str, typ: str, start: str, end: str, status: str, co
       <p>Hi {name},</p>
       <p>Your <b>{typ}</b> leave <b>{start} → {end}</b> has been <b>{status}</b>.</p>
       {comment_html}
-      <p style=\"color:#6b7280; font-size:12px;\">Check Time Off page for balances. — DailyFlow</p>
+      <p style=\"color:#6b7280; font-size:12px;\">Check Time Off page for balances. — Staflo</p>
     </div>
     """

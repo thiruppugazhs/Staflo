@@ -1,4 +1,4 @@
-"""Seed demo data for DailyFlow"""
+"""Seed demo data for Staflo"""
 import asyncio
 from app.db.session import AsyncSessionLocal, engine, Base
 from app.models.company import Company
@@ -23,7 +23,7 @@ async def seed():
         admin = User(
             company_id=comp.id,
             employee_id=generate_employee_id("Olive Systems", 1),
-            email="admin@DailyFlow.local",
+            email="admin@Staflo.local",
             password_hash=hash_password("Admin@123"),
             role="admin",
             first_name="Olive",
@@ -37,7 +37,7 @@ async def seed():
         emp1 = User(
             company_id=comp.id,
             employee_id=generate_employee_id("Olive Systems", 2),
-            email="john.doe@DailyFlow.local",
+            email="john.doe@Staflo.local",
             password_hash=hash_password("Employee@123"),
             role="employee",
             first_name="John",
@@ -51,7 +51,7 @@ async def seed():
         emp2 = User(
             company_id=comp.id,
             employee_id=generate_employee_id("Olive Systems", 3),
-            email="jane.smith@DailyFlow.local",
+            email="jane.smith@Staflo.local",
             password_hash=hash_password("Employee@123"),
             role="employee",
             first_name="Jane",
@@ -63,8 +63,8 @@ async def seed():
         db.add(emp2)
         comp.created_by_user_id = admin.id
         await db.commit()
-        print(f"Seeded: admin@DailyFlow.local / Admin@123 -> {admin.employee_id}")
-        print(f"emp: john.doe@DailyFlow.local / Employee@123 -> {emp1.employee_id}")
+        print(f"Seeded: admin@Staflo.local / Admin@123 -> {admin.employee_id}")
+        print(f"emp: john.doe@Staflo.local / Employee@123 -> {emp1.employee_id}")
 
 if __name__ == "__main__":
     asyncio.run(seed())

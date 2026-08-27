@@ -51,8 +51,8 @@ export default function Verify() {
         <div className="h-1 bg-gradient-to-r from-[#004E72] via-[#fcd34d] to-[#e0b64c]" />
         <div className="p-8 text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <img src="/logo.svg" alt="DailyFlow logo" className="h-9 w-9 rounded-xl" />
-            <span className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">DailyFlow</span>
+            <img src="/logo.svg" alt="Staflo logo" className="h-9 w-9 rounded-xl" />
+            <span className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">Staflo</span>
           </Link>
 
           {state === 'verifying' && (

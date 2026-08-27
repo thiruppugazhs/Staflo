@@ -42,8 +42,8 @@ export default function Login(){
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src="/logo.svg" alt="DailyFlow logo" className="h-9 w-9 rounded-xl" />
-            <span className="font-bold text-xl tracking-tight">DailyFlow</span>
+            <img src="/logo.svg" alt="Staflo logo" className="h-9 w-9 rounded-xl" />
+            <span className="font-bold text-xl tracking-tight">Staflo</span>
           </Link>
 
           <div className="flex-1 flex flex-col justify-center max-w-[480px]">
@@ -71,7 +71,7 @@ export default function Login(){
           </div>
 
           <div className="flex items-center justify-between text-xs text-white/50 pt-6 border-t border-white/10 shrink-0">
-            <span>© 2026 DailyFlow Technologies</span>
+            <span>© 2026 Staflo Technologies</span>
             <span className="flex items-center gap-3"><span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Secure</span><span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> Private</span></span>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function Login(){
       {/* Right — 50% Side Panel Card */}
       <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:bg-white lg:dark:bg-zinc-950 lg:p-4 xl:p-5">
         <div className="lg:hidden h-14 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
-          <Link to="/" className="flex items-center gap-2 font-bold"><img src="/logo.svg" alt="DailyFlow logo" className="h-7 w-7 rounded-lg" /> DailyFlow</Link>
+          <Link to="/" className="flex items-center gap-2 font-bold"><img src="/logo.svg" alt="Staflo logo" className="h-7 w-7 rounded-lg" /> Staflo</Link>
           <Link to="/signup" className="text-sm text-[#004E72] font-medium">Create Company</Link>
         </div>
 
@@ -127,7 +127,7 @@ export default function Login(){
 
                 <div className="relative py-1">
                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-200 dark:border-zinc-800" /></div>
-                  <div className="relative flex justify-center"><span className="bg-white dark:bg-zinc-900 px-2 text-xs text-zinc-500">New to DailyFlow?</span></div>
+                  <div className="relative flex justify-center"><span className="bg-white dark:bg-zinc-900 px-2 text-xs text-zinc-500">New to Staflo?</span></div>
                 </div>
 
                 <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">No company yet? <Link to="/signup" className="text-[#004E72] font-semibold hover:underline">Create Company — Free</Link></div>
@@ -140,7 +140,7 @@ export default function Login(){
             <div className="hidden lg:flex mt-4 items-center justify-center gap-2 text-xs text-zinc-400 shrink-0">
               <Link to="/" className="hover:text-zinc-600 dark:hover:text-zinc-300">← Back to home</Link>
               <span>•</span>
-              <span>Need help? support@DailyFlow.co</span>
+              <span>Need help? support@Staflo.co</span>
             </div>
           </div>
         </div>

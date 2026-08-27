@@ -6,7 +6,7 @@ export default function GettingStarted(){
     <div className="min-h-screen bg-[#F9F9F9] text-zinc-900">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#004E72] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span><span className="text-xs text-zinc-500 ml-2 hidden sm:inline">Getting Started</span></Link>
+          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#004E72] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">Staflo</span><span className="text-xs text-zinc-500 ml-2 hidden sm:inline">Getting Started</span></Link>
           <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white">Start Free <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
         </div>
       </header>
@@ -14,7 +14,7 @@ export default function GettingStarted(){
       <section className="mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
         <div className="inline-flex items-center gap-2 rounded-full bg-white border border-zinc-200 px-3 py-1 text-xs shadow-sm"><BookOpen className="h-3.5 w-3.5 text-[#004E72]" /> Getting Started Guide</div>
         <h1 className="mt-3 text-3xl sm:text-4xl font-bold tracking-tight">From zero to payroll in 15 minutes</h1>
-        <p className="mt-3 text-sm text-zinc-600 max-w-2xl">Follow this short guide. No training needed — DailyFlow walks you through each step.</p>
+        <p className="mt-3 text-sm text-zinc-600 max-w-2xl">Follow this short guide. No training needed — Staflo walks you through each step.</p>
         <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500"><Clock className="h-3.5 w-3.5" /> 3 steps • ~15 minutes • No credit card</div>
       </section>
 
@@ -43,8 +43,8 @@ export default function GettingStarted(){
 
         <div className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6 flex flex-col lg:flex-row items-center gap-6">
           <div className="flex-1">
-            <h3 className="font-semibold flex items-center gap-2"><Play className="h-4 w-4 text-[#004E72]" /> Watch: DailyFlow in 60 seconds</h3>
-            <p className="text-sm text-zinc-600 mt-1">See how leaders set up DailyFlow, invite a team, and run the first payroll.</p>
+            <h3 className="font-semibold flex items-center gap-2"><Play className="h-4 w-4 text-[#004E72]" /> Watch: Staflo in 60 seconds</h3>
+            <p className="text-sm text-zinc-600 mt-1">See how leaders set up Staflo, invite a team, and run the first payroll.</p>
             <div className="mt-3 inline-flex items-center gap-2 text-xs text-zinc-500">▶ This is a placeholder video — connect your demo link in /login.</div>
           </div>
           <div className="w-full lg:w-[360px] aspect-video rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-400">
@@ -58,7 +58,7 @@ export default function GettingStarted(){
         </div>
       </section>
 
-      <footer className="border-t border-zinc-200 bg-white"><div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-6 text-xs text-zinc-500 flex justify-between"><span>© 2026 DailyFlow</span><Link to="/" className="hover:text-zinc-700">← Back to home</Link></div></footer>
+      <footer className="border-t border-zinc-200 bg-white"><div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-6 text-xs text-zinc-500 flex justify-between"><span>© 2026 Staflo</span><Link to="/" className="hover:text-zinc-700">← Back to home</Link></div></footer>
     </div>
   )
 }

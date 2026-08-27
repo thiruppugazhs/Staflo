@@ -126,8 +126,8 @@ export default function Signup(){
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src="/logo.svg" alt="DailyFlow logo" className="h-9 w-9 rounded-xl" />
-            <span className="font-bold text-xl tracking-tight">DailyFlow</span>
+            <img src="/logo.svg" alt="Staflo logo" className="h-9 w-9 rounded-xl" />
+            <span className="font-bold text-xl tracking-tight">Staflo</span>
           </Link>
 
           <div className="mt-8 max-w-[440px]">
@@ -202,7 +202,7 @@ export default function Signup(){
           </div>
 
           <div className="mt-6 shrink-0 flex items-center justify-between text-xs text-white/50 pt-5 border-t border-white/10">
-            <span>© 2026 DailyFlow Technologies</span>
+            <span>© 2026 Staflo Technologies</span>
             <span className="flex items-center gap-3">
               <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Secure</span>
               <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> Private</span>
@@ -214,7 +214,7 @@ export default function Signup(){
       {/* Right — 50% Side Panel Card - no outer space */}
         <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-white dark:bg-zinc-900 lg:bg-white lg:dark:bg-zinc-900 lg:overflow-hidden">
         <div className="lg:hidden h-12 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
-          <Link to="/" className="flex items-center gap-2 font-bold text-sm"><img src="/logo.svg" alt="DailyFlow logo" className="h-6 w-6 rounded-lg" /> DailyFlow</Link>
+          <Link to="/" className="flex items-center gap-2 font-bold text-sm"><img src="/logo.svg" alt="Staflo logo" className="h-6 w-6 rounded-lg" /> Staflo</Link>
           <Link to="/login" className="text-xs text-[#004E72] font-medium">Sign In</Link>
         </div>
 

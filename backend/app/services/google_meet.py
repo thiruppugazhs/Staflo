@@ -161,14 +161,14 @@ async def create_calendar_event_with_meet(
             return _demo_meet_link(), f"mock_{uuid.uuid4().hex[:8]}", "mock"
 
         event = {
-            "summary": title or "DailyFlow Meeting",
+            "summary": title or "Staflo Meeting",
             "description": description,
             "start": {"dateTime": start_time.astimezone(timezone.utc).isoformat(), "timeZone": "UTC"},
             "end": {"dateTime": end_time.astimezone(timezone.utc).isoformat(), "timeZone": "UTC"},
             "attendees": [{"email": e} for e in attendee_emails if e],
             "conferenceData": {
                 "createRequest": {
-                    "requestId": f"dailyflow-{uuid.uuid4().hex[:16]}",
+                    "requestId": f"staflo-{uuid.uuid4().hex[:16]}",
                     "conferenceSolutionKey": {"type": "hangoutsMeet"},
                 }
             },
@@ -201,7 +201,7 @@ async def create_instant_meet(
     now = datetime.now(timezone.utc).replace(microsecond=0)
     return await create_calendar_event_with_meet(
         title="Instant Meet",
-        description="Instant meeting created from DailyFlow",
+        description="Instant meeting created from Staflo",
         start_time=now,
         end_time=now + timedelta(hours=1),
         attendee_emails=attendee_emails or [],

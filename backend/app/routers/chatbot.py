@@ -269,11 +269,11 @@ async def ask(payload: dict, db: AsyncSession = Depends(get_db), current: User =
     ctx, sources = await build_context(db, current)
 
     engine = "rules"
-    answer = await _openai_answer(question, ctx, "DailyFlow")
+    answer = await _openai_answer(question, ctx, "Staflo")
     if answer:
         engine = "openai"
     else:
-        answer = await _claude_answer(question, ctx, "DailyFlow")
+        answer = await _claude_answer(question, ctx, "Staflo")
         if answer:
             engine = "claude"
     if not answer:

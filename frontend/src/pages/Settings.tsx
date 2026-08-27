@@ -4,6 +4,7 @@ import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useAuth } from '../stores/auth'
+import { openRazorpayCheckout } from '../lib/razorpay'
 
 function resolveFileUrl(url?: string){
   if(!url) return ''
@@ -96,6 +97,57 @@ export default function Settings(){
         </Card>
       ): <div className="text-sm text-zinc-500">Loading company...</div>}
 
+      <Card className="p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Subscription & Billing</h3>
+            <p className="text-xs text-zinc-500">Manage your Staflo plan and payment gateway</p>
+          </div>
+          <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+            Active Plan: Growth (Test Mode)
+          </span>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4 pt-2">
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 space-y-2">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Growth Plan</p>
+            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">₹199 <span className="text-xs font-normal text-zinc-500">/ employee / month</span></p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">Includes advanced payroll, 100GB document storage, meeting integration, and priority support.</p>
+            <Button
+              size="sm"
+              className="mt-2 w-full"
+              onClick={() => {
+                openRazorpayCheckout({
+                  planName: 'Growth',
+                  amountInINR: 199,
+                  companyName: company?.name || 'Staflo Organization',
+                  userEmail: user?.email,
+                  onSuccess: (res) => {
+                    setMsg(`✓ Payment successful! Razorpay ID: ${res.payment_id}. Subscription updated.`)
+                  },
+                  onError: (err) => {
+                    if (err !== 'Payment modal closed by user') {
+                      setMsg(`Payment error: ${err}`)
+                    }
+                  }
+                })
+              }}
+            >
+              Pay / Renew with Razorpay
+            </Button>
+          </div>
+
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 space-y-2">
+            <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Enterprise Plan</p>
+            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Custom <span className="text-xs font-normal text-zinc-500">/ custom billing</span></p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">Custom integrations, dedicated database instance, tailored SLAs, and custom domain.</p>
+            <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => window.location.href = 'mailto:sales@staflo.io'}>
+              Contact Enterprise Sales
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-6 space-y-3">
         <h3 className="font-semibold">Change Password (forced if temp)</h3>
         <div className="grid md:grid-cols-3 gap-3">
@@ -105,7 +157,7 @@ export default function Settings(){
         </div>
         <Button size="sm" onClick={changePwd}>Change Password</Button>
       </Card>
-      {msg && <div className="text-sm p-3 rounded bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
+      {msg && <div className="text-sm p-3 rounded bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-white">{msg}</div>}
       {!isAdmin && <div className="text-sm text-amber-400">You are {user?.role} — only admin/hr can edit company settings.</div>}
     </div>
   )

@@ -72,10 +72,10 @@ export default function Layout(){
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(()=>{
-    try { return localStorage.getItem('DailyFlow-sidebar-collapsed')==='1' } catch { return false }
+    try { return localStorage.getItem('Staflo-sidebar-collapsed')==='1' } catch { return false }
   })
   useEffect(()=>{
-    try { localStorage.setItem('DailyFlow-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
+    try { localStorage.setItem('Staflo-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
   },[collapsed])
 
   const NavItem = ({t, onNavigate, collapsed: isCollapsed}:{t:any, onNavigate?:()=>void, collapsed?:boolean})=>{
@@ -123,9 +123,9 @@ export default function Layout(){
         <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
           <Link to="/dashboard" className={`flex items-center gap-2.5 font-bold text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
             <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
-              <img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" />
+              <img src="/logo.svg" alt="Staflo logo" className="h-5 w-5 rounded-md brightness-0 invert" />
             </span>
-            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">DailyFlow</span>}
+            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">Staflo</span>}
           </Link>
           <button
             onClick={()=>setCollapsed(v=>!v)}
@@ -162,7 +162,7 @@ export default function Layout(){
           <aside className="absolute left-0 top-0 bottom-0 w-[280px] bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xl">
             <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
               <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
-                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> DailyFlow
+                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="Staflo logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> Staflo
               </Link>
               <button onClick={()=>setMobileOpen(false)} className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <X className="h-5 w-5" />
@@ -195,7 +195,7 @@ export default function Layout(){
               <button onClick={()=>setMobileOpen(true)} className="md:hidden h-8 w-8 rounded-md border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <Menu className="h-5 w-5" />
               </button>
-              <span className="md:hidden font-bold flex items-center gap-2"><img src="/logo.svg" alt="DailyFlow logo" className="h-6 w-6 rounded" /> DailyFlow</span>
+              <span className="md:hidden font-bold flex items-center gap-2"><img src="/logo.svg" alt="Staflo logo" className="h-6 w-6 rounded" /> Staflo</span>
               <span className="hidden md:block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {tabs.find(t=>t.path===loc.pathname)?.label ?? 'Dashboard'}
               </span>

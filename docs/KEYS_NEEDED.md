@@ -1,4 +1,4 @@
-# DailyFlow — Keys & Env Vars Needed (Give These Later)
+# Staflo — Keys & Env Vars Needed (Give These Later)
 
 > Backend is already running on `postgresql+asyncpg://postgres.axhiwzngefjkerrmimyk:***@aws-0-ap-south-1.pooler.supabase.com:5432/postgres` (pooler).
 > Everything below is **already wired** — paste values into `backend/.env` and `frontend/.env` and restart.
@@ -20,7 +20,7 @@ Current `backend/.env` has:
 - `SMTP_PORT=465`
 - `SMTP_USER=a2301b001@smtp-brevo.com`
 - `SMTP_PASSWORD=<REDACTED>` — please regenerate and re-share
-- `SMTP_FROM_EMAIL=noreply@DailyFlow.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
+- `SMTP_FROM_EMAIL=noreply@Staflo.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
 - `SMTP_USE_TLS=false`
 - `SMTP_USE_SSL=true`
 
@@ -29,16 +29,16 @@ Current `backend/.env` has:
 - `ALGORITHM=HS256`
 - `ACCESS_TOKEN_EXPIRE_MINUTES=60`
 - `REFRESH_TOKEN_EXPIRE_DAYS=7`
-- `CORS_ORIGINS=http://localhost:5173,http://localhost:3000,https://DailyFlow.susindran.in`
+- `CORS_ORIGINS=http://localhost:5173,http://localhost:3000,https://Staflo.susindran.in`
 
 Optional:
 - `REQUIRE_EMAIL_VERIFICATION=true|false` — if `true`, `POST /auth/login` returns 403 until verified (currently soft banner only)
 
 ## 4) Frontend `frontend/.env`
-- `VITE_API_URL=http://localhost:8000/api/v1` (local) or `https://api.DailyFlow.susindran.in/api/v1` (prod)
+- `VITE_API_URL=http://localhost:8000/api/v1` (local) or `https://api.Staflo.susindran.in/api/v1` (prod)
 - `VITE_SUPABASE_URL` — same as `SUPABASE_URL` (for `lib/supabase.ts` direct public URL helpers)
 - `VITE_SUPABASE_ANON_KEY` — same as `SUPABASE_ANON_KEY`
-- Optional for verification link: `VITE_APP_URL=https://DailyFlow.susindran.in` (used in `verify_url`)
+- Optional for verification link: `VITE_APP_URL=https://Staflo.susindran.in` (used in `verify_url`)
 
 ## 5) How to Give Later
 Paste either:
@@ -50,7 +50,7 @@ Paste either:
 
 ## 6) Google Calendar + Meet (real Meet links)
 
-There is no standalone "Meet API" — DailyFlow creates a **Google Calendar event** with
+There is no standalone "Meet API" — Staflo creates a **Google Calendar event** with
 `conferenceData` and extracts the generated `https://meet.google.com/xxx-yyyy-zzz` link.
 Until credentials below are set, meetings return flagged **demo** links (`source: "mock"`)
 that Meet rejects ("Check your meeting code").

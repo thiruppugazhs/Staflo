@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/DailyFlow"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/Staflo"
     SUPABASE_URL: str = ""
     SUPABASE_SERVICE_KEY: str = ""
     SUPABASE_ANON_KEY: str = ""
@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 465
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
-    SMTP_FROM_EMAIL: str = "noreply@DailyFlow.susindran.in"
+    SMTP_FROM_EMAIL: str = "noreply@Staflo.susindran.in"
     SMTP_USE_TLS: bool = False
     SMTP_USE_SSL: bool = True
     REQUIRE_EMAIL_VERIFICATION: bool = False
@@ -38,8 +38,9 @@ class Settings(BaseSettings):
     GOOGLE_OAUTH_REFRESH_TOKEN: str = ""
     # Workspace domain-wide delegation subject (service account impersonation)
     GOOGLE_IMPERSONATE_EMAIL: str = ""
-    # Calendar to create events on
-    GOOGLE_CALENDAR_ID: str = "primary"
+    # Razorpay Payment Gateway
+    RAZORPAY_KEY_ID: str = "rzp_test_TUjXmrPNGhYVpq"
+    RAZORPAY_KEY_SECRET: str = "mllaW6PHW7l5IAvND8BvLspU"
 
     class Config:
         env_file = ".env"

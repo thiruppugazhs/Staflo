@@ -1,12 +1,12 @@
-# DailyFlow
+# Staflo
 
-DailyFlow is a multi-tenant human resource management system for employee records, attendance, leave, payroll, documents, meetings, and workforce reporting. It combines a React web application with a FastAPI API and Supabase-backed PostgreSQL and Storage.
+Staflo is a multi-tenant human resource management system for employee records, attendance, leave, payroll, documents, meetings, and workforce reporting. It combines a React web application with a FastAPI API and Supabase-backed PostgreSQL and Storage.
 
 ## Product Preview
 
-![DailyFlow landing page](image.png)
+![Staflo landing page](image.png)
 
-The landing page highlights DailyFlow's workforce management experience: streamlined employee attendance tracking, attendance summaries, and an HR-friendly dashboard designed for modern companies.
+The landing page highlights Staflo's workforce management experience: streamlined employee attendance tracking, attendance summaries, and an HR-friendly dashboard designed for modern companies.
 
 ## Highlights
 
@@ -113,7 +113,7 @@ All application routes are mounted below `/api/v1`:
 ## Project Structure
 
 ```text
-DailyFlow/
+Staflo/
 ├── backend/
 │   ├── app/
 │   │   ├── core/             # Settings, dependencies, and security
