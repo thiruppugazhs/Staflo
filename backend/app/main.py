@@ -33,20 +33,17 @@ async def unhandled_exception_handler(request, exc):
         headers["Access-Control-Allow-Origin"] = origin
     return JSONResponse(status_code=500, content={"detail": f"Internal server error: {exc}"}, headers=headers)
 
-app.include_router(auth.router, prefix="/api/v1")
-app.include_router(users.router, prefix="/api/v1")
-app.include_router(attendance.router, prefix="/api/v1")
-app.include_router(leave.router, prefix="/api/v1")
-app.include_router(payroll.router, prefix="/api/v1")
-app.include_router(documents.router, prefix="/api/v1")
-app.include_router(reports.router, prefix="/api/v1")
-app.include_router(companies.router, prefix="/api/v1")
-app.include_router(avatars.router, prefix="/api/v1")
-app.include_router(notifications.router, prefix="/api/v1")
-app.include_router(meetings.router, prefix="/api/v1")
-app.include_router(chatbot.router, prefix="/api/v1")
-app.include_router(interns.router, prefix="/api/v1")
-app.include_router(payments.router, prefix="/api/v1")
+# Mount routers on both /api/v1 and /v1 so Vercel rewrites work seamlessly
+all_routers = [
+    auth.router, users.router, attendance.router, leave.router,
+    payroll.router, documents.router, reports.router, companies.router,
+    avatars.router, notifications.router, meetings.router, chatbot.router,
+    interns.router, payments.router
+]
+
+for prefix in ["/api/v1", "/v1"]:
+    for r in all_routers:
+        app.include_router(r, prefix=prefix)
 
 # serve local uploads fallback (for dev when Supabase not configured)
 if os.path.exists("uploads"):
