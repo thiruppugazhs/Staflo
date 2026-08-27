@@ -4,8 +4,6 @@ Staflo is a multi-tenant human resource management system for employee records, 
 
 ## Product Preview
 
-![Staflo landing page](image.png)
-
 The landing page highlights Staflo's workforce management experience: streamlined employee attendance tracking, attendance summaries, and an HR-friendly dashboard designed for modern companies.
 
 ## Highlights
