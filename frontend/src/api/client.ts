@@ -1,13 +1,22 @@
 import axios from 'axios'
 
 // Smart API URL resolution:
-// 1. Explicit VITE_API_URL if set in env
-// 2. Relative '/api/v1' in production / custom domain (handled seamlessly by Vercel rewrites)
-// 3. 'http://localhost:8000/api/v1' when developing locally on localhost
-const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-const defaultUrl = isLocal ? 'http://localhost:8000/api/v1' : '/api/v1'
-const API_URL = (import.meta.env.VITE_API_URL as string) || defaultUrl
+// Handles explicit VITE_API_URL, localhost, and production relative routes
+function getBaseApiUrl(): string {
+  const envUrl = (import.meta.env.VITE_API_URL as string)?.trim()
+  if (envUrl) {
+    let clean = envUrl.replace(/\/+$/, '')
+    // If user provided origin only without /api/v1 (e.g. https://staflo-backend.vercel.app), append /api/v1
+    if (!clean.endsWith('/api/v1') && !clean.endsWith('/v1') && !clean.endsWith('/api')) {
+      clean = `${clean}/api/v1`
+    }
+    return clean
+  }
+  const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  return isLocal ? 'http://localhost:8000/api/v1' : '/api/v1'
+}
 
+export const API_URL = getBaseApiUrl()
 export const api = axios.create({ baseURL: API_URL })
 
 api.interceptors.request.use((config) => {
