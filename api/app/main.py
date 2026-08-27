@@ -3,8 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .db.session import engine, Base
 from .routers import auth, users, attendance, leave, payroll, documents, reports, companies, avatars, notifications, meetings, chatbot, interns, payments
-# import models to register
-from .models import company, user, attendance as att_model, leave as leave_model, payroll as payroll_model, document as doc_model, meeting as meeting_model, intern as intern_model
+# import models to register with SQLAlchemy Base.metadata
+from .models import (
+    Company, User, AttendanceRecord, LeaveType, LeaveRequest, LeaveBalance,
+    SalaryComponent, SalaryStructure, PayrollRun, Document, Meeting,
+    InternshipDetail, InternEvaluation
+)
 from fastapi.staticfiles import StaticFiles
 import os
 
