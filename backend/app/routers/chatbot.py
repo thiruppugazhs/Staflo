@@ -252,6 +252,59 @@ async def _claude_answer(question: str, ctx: dict, company_hint: str) -> str | N
     return None
 
 
+async def _gemini_answer(question: str, ctx: dict, company_hint: str) -> str | None:
+    """Call Google Gemini API with employee context for AI Agent Raya."""
+    import httpx
+    api_key = settings.GEMINI_API_KEY
+    if not api_key:
+        return None
+
+    agent_name = settings.AGENT_NAME or "Raya"
+    system_instruction = (
+        f"You are {agent_name}, the intelligent AI HR Agent for {company_hint}. "
+        "Answer questions accurately, warmly, and professionally ONLY using the provided JSON context about "
+        "the authenticated employee. Never fabricate data; politely inform the employee if specific info is not available. "
+        "Refuse to answer questions about other employees' sensitive records, medical diagnoses, or non-HR topics. "
+        "Be concise, helpful, and clear (max 150 words)."
+    )
+    prompt = f"Employee Live Context:\n{ctx}\n\nEmployee Question: {question}"
+
+    # Standard Gemini 1.5 API Endpoint
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{settings.GEMINI_MODEL}:generateContent?key={api_key}"
+    payload = {
+        "system_instruction": {
+            "parts": [{"text": system_instruction}]
+        },
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": prompt}]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.3,
+            "maxOutputTokens": 400
+        }
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.post(url, json=payload)
+            if resp.status_code == 200:
+                data = resp.json()
+                candidates = data.get("candidates") or []
+                if candidates:
+                    content = candidates[0].get("content") or {}
+                    parts = content.get("parts") or []
+                    text = "".join(p.get("text", "") for p in parts)
+                    if text.strip():
+                        return text.strip()
+            print(f"[CHATBOT] Gemini response {resp.status_code}: {resp.text[:200]}")
+    except Exception as e:
+        print(f"[CHATBOT] Gemini request failed: {e}")
+    return None
+
+
 @router.post("/ask")
 async def ask(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
     question = (payload.get("question") or "").strip()
@@ -268,18 +321,24 @@ async def ask(payload: dict, db: AsyncSession = Depends(get_db), current: User =
 
     ctx, sources = await build_context(db, current)
 
-    engine = "rules"
-    answer = await _openai_answer(question, ctx, "Staflo")
-    if answer:
-        engine = "openai"
-    else:
-        answer = await _claude_answer(question, ctx, "Staflo")
-        if answer:
-            engine = "claude"
+    engine = "gemini"
+    # 1. Primary: Google Gemini (Raya)
+    answer = await _gemini_answer(question, ctx, "Staflo")
     if not answer:
-        answer = _rule_answer(question, ctx)
+        # 2. Fallbacks
+        answer = await _openai_answer(question, ctx, "Staflo")
+        if answer:
+            engine = "openai"
+        else:
+            answer = await _claude_answer(question, ctx, "Staflo")
+            if answer:
+                engine = "claude"
+            else:
+                answer = _rule_answer(question, ctx)
+                engine = "rules"
+
     if not answer:
         answer = ("I don't have that information yet. Try asking about leave balance, attendance, "
                   "salary, meetings, or your profile.")
 
-    return {"answer": answer, "data_used": sources, "engine": engine}
+    return {"answer": answer, "data_used": sources, "engine": engine, "agent": settings.AGENT_NAME or "Raya"}

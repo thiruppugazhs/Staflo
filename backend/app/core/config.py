@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     SMTP_USE_TLS: bool = False
     SMTP_USE_SSL: bool = True
     REQUIRE_EMAIL_VERIFICATION: bool = False
+    # HR AI Chatbot: Raya (Powered by Google Gemini)
+    AGENT_NAME: str = "Raya"
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-1.5-flash"
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-3-haiku-20240307"
     OPENAI_API_KEY: str = ""
