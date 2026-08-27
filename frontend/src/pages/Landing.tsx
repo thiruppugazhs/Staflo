@@ -6,7 +6,6 @@ import {
   MapPin, Timer, FileText, Layers, TrendingUp, Lock, Globe, Zap, Menu, X, Play, ChevronRight
 } from 'lucide-react'
 import { useAuth } from '../stores/auth'
-import ThemeToggle from '../components/ThemeToggle'
 import StafloLogo, { StafloIcon } from '../components/Logo'
 import { openRazorpayCheckout } from '../lib/razorpay'
 
@@ -17,7 +16,7 @@ export default function Landing() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] text-zinc-900 selection:bg-[#004E72]/15">
+    <div className="min-h-screen bg-white text-zinc-900 antialiased font-sans">
       {/* ---------- NAV - always white (landing white-only) ---------- */}
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
@@ -35,7 +34,6 @@ export default function Landing() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
             {token ? (
               <Link to="/dashboard">
                 <button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white hover:bg-[#FF6E42] shadow">
