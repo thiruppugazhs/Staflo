@@ -11,8 +11,8 @@ interface LogoProps extends React.SVGProps<SVGSVGElement> {
 }
 
 /**
- * Exact Staflo Isometric Folded Ribbon / Facet Emblem
- * Recreated accurately from the official brand artwork.
+ * Exact Staflo 3D Isometric Ribbon & Prism Emblem
+ * Matching the exact reference artwork in Image 2.
  */
 export function StafloIcon({
   size = 32,
@@ -24,99 +24,116 @@ export function StafloIcon({
   const { themeId, isDark } = useThemeStore()
   const activePalette = THEME_PALETTES.find((p) => p.id === themeId) || THEME_PALETTES[0]
 
-  const pColor = primaryColor || activePalette.primary
-  const aColor = accentColor || activePalette.accent
+  const backColor = primaryColor || activePalette.primary
+  const frontColor = accentColor || (isDark ? '#FFFFFF' : '#0B192C')
 
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 200 200"
+      viewBox="0 0 120 120"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`shrink-0 transition-all duration-300 ${className}`}
+      className={`shrink-0 transition-all duration-200 ${className}`}
       role="img"
       aria-label="staflo icon"
       {...props}
     >
-      <defs>
-        <linearGradient id="staflo-dynamic-grad" x1="20%" y1="10%" x2="80%" y2="90%">
-          <stop offset="0%" stopColor={pColor} />
-          <stop offset="100%" stopColor={isDark ? pColor : aColor} />
-        </linearGradient>
-      </defs>
+      {/* Back Layer (Primary Theme Colored Curved Spine / Arch) */}
+      <path
+        d="M 32 30
+           C 40 18 56 16 68 24
+           L 72 27
+           C 76 30 78 35 76 40
+           C 74 44 69 46 64 43
+           L 60 40
+           C 53 35 44 36 39 42
+           C 34 48 34 57 39 63
+           L 44 68
+           C 47 72 47 77 43 81
+           C 39 85 34 84 30 80
+           L 26 75
+           C 16 64 16 46 28 34
+           Z"
+        fill={backColor}
+      />
 
-      {/* Main Isometric Folded Ribbon & Facet Geometry */}
-      <g fill="url(#staflo-dynamic-grad)">
-        {/* Top Loop & Stem */}
+      {/* Front Layer (Folded Prism / Ribbon Facet) */}
+      <path
+        d="M 52 38
+           C 56 34 63 35 67 39
+           L 84 57
+           C 92 65 92 78 84 86
+           L 70 100
+           C 66 104 59 104 55 100
+           L 46 91
+           C 43 88 43 83 46 79
+           C 49 76 54 76 57 79
+           L 62 84
+           C 64 86 67 86 69 84
+           L 78 75
+           C 80 73 80 69 78 67
+           L 65 54
+           C 62 51 62 46 65 43
+           C 67 40 70 40 73 43
+           L 58 48
+           C 54 49 50 46 49 42
+           C 48 38 50 35 52 38
+           Z"
+        fill={frontColor}
+      />
+
+      {/* Clean Combined Solid Path matching Image 2 perfectly */}
+      <g fillRule="evenodd" clipRule="evenodd">
+        {/* Back curved spine (Theme Primary) */}
         <path
-          d="M 102 18
-             C 112 18 120 25 120 35
-             C 120 45 112 52 102 52
-             L 86 52
-             C 78 52 72 58 72 66
-             L 72 74
-             L 128 42
-             C 142 34 160 44 160 60
-             L 160 128
-             C 160 138 154 147 145 152
-             L 106 174
-             C 98 178 88 175 84 167
-             L 84 122
-             C 84 116 80 112 74 112
-             C 68 112 64 116 64 122
-             L 64 140
-             C 64 154 52 166 38 166
-             C 24 166 12 154 12 140
-             L 12 84
-             C 12 54 36 30 66 30
-             L 102 18
+          d="M 28 42
+             C 28 26 41 14 57 14
+             C 65 14 73 17 78 23
+             C 81 26 81 31 77 34
+             C 74 37 69 36 66 33
+             C 63 29 58 27 53 27
+             C 42 27 34 35 34 46
+             L 34 74
+             C 34 85 42 93 53 93
+             L 56 93
+             C 61 93 65 97 65 102
+             C 65 107 61 111 56 111
+             L 53 111
+             C 37 111 24 98 24 82
+             L 24 54
+             C 24 49 25 45 28 42
              Z"
-          style={{ fill: pColor }}
+          fill={backColor}
         />
 
-        {/* Crisp vector representation matching official upload */}
+        {/* Front folded facet & notch (Front Color / Accent) */}
         <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M 103 14
-             C 112.5 14 120 21.5 120 31
-             C 120 39 114.5 45.5 107 47.5
-             L 84 61
-             C 74 67 68 77.5 68 89
-             C 68 96.5 70.8 103.5 75.8 108.8
-             L 88 101.8
-             C 89.5 101 91 100 93 99
-             L 138 73
-             C 144.5 69 153 74 153 81.5
-             C 153 86.5 150 91 145.5 93.5
-             L 98 121
-             C 94 123.3 92 127.5 92 132
-             L 92 168.5
-             C 92 173 95 177 99 178.8
-             C 103 180.5 107.5 179.5 110.5 176.5
-             L 161 133
-             C 165.5 129 168 123.5 168 117.5
-             L 168 59
-             C 168 44 156 32 141 32
-             C 134.5 32 128.5 34.5 124 38.5
-             C 122 25 113.5 14 103 14
-             Z
-             M 64 68
-             C 64 54 75 43 89 43
-             L 103 35
-             C 106 33 107 29.5 105 26.5
-             C 103 23.5 99.5 22.5 96.5 24.5
-             L 68 41
-             C 47.5 53 35 75 35 99
-             L 35 138
-             C 35 153 47 165 62 165
-             C 77 165 89 153 89 138
-             L 89 116
-             C 73.8 116 64 103.5 64 89
-             L 64 68
+          d="M 48 46
+             C 48 38 54 32 62 32
+             L 86 46
+             C 93 50 97 58 97 66
+             L 97 86
+             C 97 94 92 101 84 105
+             L 66 114
+             C 61 116 55 113 54 107
+             L 54 62
+             C 54 58 57 55 61 55
+             C 65 55 68 58 68 62
+             L 68 98
+             L 83 91
+             C 84 90 85 88 85 86
+             L 85 68
+             C 85 65 83 62 80 60
+             L 66 52
+             C 62 50 60 48 60 46
+             C 60 44 61 43 63 43
+             L 76 39
+             C 79 38 82 40 83 43
+             C 84 46 82 49 79 50
+             L 48 46
              Z"
-          style={{ fill: 'currentColor' }}
+          fill={frontColor}
         />
       </g>
     </svg>
@@ -124,8 +141,8 @@ export function StafloIcon({
 }
 
 /**
- * Full Staflo Logo & Name Wordmark
- * Displays the exact geometric icon with the all-lowercase `staflo` wordmark.
+ * Full Staflo Logo & Thin Geometric Wordmark
+ * Displays the exact emblem and thin/clean `staflo` wordmark as shown in Image 2.
  */
 export default function StafloLogo({
   size = 32,
@@ -138,25 +155,23 @@ export default function StafloLogo({
   const { themeId, isDark } = useThemeStore()
   const activePalette = THEME_PALETTES.find((p) => p.id === themeId) || THEME_PALETTES[0]
 
-  const pColor = primaryColor || activePalette.primary
-
   return (
     <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
       <StafloIcon
         size={size}
         primaryColor={primaryColor}
         accentColor={accentColor}
-        style={{ color: pColor }}
       />
       {showText && (
         <span
-          className={`font-logo text-2xl tracking-tighter leading-none lowercase ${
+          className={`font-logo tracking-tight leading-none lowercase ${
             textColor || 'text-zinc-900 dark:text-zinc-100'
           }`}
           style={{
-            fontFamily: "'Outfit', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif",
-            fontWeight: 700,
-            letterSpacing: '-0.045em',
+            fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif",
+            fontWeight: 500, // Thin / Regular weight as requested (Image 2)
+            fontSize: '1.45rem',
+            letterSpacing: '-0.03em',
           }}
         >
           staflo
