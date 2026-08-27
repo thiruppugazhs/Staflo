@@ -53,21 +53,21 @@ export default function Layout(){
   }
 
   const coreTabs = [
-    {label:'Dashboard', path:'/dashboard', icon: LayoutDashboard, active: 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
-    {label:'Employees', path:'/employees', icon: Users, active: 'bg-[#004E72] text-white shadow-md shadow-[#004E72]/20', tint: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300', hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'},
-    {label:'Attendance', path:'/attendance', icon: Clock, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
-    {label:'Time Off', path:'/time-off', icon: CalendarDays, active: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
-    {label:'Payroll', path:'/payroll', icon: Wallet, active: 'bg-teal-600 text-white shadow-md shadow-teal-600/20', tint: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-300', hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-300'},
-    {label:'Reports', path:'/reports', icon: BarChart3, active: 'bg-sky-600 text-white shadow-md shadow-sky-600/20', tint: 'bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300', hover: 'hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-700 dark:hover:text-sky-300'},
-    {label:'Documents', path:'/documents', icon: FileText, active: 'bg-orange-600 text-white shadow-md shadow-orange-600/20', tint: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-300', hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300'},
-    {label:'Notifications', path:'/notifications', icon: Bell, active: 'bg-amber-600 text-white shadow-md shadow-amber-600/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
-    {label:'Company', path:'/company', icon: Building2, active: 'bg-zinc-700 text-white shadow-md shadow-zinc-700/20', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
-    {label:'Meetings', path:'/meetings', icon: Video, active: 'bg-fuchsia-600 text-white shadow-md shadow-fuchsia-600/20', tint: 'bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/30 dark:text-fuchsia-300', hover: 'hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/20 hover:text-fuchsia-700 dark:hover:text-fuchsia-300'},
-    {label:'Interns', path:'/interns', icon: GraduationCap, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
+    {label:'Dashboard', path:'/dashboard', icon: LayoutDashboard},
+    {label:'Employees', path:'/employees', icon: Users},
+    {label:'Attendance', path:'/attendance', icon: Clock},
+    {label:'Time Off', path:'/time-off', icon: CalendarDays},
+    {label:'Payroll', path:'/payroll', icon: Wallet},
+    {label:'Reports', path:'/reports', icon: BarChart3},
+    {label:'Documents', path:'/documents', icon: FileText},
+    {label:'Notifications', path:'/notifications', icon: Bell},
+    {label:'Company', path:'/company', icon: Building2},
+    {label:'Meetings', path:'/meetings', icon: Video},
+    {label:'Interns', path:'/interns', icon: GraduationCap},
   ]
   const accountTabs = [
-    {label:'My Profile', path:'/me', icon: User, active: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20', tint: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300', hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-700 dark:hover:text-indigo-300'},
-    {label:'Settings', path:'/settings', icon: Settings, active: 'bg-zinc-800 text-white dark:bg-zinc-700 dark:text-white shadow-md', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
+    {label:'My Profile', path:'/me', icon: User},
+    {label:'Settings', path:'/settings', icon: Settings},
   ]
   const tabs = [...coreTabs, ...accountTabs]
 
@@ -88,14 +88,20 @@ export default function Layout(){
         to={t.path}
         onClick={onNavigate}
         title={isCollapsed ? t.label : undefined}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
+        className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
           ${isCollapsed ? 'justify-center px-2' : ''}
-          ${active ? t.active : `text-zinc-600 dark:text-zinc-400 ${t.hover}`}`}
+          ${active 
+            ? 'bg-[var(--theme-primary)] text-white shadow-md shadow-black/10' 
+            : 'text-zinc-600 dark:text-zinc-400 hover:bg-[var(--theme-muted)]/60 hover:text-[var(--theme-primary)] dark:hover:bg-zinc-800 dark:hover:text-white'}`}
       >
-        <span className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 transition ${active ? 'bg-white/20' : t.tint}`}>
+        <span className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+          active 
+            ? 'bg-white/20 text-white' 
+            : 'bg-[var(--theme-muted)] text-[var(--theme-primary)] group-hover:bg-[var(--theme-primary)] group-hover:text-white dark:bg-zinc-800 dark:text-zinc-300 dark:group-hover:bg-[var(--theme-primary)]'
+        }`}>
           <Icon className="h-[16px] w-[16px] shrink-0" />
         </span>
-        {!isCollapsed && t.label}
+        {!isCollapsed && <span className="truncate">{t.label}</span>}
       </Link>
     )
   }

@@ -514,11 +514,11 @@ export default function Signup(){
                 </Button>
               ) : step === 2 ? (
                 <Button type="submit" disabled={loading || !canStep2} className="flex-1 h-10 text-xs font-medium">
-                  {loading ? 'Sending OTP…' : 'Create Workspace & Send OTP'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  {loading ? 'Sending OTP…' : 'Send OTP & Continue'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               ) : (
                 <Button type="button" onClick={handleVerifyOtp} disabled={verifying || otp.length < 6} className="flex-1 h-10 text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white">
-                  {verifying ? 'Verifying OTP…' : 'Verify & Go to Dashboard'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  {verifying ? 'Verifying OTP…' : 'Verify OTP & Go to Dashboard'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               )}
             </div>

@@ -217,9 +217,9 @@ export default function Dashboard(){
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-5 relative overflow-hidden">
-          <div className="absolute right-0 top-0 h-20 w-20 bg-violet-500/10 rounded-full -mr-8 -mt-8"/>
+          <div className="absolute right-0 top-0 h-20 w-20 bg-[var(--theme-primary)]/10 rounded-full -mr-8 -mt-8"/>
           <div className="flex items-center justify-between">
-            <div className="h-9 w-9 rounded-xl bg-violet-600 flex items-center justify-center text-white"><Users className="h-5 w-5"/></div>
+            <div className="h-9 w-9 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-xs"><Users className="h-5 w-5"/></div>
             <span className={`text-xs flex items-center gap-1 px-2 py-1 rounded-full ${employees.length>0?'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300':'bg-zinc-100 dark:bg-zinc-800'}`}><TrendingUp className="h-3 w-3"/> {roleStats.admin||0} admins</span>
           </div>
           <div className="mt-4 text-3xl font-bold">{employees.length}</div>
@@ -233,7 +233,7 @@ export default function Dashboard(){
         <Card className="p-5 relative overflow-hidden">
           <div className="absolute right-0 top-0 h-20 w-20 bg-emerald-500/10 rounded-full -mr-8 -mt-8"/>
           <div className="flex items-center justify-between">
-            <div className="h-9 w-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white"><CheckCircle2 className="h-5 w-5"/></div>
+            <div className="h-9 w-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-xs"><CheckCircle2 className="h-5 w-5"/></div>
             <span className="text-xs flex items-center gap-1 text-emerald-600 dark:text-emerald-400">{todayPresent} / {employees.length} <ArrowUpRight className="h-3 w-3"/></span>
           </div>
           <div className="mt-4 text-3xl font-bold">{stats ? `${stats.present}` : todayPresent}<span className="text-lg font-normal text-zinc-400"> present</span></div>
@@ -244,9 +244,9 @@ export default function Dashboard(){
           </div>
         </Card>
         <Card className="p-5 relative overflow-hidden">
-          <div className="absolute right-0 top-0 h-20 w-20 bg-amber-500/10 rounded-full -mr-8 -mt-8"/>
+          <div className="absolute right-0 top-0 h-20 w-20 bg-[var(--theme-accent)]/10 rounded-full -mr-8 -mt-8"/>
           <div className="flex items-center justify-between">
-            <div className="h-9 w-9 rounded-xl bg-amber-500 flex items-center justify-center text-white"><CalendarDays className="h-5 w-5"/></div>
+            <div className="h-9 w-9 rounded-xl bg-[var(--theme-accent)] flex items-center justify-center text-white shadow-xs"><CalendarDays className="h-5 w-5"/></div>
             <span className={`text-xs px-2 py-1 rounded-full ${pendingLeaves?'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300':'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'}`}>{pendingLeaves} pending</span>
           </div>
           <div className="mt-4 text-3xl font-bold">{leaveQueue.length}<span className="text-lg font-normal text-zinc-400"> requests</span></div>
@@ -254,9 +254,9 @@ export default function Dashboard(){
           <Link to="/time-off" className="mt-3 inline-flex text-xs text-amber-600 dark:text-amber-400 hover:underline">Review queue →</Link>
         </Card>
         <Card className="p-5 relative overflow-hidden">
-          <div className="absolute right-0 top-0 h-20 w-20 bg-sky-500/10 rounded-full -mr-8 -mt-8"/>
+          <div className="absolute right-0 top-0 h-20 w-20 bg-[var(--theme-secondary)]/10 rounded-full -mr-8 -mt-8"/>
           <div className="flex items-center justify-between">
-            <div className="h-9 w-9 rounded-xl bg-sky-500 flex items-center justify-center text-white"><Wallet className="h-5 w-5"/></div>
+            <div className="h-9 w-9 rounded-xl bg-[var(--theme-secondary)] flex items-center justify-center text-white shadow-xs"><Wallet className="h-5 w-5"/></div>
             <span className="text-xs flex items-center gap-1 text-zinc-500"><Building2 className="h-3 w-3"/> {pay?.salary_structures ?? 0} structures</span>
           </div>
           <div className="mt-4 text-3xl font-bold">₹{pay ? (pay.total_monthly_payroll/1000).toFixed(0)+'k' : '—'}</div>

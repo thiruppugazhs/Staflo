@@ -12,7 +12,7 @@ function resolveFileUrl(url?: string){
   if(!url) return '#'
   if(url.startsWith('http://') || url.startsWith('https://')) return url
   if(url.startsWith('/uploads')){
-    const base = (import.meta.env.VITE_API_URL as string || 'http://localhost:8001/api/v1').replace(/\/api\/v1\/?$/, '')
+    const base = (import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api/v1').replace(/\/api\/v1\/?$/, '')
     return `${base}${url}`
   }
   return url
@@ -20,10 +20,12 @@ function resolveFileUrl(url?: string){
 
 export default function Profile(){
   const { id: paramId } = useParams()
-  const { user: me } = useAuth()
+  const { user: me, fetchMe } = useAuth()
   const toast = useToast()
-  const id = paramId || me?.id
+  const isMe = !paramId || paramId === 'me' || (me?.id && paramId === me.id)
   const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   const [tab, setTab] = useState<'resume'|'private'|'salary'>('resume')
   const [salary, setSalary] = useState<any>(null)
   const [formSalary, setFormSalary] = useState('50000')
@@ -35,36 +37,65 @@ export default function Profile(){
   const [editField, setEditField] = useState<any>({phone: '', address: '', job_title: '', department: ''})
   const [company, setCompany] = useState<any>(null)
 
-  const canViewSalary = me?.role !== 'employee' || me?.id === id
+  const canViewSalary = me?.role !== 'employee' || isMe
   const canEditSalary = me?.role === 'admin' || me?.role === 'hr'
-  const canEditAll = canEditSalary || me?.id === id
+  const canEditAll = canEditSalary || isMe
 
   const load = async()=>{
-    if(!id) return
-    const {data} = await api.get(`/users/${id}`)
-    setUser(data)
-    setEditField({phone: data.phone||'', address: data.address||'', job_title: data.job_title||'', department: data.department||''})
-    if(canViewSalary){
-      try{
-        const s = await api.get(`/payroll/salary/${id}`)
-        setSalary(s.data)
-        if(s.data?.monthly_wage) setFormSalary(String(s.data.monthly_wage))
-      }catch{}
-      try{
-        const c = await api.get('/payroll/components')
-        setComponents(c.data)
-      }catch{}
-    }
+    setLoading(true)
+    setLoadError('')
     try{
-      const d = await api.get(`/documents/${id}`)
-      setDocs(d.data)
-    }catch{}
+      let userData: any = null
+      if (isMe) {
+        const { data } = await api.get('/users/me')
+        userData = data
+      } else if (paramId) {
+        const { data } = await api.get(`/users/${paramId}`)
+        userData = data
+      }
+
+      if (userData) {
+        setUser(userData)
+        setEditField({
+          phone: userData.phone||'',
+          address: userData.address||'',
+          job_title: userData.job_title||'',
+          department: userData.department||''
+        })
+
+        const effectiveId = userData.id
+        if(canViewSalary){
+          try{
+            const s = await api.get(`/payroll/salary/${effectiveId}`)
+            setSalary(s.data)
+            if(s.data?.monthly_wage) setFormSalary(String(s.data.monthly_wage))
+          }catch{}
+          try{
+            const c = await api.get('/payroll/components')
+            setComponents(c.data)
+          }catch{}
+        }
+        try{
+          const d = await api.get(`/documents/${effectiveId}`)
+          setDocs(d.data)
+        }catch{}
+      }
+    }catch(err: any){
+      setLoadError(err.response?.data?.detail || 'Failed to load user profile.')
+    }finally{
+      setLoading(false)
+    }
+
     try{
       const c = await api.get('/companies/me')
       setCompany(c.data)
     }catch{}
   }
-  useEffect(()=>{ load() },[id])
+
+  useEffect(()=>{
+    if (!me) fetchMe()
+    load()
+  },[paramId, me?.id])
 
   // Live preview: compute salary breakdown without saving (show all salary info)
   useEffect(()=>{
@@ -82,9 +113,10 @@ export default function Profile(){
   },[formSalary, tab, components.length, canViewSalary])
 
   const saveSalary = async()=>{
+    if(!user?.id) return
     setMsg('')
     try{
-      const {data}= await api.post(`/payroll/salary/${id}`, {monthly_wage: parseFloat(formSalary)})
+      const {data}= await api.post(`/payroll/salary/${user.id}`, {monthly_wage: parseFloat(formSalary)})
       setSalary(data)
       setMsg('Saved: Net Pay ' + data.breakdown.net_pay)
     }catch(e:any){ setMsg(e.response?.data?.detail || 'Failed')}
@@ -102,19 +134,23 @@ export default function Profile(){
   const uploadDoc = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     const file = e.target.files?.[0]
     if(!file) return
+    const targetId = user?.id || paramId || me?.id
+    if(!targetId) return
     const fd = new FormData()
     fd.append('file', file)
     try{
-      await api.post(`/documents/upload/${id}`, fd, {headers: {'Content-Type':'multipart/form-data'}})
-      const d = await api.get(`/documents/${id}`)
+      await api.post(`/documents/upload/${targetId}`, fd, {headers: {'Content-Type':'multipart/form-data'}})
+      const d = await api.get(`/documents/${targetId}`)
       setDocs(d.data)
       toast.success(`Document "${file.name}" uploaded ✓`)
     }catch(ex:any){ toast.error(ex.response?.data?.detail || 'Upload failed') }
   }
 
   const saveProfile = async()=>{
+    const targetId = user?.id || paramId || me?.id
+    if(!targetId) return
     try{
-      await api.patch(`/users/${id}`, editField)
+      await api.patch(`/users/${targetId}`, editField)
       load()
       toast.success('Profile updated ✓')
     }catch(e:any){ toast.error(e.response?.data?.detail || 'Failed to update profile') }
@@ -130,7 +166,7 @@ export default function Profile(){
     try{
       const { data } = await api.post('/auth/change-password-otp')
       setPwdOtpSent(true)
-      toast.success(data.message || '6-digit OTP sent to your registered email!')
+      toast.success(data.message || 'OTP sent to your email!')
     }catch(e:any){
       setMsg(e.response?.data?.detail || 'Failed to send OTP')
     }finally{
@@ -163,31 +199,60 @@ export default function Profile(){
 
   const uploadAvatar = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     const file = e.target.files?.[0]
-    if(!file) return
+    const targetId = user?.id || paramId || me?.id
+    if(!file || !targetId) return
     const fd = new FormData()
     fd.append('file', file)
     try{
-      await api.post(`/users/${id}/avatar`, fd, {headers:{'Content-Type':'multipart/form-data'}})
+      await api.post(`/users/${targetId}/avatar`, fd, {headers:{'Content-Type':'multipart/form-data'}})
       load()
       toast.success('Profile picture updated ✓')
     }catch(ex:any){ toast.error(ex.response?.data?.detail || 'Avatar upload failed') }
   }
 
-  if(!user) return <div className="text-zinc-500">Loading...</div>
+  if(loading && !user) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center space-y-2">
+          <div className="animate-spin h-8 w-8 border-3 border-[#004E72] border-t-transparent rounded-full mx-auto"/>
+          <p className="text-xs text-zinc-500 font-medium">Loading profile details…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if(!user) {
+    return (
+      <div className="p-8 max-w-lg mx-auto">
+        <Card className="p-6 text-center space-y-3">
+          <div className="h-12 w-12 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 flex items-center justify-center mx-auto font-bold text-lg">!</div>
+          <h3 className="font-bold text-base">Profile unavailable</h3>
+          <p className="text-xs text-zinc-500">{loadError || 'Could not load the requested user profile.'}</p>
+          <Button size="sm" onClick={load} className="bg-[#004E72] text-white text-xs">Retry</Button>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
-      <Link to="/" className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">← Back to Employees</Link>
+      <Link to="/employees" className="text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white inline-flex items-center gap-1">← Back to Employees</Link>
       <Card className="p-6">
-        <div className="flex gap-4">
-          <div className="h-16 w-16 rounded-full bg-[#004E72]/30 border border-[#004E72]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
+        <div className="flex gap-4 items-center">
+          <div className="h-16 w-16 rounded-full bg-[#004E72]/15 border-2 border-[#004E72]/30 flex items-center justify-center text-xl font-bold overflow-hidden shrink-0">
             {user.avatar_url ? <img src={resolveFileUrl(user.avatar_url)} alt="avatar" className="h-full w-full object-cover"/> : `${user.first_name[0]}${user.last_name[0]}`}
           </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold">{user.first_name} {user.last_name}</h2>
-            <div className="text-sm text-zinc-500">{user.employee_id} • {user.role} • {user.job_title || '—'} {company?.name && `• ${company.name}`}</div>
-            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={resolveFileUrl(company.logo_url)} target="_blank" rel="noopener noreferrer" className="text-[#004E72] hover:underline">Company Logo</a></span>}</div>
-            {(me?.id===id || me?.role!=='employee') && <div className="mt-2"><label className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded cursor-pointer">Change Avatar<input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/></label></div>}
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold truncate text-zinc-900 dark:text-white">{user.first_name} {user.last_name}</h2>
+            <div className="text-xs text-zinc-500 truncate">{user.employee_id} • <span className="capitalize font-medium text-violet-600 dark:text-violet-400">{user.role}</span> • {user.job_title || '—'} {company?.name && `• ${company.name}`}</div>
+            <div className="text-xs text-zinc-500 truncate mt-0.5">{user.email} • {user.department || 'General'}</div>
+            {(me?.id===user.id || isMe || me?.role!=='employee') && (
+              <div className="mt-2">
+                <label className="text-xs bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 px-2.5 py-1 rounded-md cursor-pointer font-medium transition inline-flex items-center gap-1.5">
+                  Change Profile Pic <input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/>
+                </label>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex gap-2 mt-4 border-t border-zinc-200 dark:border-zinc-800 pt-4">
@@ -198,7 +263,7 @@ export default function Profile(){
       </Card>
 
       {/* Communication Hub — Full Mode (Add ons.md Integration 3) */}
-      {me?.id !== id && (
+      {me?.id !== user.id && (
         <Card className="p-5">
           <h3 className="font-semibold flex items-center gap-2">Communication Hub <span className="text-xs font-normal text-zinc-500">• One-click Call, WhatsApp, Email, Meet</span></h3>
           <p className="text-xs text-zinc-500 mt-1">Contact {user.first_name} instantly — uses <code>tel:</code> / <code>wa.me</code> / <code>mailto:</code> / <code>POST /meetings/instant</code> (Add ons.md:184)</p>
@@ -254,8 +319,8 @@ export default function Profile(){
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div><label className="text-xs text-zinc-500">Phone {me?.role==='employee'?'(editable)':''}</label><Input value={editField.phone} onChange={e=>setEditField({...editField, phone:e.target.value})} placeholder="Phone"/></div>
             <div><label className="text-xs text-zinc-500">Address</label><Input value={editField.address} onChange={e=>setEditField({...editField, address:e.target.value})} placeholder="Address"/></div>
-            <div><label className="text-xs text-zinc-500">Job Title {canEditSalary ? '(admin editable)' : ''}</label><Input value={editField.job_title} onChange={e=>setEditField({...editField, job_title:e.target.value})} disabled={!canEditSalary && me?.id!==id} placeholder="Developer"/></div>
-            <div><label className="text-xs text-zinc-500">Department</label><Input value={editField.department} onChange={e=>setEditField({...editField, department:e.target.value})} disabled={!canEditSalary && me?.id!==id} placeholder="Engineering"/></div>
+            <div><label className="text-xs text-zinc-500">Job Title {canEditSalary ? '(admin editable)' : ''}</label><Input value={editField.job_title} onChange={e=>setEditField({...editField, job_title:e.target.value})} disabled={!canEditSalary && me?.id!==user.id} placeholder="Developer"/></div>
+            <div><label className="text-xs text-zinc-500">Department</label><Input value={editField.department} onChange={e=>setEditField({...editField, department:e.target.value})} disabled={!canEditSalary && me?.id!==user.id} placeholder="Engineering"/></div>
           </div>
           <Button size="sm" onClick={saveProfile}>Save Profile</Button>
           <div className="text-xs text-zinc-500">Employees can edit limited fields (phone, address, avatar). Admin can edit all employee details (job, dept, role). Salary structure visible in Salary Info tab.</div>
@@ -284,7 +349,7 @@ export default function Profile(){
               <div className="space-y-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                 <p className="text-xs text-zinc-500">To protect your account security, changing your password requires verifying a 6-digit OTP sent to <span className="font-medium text-zinc-800 dark:text-zinc-200">{user.email}</span>.</p>
                 <Button size="sm" onClick={requestPasswordOtp} disabled={pwdLoading} className="bg-[#004E72] hover:bg-[#092634] text-white text-xs">
-                  {pwdLoading ? 'Sending OTP…' : 'Send 6-Digit Verification OTP'}
+                  {pwdLoading ? 'Sending OTP…' : 'Send OTP'}
                 </Button>
               </div>
             ) : (

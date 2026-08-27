@@ -113,7 +113,7 @@ export default function Login(){
               <div className="flex items-center gap-2 pt-2">
                 <Button type="button" variant="outline" onClick={() => { setShowForgot(false); setForgotStep(1) }} className="flex-1 h-10 text-xs">Cancel</Button>
                 <Button type="submit" disabled={forgotLoading} className="flex-1 h-10 text-xs bg-[#004E72] hover:bg-[#092634] text-white">
-                  {forgotLoading ? 'Processing…' : forgotStep === 1 ? 'Send Reset OTP' : 'Reset Password'}
+                  {forgotLoading ? 'Processing…' : forgotStep === 1 ? 'Send OTP' : 'Verify OTP & Reset Password'}
                 </Button>
               </div>
             </form>

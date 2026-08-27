@@ -60,18 +60,23 @@ export const useAuth = create<AuthState>((set) => ({
     set({ user: null, token: null })
   },
   fetchMe: async () => {
-    const { data } = await api.get('/auth/me')
-    const mapped: User = {
-      id: data.id,
-      employee_id: data.employee_id,
-      email: data.email,
-      role: data.role,
-      company_id: data.company_id,
-      company_slug: data.company_slug,
-      first_name: data.first_name,
-      last_name: data.last_name,
+    try {
+      const { data } = await api.get('/auth/me')
+      const mapped: User = {
+        id: data.id,
+        employee_id: data.employee_id,
+        email: data.email,
+        role: data.role,
+        company_id: data.company_id,
+        company_slug: data.company_slug,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        avatar_url: data.avatar_url,
+      }
+      localStorage.setItem('user', JSON.stringify(mapped))
+      set({ user: mapped })
+    } catch (e) {
+      console.warn('fetchMe failed', e)
     }
-    localStorage.setItem('user', JSON.stringify(mapped))
-    set({ user: mapped })
   }
 }))

@@ -251,7 +251,7 @@ export default function Settings(){
           <div className="space-y-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
             <p className="text-xs text-zinc-500">Password change requests require 6-digit OTP code verification sent to <span className="font-medium text-zinc-800 dark:text-zinc-200">{user?.email}</span>.</p>
             <Button size="sm" onClick={requestPasswordOtp} disabled={pwdLoading} className="bg-[#004E72] hover:bg-[#092634] text-white text-xs">
-              {pwdLoading ? 'Sending OTP…' : 'Send 6-Digit Verification OTP'}
+              {pwdLoading ? 'Sending OTP…' : 'Send OTP'}
             </Button>
           </div>
         ) : (

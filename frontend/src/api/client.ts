@@ -28,10 +28,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    if (error.response?.status === 401) {
+    // Only clear token if the core auth check fails or token is explicitly invalid
+    if (error.response?.status === 401 && error.config?.url?.includes('/auth/me')) {
       localStorage.removeItem('access_token')
-      // optional refresh
-      // window.location.href = '/login'
+      localStorage.removeItem('user')
     }
     return Promise.reject(error)
   }
