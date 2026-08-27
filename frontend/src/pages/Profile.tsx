@@ -148,13 +148,13 @@ export default function Profile(){
       <Link to="/" className="text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">← Back to Employees</Link>
       <Card className="p-6">
         <div className="flex gap-4">
-          <div className="h-16 w-16 rounded-full bg-[#eab308]/30 border border-[#eab308]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
+          <div className="h-16 w-16 rounded-full bg-[#004E72]/30 border border-[#004E72]/50 flex items-center justify-center text-xl font-bold overflow-hidden">
             {user.avatar_url ? <img src={resolveFileUrl(user.avatar_url)} alt="avatar" className="h-full w-full object-cover"/> : `${user.first_name[0]}${user.last_name[0]}`}
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold">{user.first_name} {user.last_name}</h2>
             <div className="text-sm text-zinc-500">{user.employee_id} • {user.role} • {user.job_title || '—'} {company?.name && `• ${company.name}`}</div>
-            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={resolveFileUrl(company.logo_url)} target="_blank" rel="noopener noreferrer" className="text-[#eab308] hover:underline">Company Logo</a></span>}</div>
+            <div className="text-xs text-zinc-500">{user.email} • {user.department || 'No dept'} {company?.logo_url && <span>• <a href={resolveFileUrl(company.logo_url)} target="_blank" rel="noopener noreferrer" className="text-[#004E72] hover:underline">Company Logo</a></span>}</div>
             {(me?.id===id || me?.role!=='employee') && <div className="mt-2"><label className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded cursor-pointer">Change Avatar<input type="file" accept="image/*" onChange={uploadAvatar} className="hidden"/></label></div>}
           </div>
         </div>
@@ -235,7 +235,7 @@ export default function Profile(){
               {docs.map((d:any)=>(
                 <div key={d.id} className="flex justify-between items-center text-sm border border-zinc-200 dark:border-zinc-800 rounded-xl p-2.5 hover:border-violet-300 dark:hover:border-violet-700 transition">
                   <div className="min-w-0 flex-1 truncate pr-2">{d.name} <span className="text-xs text-zinc-500">{d.mime_type}</span></div>
-                  <a href={resolveFileUrl(d.file_url)} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[#eab308] hover:text-[#5a3d53] dark:text-violet-400 dark:hover:text-violet-300 px-2 py-1 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 shrink-0">View</a>
+                  <a href={resolveFileUrl(d.file_url)} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[#004E72] hover:text-[#5a3d53] dark:text-violet-400 dark:hover:text-violet-300 px-2 py-1 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 shrink-0">View</a>
                 </div>
               ))}
               {docs.length===0 && <div className="text-xs text-zinc-500">No documents — upload resume, ID, etc.</div>}

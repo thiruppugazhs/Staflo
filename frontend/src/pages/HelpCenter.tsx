@@ -22,15 +22,15 @@ export default function HelpCenter(){
   const [query,setQuery]=useState('')
   const filtered = cats.filter(c=> c.title.toLowerCase().includes(query.toLowerCase()))
   return (
-    <div className="min-h-screen bg-[#FFFBF7] text-zinc-900">
+    <div className="min-h-screen bg-[#F9F9F9] text-zinc-900">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#eab308] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span><span className="text-xs text-zinc-500 ml-1 hidden sm:inline">Help Center</span></Link>
-          <Link to="/contact"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#eab308] text-white">Contact Support <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
+          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#004E72] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span><span className="text-xs text-zinc-500 ml-1 hidden sm:inline">Help Center</span></Link>
+          <Link to="/contact"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white">Contact Support <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
         </div>
       </header>
 
-      <section className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-br from-[#eab308] via-[#d97706] to-[#b45309] text-white">
+      <section className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-br from-[#004E72] via-[#FF6E42] to-[#092634] text-white">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:48px_48px] opacity-30" />
         <div className="relative mx-auto max-w-[720px] px-4 sm:px-6 py-12 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/20 px-3 py-1 text-xs"><HelpCircle className="h-3.5 w-3.5" /> How can we help?</div>
@@ -47,7 +47,7 @@ export default function HelpCenter(){
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(c=>(
             <div key={c.title} className="rounded-2xl border border-zinc-200 bg-white p-6 hover:shadow-md transition shadow-sm">
-              <div className="h-10 w-10 rounded-xl bg-[#eab308]/10 flex items-center justify-center"><c.icon className="h-5 w-5 text-[#eab308]" /></div>
+              <div className="h-10 w-10 rounded-xl bg-[#004E72]/10 flex items-center justify-center"><c.icon className="h-5 w-5 text-[#004E72]" /></div>
               <h3 className="mt-4 font-semibold">{c.title}</h3>
               <p className="text-sm text-zinc-600 mt-1">{c.desc}</p>
               <div className="mt-3 text-xs text-zinc-500">{c.count} articles</div>
@@ -68,10 +68,10 @@ export default function HelpCenter(){
             </div>
           </div>
           <div className="rounded-2xl bg-white border border-zinc-200 p-6 h-fit">
-            <MessageCircle className="h-6 w-6 text-[#eab308]" />
+            <MessageCircle className="h-6 w-6 text-[#004E72]" />
             <h3 className="font-semibold mt-3">Still need help?</h3>
             <p className="text-sm text-zinc-600 mt-1">Our support team replies in under 4 hours on business days.</p>
-            <Link to="/contact" className="mt-4 inline-flex items-center justify-center w-full h-10 rounded-full bg-[#eab308] text-white text-sm font-medium">Contact Support</Link>
+            <Link to="/contact" className="mt-4 inline-flex items-center justify-center w-full h-10 rounded-full bg-[#004E72] text-white text-sm font-medium">Contact Support</Link>
             <Link to="/getting-started" className="mt-2 inline-flex items-center justify-center w-full h-10 rounded-full border border-zinc-200 bg-white text-sm font-medium">View Getting Started Guide</Link>
           </div>
         </div>

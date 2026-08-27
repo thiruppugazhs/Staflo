@@ -6,15 +6,16 @@ import {
   MapPin, Timer, FileText, Layers, TrendingUp, Lock, Globe, Zap, Menu, X, Play, ChevronRight
 } from 'lucide-react'
 import { useAuth } from '../stores/auth'
+import ThemeToggle from '../components/ThemeToggle'
 
-const BRAND = '#eab308'
+const BRAND = '#004E72'
 
 export default function Landing() {
   const { token } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[#FFFBF7] text-zinc-900 selection:bg-[#eab308]/15">
+    <div className="min-h-screen bg-[#F9F9F9] text-zinc-900 selection:bg-[#004E72]/15">
       {/* ---------- NAV - always white (landing white-only) ---------- */}
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
@@ -32,9 +33,10 @@ export default function Landing() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
             {token ? (
               <Link to="/dashboard">
-                <button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#eab308] text-white hover:bg-[#d97706] shadow">
+                <button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white hover:bg-[#FF6E42] shadow">
                   Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                 </button>
               </Link>
@@ -42,7 +44,7 @@ export default function Landing() {
               <>
                 <Link to="/login" className="text-sm text-zinc-600 hover:text-zinc-900 px-3 py-2">Sign In</Link>
                 <Link to="/signup">
-                  <button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#eab308] text-white hover:bg-[#d97706] shadow">
+                  <button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#004E72] text-white hover:bg-[#FF6E42] shadow">
                     Create Company <ArrowRight className="ml-1.5 h-4 w-4" />
                   </button>
                 </Link>
@@ -60,10 +62,10 @@ export default function Landing() {
             <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-zinc-700">How it works</a>
             <a href="#pricing" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-zinc-700">Pricing</a>
             <div className="pt-3 flex flex-col gap-2">
-              {token ? <Link to="/dashboard" onClick={() => setMobileOpen(false)}><button className="w-full inline-flex items-center justify-center rounded-md h-10 px-4 font-medium bg-[#eab308] text-white">Go to Dashboard</button></Link>
+              {token ? <Link to="/dashboard" onClick={() => setMobileOpen(false)}><button className="w-full inline-flex items-center justify-center rounded-md h-10 px-4 font-medium bg-[#004E72] text-white">Go to Dashboard</button></Link>
                 : <>
                   <Link to="/login" onClick={() => setMobileOpen(false)}><button className="w-full inline-flex items-center justify-center rounded-md h-10 px-4 font-medium border border-zinc-200 bg-white">Sign In</button></Link>
-                  <Link to="/signup" onClick={() => setMobileOpen(false)}><button className="w-full inline-flex items-center justify-center rounded-md h-10 px-4 font-medium bg-[#eab308] text-white">Create Company</button></Link>
+                  <Link to="/signup" onClick={() => setMobileOpen(false)}><button className="w-full inline-flex items-center justify-center rounded-md h-10 px-4 font-medium bg-[#004E72] text-white">Create Company</button></Link>
                 </>}
             </div>
           </div>
@@ -71,11 +73,11 @@ export default function Landing() {
       </header>
 
       {/* ---------- HERO - with soft organic blob BG from reference ---------- */}
-      <section className="relative overflow-hidden bg-[#FFFBF7]">
+      <section className="relative overflow-hidden bg-[#F9F9F9]">
         {/* organic pastel blobs - matches reference image */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {/* base warm off-white */}
-          <div className="absolute inset-0 bg-[#FFFBF7]" />
+          <div className="absolute inset-0 bg-[#F9F9F9]" />
           {/* top warm wash - peach / cream */}
           <div className="absolute -top-[18%] left-[30%] w-[55%] h-[42%] bg-[#FFF1E6] rounded-[50%_50%_50%_50%/60%_60%_40%_40%] blur-[30px] opacity-80" />
           {/* left large organic blob - cream/peach */}
@@ -94,7 +96,7 @@ export default function Landing() {
           {/* subtle inner highlight on mint to add depth */}
           <div className="absolute right-[8%] bottom-[18%] w-[18%] h-[28%] bg-[#D4F0E8]/50 rounded-full blur-[18px]" />
           {/* faint dot texture - like reference subtle grain */}
-          <div className="absolute inset-0 opacity-[0.035] bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:18px_18px]" />
+          <div className="absolute inset-0 opacity-[0.035] bg-[radial-gradient(#004E72_1px,transparent_1px)] [background-size:18px_18px]" />
         </div>
 
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 pt-12 sm:pt-20 pb-12">
@@ -103,8 +105,8 @@ export default function Landing() {
             <div className="space-y-6 relative">
               <div className="space-y-4">
                 <h1 className="text-[36px] sm:text-[52px] lg:text-[58px] font-extrabold tracking-tight leading-[0.95]">
-                  <span className="text-[#0F2F4D]">Every workday,</span><br />
-                  <span className="text-[#d97706]">perfectly aligned.</span>
+                  <span className="text-[#092634]">Every workday,</span><br />
+                  <span className="text-[#FF6E42]">perfectly aligned.</span>
                 </h1>
                 <p className="text-[14px] sm:text-[15px] leading-relaxed text-[#5A6B7A] max-w-[520px]">
                   DailyFlow is a powerful HRMS that simplifies employee management, attendance, leave, payroll and more — so your team can focus on what truly matters.
@@ -113,7 +115,7 @@ export default function Landing() {
 
               <div className="flex flex-wrap gap-3">
                 <Link to="/signup">
-                  <button className="inline-flex items-center justify-center rounded-lg px-6 h-11 text-[14px] font-semibold bg-[#ca8a04] text-white hover:bg-[#d97706] shadow-[0_4px_20px_rgba(202,138,4,0.3)]">
+                  <button className="inline-flex items-center justify-center rounded-lg px-6 h-11 text-[14px] font-semibold bg-[#004E72] text-white hover:bg-[#FF6E42] shadow-[0_4px_20px_rgba(0,78,114,0.3)]">
                     Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
                   </button>
                 </Link>
@@ -160,7 +162,7 @@ export default function Landing() {
                     </span>
                     <span className="hidden lg:inline text-[11px] text-zinc-400 tracking-tight">Your team at a glance</span>
                   </div>
-                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#ca8a04] to-[#f59e0b] flex items-center justify-center text-[10px] font-bold text-white shadow-sm ring-1 ring-white">OS</div>
+                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#004E72] to-[#FF6E42] flex items-center justify-center text-[10px] font-bold text-white shadow-sm ring-1 ring-white">OS</div>
                 </div>
 
                 {/* stats */}
@@ -202,8 +204,8 @@ export default function Landing() {
                 </div>
 
                 {/* payroll bar */}
-                <div className="relative mt-3 rounded-[16px] bg-gradient-to-r from-[#ca8a04] via-[#d97706] to-[#f59e0b] p-[1px] shadow-[0_8px_24px_rgba(202,138,4,0.22)]">
-                  <div className="rounded-[15px] bg-gradient-to-r from-[#ca8a04] to-[#b45309] px-4 py-3 flex items-center justify-between text-white">
+                <div className="relative mt-3 rounded-[16px] bg-gradient-to-r from-[#004E72] via-[#FF6E42] to-[#FF6E42] p-[1px] shadow-[0_8px_24px_rgba(0,78,114,0.22)]">
+                  <div className="rounded-[15px] bg-gradient-to-r from-[#004E72] to-[#092634] px-4 py-3 flex items-center justify-between text-white">
                     <div className="flex items-center gap-3">
                       <div className="h-9 w-9 rounded-xl bg-white/15 backdrop-blur border border-white/20 flex items-center justify-center"><Wallet className="h-4.5 w-4.5 text-white" /></div>
                       <div>
@@ -228,7 +230,7 @@ export default function Landing() {
               </div>
               {/* floating: Leave approved */}
               <div className="hidden sm:flex absolute -right-5 -top-1 rounded-[14px] border border-zinc-200 bg-white/95 backdrop-blur pl-2 pr-3.5 py-2.5 shadow-[0_16px_40px_rgba(0,0,0,0.12)] items-center gap-3">
-                <div className="h-9 w-9 rounded-full bg-[#ca8a04] flex items-center justify-center text-white shadow-sm"><CalendarCheck className="h-4.5 w-4.5" /></div>
+                <div className="h-9 w-9 rounded-full bg-[#004E72] flex items-center justify-center text-white shadow-sm"><CalendarCheck className="h-4.5 w-4.5" /></div>
                 <div>
                   <div className="text-xs font-semibold leading-none text-zinc-900 flex items-center gap-1">Leave approved <span className="text-emerald-500">✓</span></div>
                   <div className="text-[11px] text-zinc-500 mt-1">Paid • 12 → 14 Mar</div>
@@ -261,7 +263,7 @@ export default function Landing() {
           <div className="absolute bottom-[12%] right-[18%] w-[520px] h-[320px] bg-[#C2E9DF]/28 rounded-[50%_50%_30%_70%/40%_50%_60%_50%] blur-[6px]" />
           <div className="absolute bottom-[18%] left-[22%] w-[220px] h-[220px] bg-[#F8C5C0]/18 rounded-full blur-[22px]" />
           <div className="absolute top-[42%] left-[48%] w-[180px] h-[180px] bg-[#FFF1E6]/60 rounded-[50%_50%_50%_50%] blur-[12px]" />
-          <div className="absolute inset-0 opacity-[0.022] bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:20px_20px]" />
+          <div className="absolute inset-0 opacity-[0.022] bg-[radial-gradient(#004E72_1px,transparent_1px)] [background-size:20px_20px]" />
         </div>
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center space-y-3">
@@ -297,7 +299,7 @@ export default function Landing() {
             },
           ].map(f => (
             <div key={f.title} className="rounded-xl border border-zinc-200 bg-white p-5 sm:p-6 hover:border-zinc-300 hover:shadow-sm transition group">
-              <div className="h-10 w-10 rounded-xl bg-[#eab308]/10 border border-[#eab308]/10 flex items-center justify-center group-hover:bg-[#eab308]/15 transition"><f.icon className="h-5 w-5 text-[#eab308]" /></div>
+              <div className="h-10 w-10 rounded-xl bg-[#004E72]/10 border border-[#004E72]/10 flex items-center justify-center group-hover:bg-[#004E72]/15 transition"><f.icon className="h-5 w-5 text-[#004E72]" /></div>
               <h3 className="mt-4 font-semibold text-zinc-900">{f.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-600">{f.desc}</p>
               <ul className="mt-4 space-y-1.5">
@@ -311,7 +313,7 @@ export default function Landing() {
         <div className="grid lg:grid-cols-3 gap-4 mt-6">
           <div className="rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-white p-6 lg:col-span-2">
             <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-[#eab308] flex items-center justify-center shrink-0"><Layers className="h-5 w-5 text-white" /></div>
+              <div className="h-10 w-10 rounded-xl bg-[#004E72] flex items-center justify-center shrink-0"><Layers className="h-5 w-5 text-white" /></div>
               <div>
                 <h3 className="font-semibold text-zinc-900">Built to grow with you</h3>
                 <p className="text-sm text-zinc-600 mt-1">Whether you run one company or many, each workspace stays fully separate and secure. Add teams, offices and employees — DailyFlow scales as you do, without complexity.</p>
@@ -325,7 +327,7 @@ export default function Landing() {
           </div>
           <div className="rounded-xl border border-zinc-200 bg-white p-6 flex flex-col justify-between shadow-sm">
             <div>
-              <TrendingUp className="h-6 w-6 text-[#eab308]" />
+              <TrendingUp className="h-6 w-6 text-[#004E72]" />
               <h3 className="font-semibold mt-3 text-zinc-900">Insights that drive decisions</h3>
               <p className="text-sm text-zinc-600 mt-1">Understand attendance, time off and payroll at a glance — with reports you can filter by date, team or person.</p>
             </div>
@@ -336,14 +338,14 @@ export default function Landing() {
       </section>
 
       {/* ---------- HOW IT WORKS - with blobs ---------- */}
-      <section id="how-it-works" className="relative overflow-hidden border-y border-zinc-200 bg-[#FFFBF7]">
+      <section id="how-it-works" className="relative overflow-hidden border-y border-zinc-200 bg-[#F9F9F9]">
         {/* subtle blobs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -left-[8%] top-[10%] w-[360px] h-[360px] bg-[#C2E9DF]/40 rounded-[50%_40%_60%_50%/60%_50%_40%_50%] opacity-70" />
           <div className="absolute -right-[10%] -top-[12%] w-[420px] h-[420px] bg-[#DDCFF2]/35 rounded-[45%_55%_40%_60%/60%_40%_55%_45%] opacity-60" />
           <div className="absolute left-[42%] bottom-[-14%] w-[480px] h-[260px] bg-[#FDF0E2]/60 rounded-[60%_40%_40%_60%/50%_60%_40%_50%]" />
           <div className="absolute right-[30%] top-[28%] w-[140px] h-[140px] bg-[#F8C5C0]/22 rounded-full blur-[14px]" />
-          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:20px_20px]" />
+          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#004E72_1px,transparent_1px)] [background-size:20px_20px]" />
         </div>
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
@@ -355,16 +357,16 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10 relative">
-            <div className="hidden md:block absolute top-[34px] left-[14%] right-[14%] h-[2px] bg-gradient-to-r from-[#eab308]/0 via-[#eab308]/20 to-[#eab308]/0" />
+            <div className="hidden md:block absolute top-[34px] left-[14%] right-[14%] h-[2px] bg-gradient-to-r from-[#004E72]/0 via-[#004E72]/20 to-[#004E72]/0" />
             {[
               { step: '01', icon: Building2, title: 'Create Your Workspace', desc: 'Sign up with your company name. Your workspace is ready in under a minute — you’re all set to get started.' },
               { step: '02', icon: UserPlus, title: 'Invite Your Team', desc: 'Add teammates by email. They receive a secure invitation with everything they need to join right away.' },
               { step: '03', icon: FileText, title: 'Run Your Day-to-Day', desc: 'Your team checks in daily, managers approve time off, and you run payroll with clear, accurate breakdowns.' },
             ].map(s => (
               <div key={s.step} className="relative">
-                <div className="mx-auto md:mx-0 h-10 w-10 rounded-full bg-[#eab308] flex items-center justify-center text-sm font-bold shadow-md shadow-[#eab308]/15 relative z-10 text-white"><s.icon className="h-5 w-5" /></div>
+                <div className="mx-auto md:mx-0 h-10 w-10 rounded-full bg-[#004E72] flex items-center justify-center text-sm font-bold shadow-md shadow-[#004E72]/15 relative z-10 text-white"><s.icon className="h-5 w-5" /></div>
                 <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-                  <div className="text-xs tracking-widest text-[#eab308] font-semibold">STEP {s.step}</div>
+                  <div className="text-xs tracking-widest text-[#004E72] font-semibold">STEP {s.step}</div>
                   <h3 className="mt-1 font-semibold text-zinc-900">{s.title}</h3>
                   <p className="mt-2 text-sm text-zinc-600 leading-relaxed">{s.desc}</p>
                 </div>
@@ -381,7 +383,7 @@ export default function Landing() {
           <div className="absolute -right-[8%] bottom-[8%] w-[420px] h-[420px] bg-[#DDCFF2]/35 rounded-[40%_60%_55%_45%/60%_40%_50%_50%] opacity-60" />
           <div className="absolute left-[38%] -top-[10%] w-[500px] h-[280px] bg-[#C2E9DF]/22 rounded-[60%_40%_30%_70%/50%_30%_70%_50%] blur-[4px]" />
           <div className="absolute right-[25%] bottom-[22%] w-[160px] h-[160px] bg-[#F8C5C0]/18 rounded-full blur-[16px]" />
-          <div className="absolute inset-0 opacity-[0.022] bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:20px_20px]" />
+          <div className="absolute inset-0 opacity-[0.022] bg-[radial-gradient(#004E72_1px,transparent_1px)] [background-size:20px_20px]" />
         </div>
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center">
@@ -390,7 +392,7 @@ export default function Landing() {
         </div>
         <div className="grid md:grid-cols-3 gap-5 mt-10">
           {[
-            { role: 'Company Admin', badge: 'Full access', icon: ShieldCheck, color: 'from-[#eab308] to-[#b45309]', items: ['Full team overview & invite anyone', 'Manage company settings & branding', 'View attendance and run payroll', 'Approve time off & manage salaries'] },
+            { role: 'Company Admin', badge: 'Full access', icon: ShieldCheck, color: 'from-[#004E72] to-[#092634]', items: ['Full team overview & invite anyone', 'Manage company settings & branding', 'View attendance and run payroll', 'Approve time off & manage salaries'] },
             { role: 'HR Manager', badge: 'Team lead', icon: Users, color: 'from-[#5b7fa6] to-[#7aa0c4]', items: ['Invite and manage team members', 'Review and approve time off', 'Set up payroll components', 'Generate attendance & payroll reports'] },
             { role: 'Employee', badge: 'Self-service', icon: Sparkles, color: 'from-[#d98a5c] to-[#e8a87c]', items: ['Personal profile & documents', 'One-tap check-in and status update', 'Request time off in seconds', 'View payslips — clear and simple'] },
           ].map(r => (
@@ -400,7 +402,7 @@ export default function Landing() {
               <ul className="mt-4 space-y-2 flex-1">
                 {r.items.map(i => <li key={i} className="flex gap-2 text-sm text-zinc-600"><Check className="h-4 w-4 text-green-600 shrink-0 mt-0.5" /> {i}</li>)}
               </ul>
-              <Link to="/signup" className="mt-6 text-sm text-[#eab308] flex items-center gap-1 hover:gap-2 transition-all font-medium">Get started <ArrowRight className="h-4 w-4" /></Link>
+              <Link to="/signup" className="mt-6 text-sm text-[#004E72] flex items-center gap-1 hover:gap-2 transition-all font-medium">Get started <ArrowRight className="h-4 w-4" /></Link>
             </div>
           ))}
         </div>
@@ -408,13 +410,13 @@ export default function Landing() {
       </section>
 
       {/* ---------- PRICING - with blobs ---------- */}
-      <section id="pricing" className="relative overflow-hidden border-y border-zinc-200 bg-[#FFFBF7]">
+      <section id="pricing" className="relative overflow-hidden border-y border-zinc-200 bg-[#F9F9F9]">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -left-[10%] -top-[14%] w-[440px] h-[440px] bg-[#F8C5C0]/28 rounded-[50%_50%_40%_60%/60%_40%_60%_40%] opacity-60" />
           <div className="absolute -right-[9%] top-[8%] w-[380px] h-[380px] bg-[#DDCFF2]/38 rounded-[45%_55%_60%_40%/40%_60%_40%_60%] opacity-65" />
           <div className="absolute left-[28%] bottom-[-10%] w-[600px] h-[300px] bg-[#C2E9DF]/26 rounded-[40%_60%_50%_50%/60%_40%_60%_40%] blur-[5px]" />
           <div className="absolute right-[18%] bottom-[18%] w-[140px] h-[140px] bg-[#FDF0E2]/70 rounded-full blur-[12px]" />
-          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:20px_20px]" />
+          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#004E72_1px,transparent_1px)] [background-size:20px_20px]" />
         </div>
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-16 sm:py-20">
           <div className="mx-auto max-w-2xl text-center">
@@ -427,8 +429,8 @@ export default function Landing() {
               { name: 'Growth', price: '₹199', sub: 'per employee / month', cta: 'Start Growth', featured: true, features: ['Everything in Starter', 'Advanced reports & exports', '100GB secure storage', 'Priority support', 'Custom payroll setup'] },
               { name: 'Enterprise', price: 'Custom', sub: 'Unlimited employees', cta: 'Contact Sales', featured: false, features: ['Everything in Growth', 'Single sign-on & detailed audit trail', 'Dedicated support & SLA', 'On-premise option available', 'Custom branding & domain'] },
             ].map(p => (
-              <div key={p.name} className={`rounded-xl border bg-white p-6 flex flex-col relative shadow-sm ${p.featured ? 'border-[#eab308]/30 bg-gradient-to-b from-[#eab308]/[0.06] to-white shadow-[0_12px_32px_rgba(234,179,8,0.12)]' : 'border-zinc-200'}`}>
-                {p.featured && <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-[#eab308] text-white px-3 py-1 rounded-full">Most popular</div>}
+              <div key={p.name} className={`rounded-xl border bg-white p-6 flex flex-col relative shadow-sm ${p.featured ? 'border-[#004E72]/30 bg-gradient-to-b from-[#004E72]/[0.06] to-white shadow-[0_12px_32px_rgba(0,78,114,0.12)]' : 'border-zinc-200'}`}>
+                {p.featured && <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-[#004E72] text-white px-3 py-1 rounded-full">Most popular</div>}
                 <h3 className="font-semibold text-zinc-900">{p.name}</h3>
                 <div className="mt-2 flex items-baseline gap-1"><span className="text-3xl font-bold text-zinc-900">{p.price}</span>{p.price !== 'Free' && p.price !== 'Custom' && <span className="text-sm text-zinc-500">{p.sub}</span>}</div>
                 { (p.price==='Free' || p.price==='Custom') && <div className="text-xs text-zinc-500">{p.sub}</div>}
@@ -436,7 +438,7 @@ export default function Landing() {
                   {p.features.map(f => <li key={f} className="flex gap-2 text-sm text-zinc-700"><Check className="h-4 w-4 text-green-600 shrink-0" /> {f}</li>)}
                 </ul>
                 <Link to="/signup" className="mt-6">
-                  <button className={`w-full inline-flex items-center justify-center rounded-full h-10 px-4 font-medium ${p.featured ? 'bg-[#eab308] text-white hover:bg-[#d97706] shadow' : 'border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-900'}`}>{p.cta}</button>
+                  <button className={`w-full inline-flex items-center justify-center rounded-full h-10 px-4 font-medium ${p.featured ? 'bg-[#004E72] text-white hover:bg-[#FF6E42] shadow' : 'border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-900'}`}>{p.cta}</button>
                 </Link>
               </div>
             ))}
@@ -446,21 +448,21 @@ export default function Landing() {
       </section>
 
       {/* ---------- FINAL CTA - with surrounding blobs ---------- */}
-      <section className="relative overflow-hidden bg-[#FFFBF7] px-4 sm:px-6 py-10">
+      <section className="relative overflow-hidden bg-[#F9F9F9] px-4 sm:px-6 py-10">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -left-[8%] top-[6%] w-[320px] h-[320px] bg-[#FDF0E2] rounded-[60%_40%_50%_50%/50%_60%_40%_50%] opacity-70" />
           <div className="absolute -right-[10%] bottom-[-12%] w-[360px] h-[360px] bg-[#DDCFF2]/40 rounded-[40%_60%_45%_55%/55%_45%_60%_40%]" />
           <div className="absolute left-[35%] bottom-[-8%] w-[400px] h-[220px] bg-[#C2E9DF]/35 rounded-[50%_50%_30%_70%/40%_60%_40%_60%] blur-[4px]" />
           <div className="absolute right-[28%] top-[14%] w-[120px] h-[120px] bg-[#F8C5C0]/25 rounded-full blur-[14px]" />
         </div>
-        <div className="relative mx-auto max-w-[1280px] rounded-[24px] border border-[#eab308]/15 bg-gradient-to-br from-[#eab308] via-[#d97706] to-[#b45309] p-[1px]">
-          <div className="rounded-[23px] bg-gradient-to-br from-[#eab308] via-[#b45309] to-[#b45309] px-6 sm:px-10 py-10 sm:py-14 text-center relative overflow-hidden">
+        <div className="relative mx-auto max-w-[1280px] rounded-[24px] border border-[#004E72]/15 bg-gradient-to-br from-[#004E72] via-[#FF6E42] to-[#092634] p-[1px]">
+          <div className="rounded-[23px] bg-gradient-to-br from-[#004E72] via-[#092634] to-[#092634] px-6 sm:px-10 py-10 sm:py-14 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:48px_48px] opacity-30" />
             <div className="relative">
               <h2 className="text-2xl sm:text-4xl font-bold text-white">Ready to harmonize your workday?</h2>
               <p className="mt-3 text-sm sm:text-base text-white/85 max-w-2xl mx-auto">Create your company in 60 seconds. Invite your team. Watch attendance, time off and payroll come together — every day.</p>
               <div className="mt-8 flex flex-wrap justify-center gap-3">
-                <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full bg-white text-[#eab308] hover:bg-zinc-100 px-8 h-11 font-medium">Create Company — Free <ArrowRight className="ml-2 h-4 w-4" /></button></Link>
+                <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full bg-white text-[#004E72] hover:bg-zinc-100 px-8 h-11 font-medium">Create Company — Free <ArrowRight className="ml-2 h-4 w-4" /></button></Link>
                 <Link to="/login"><button className="inline-flex items-center justify-center rounded-full bg-transparent border border-white/30 text-white hover:bg-white/10 px-8 h-11 font-medium">Sign In</button></Link>
               </div>
               <div className="mt-4 text-xs text-white/70">Free for up to 5 employees • No credit card • Cancel anytime</div>
@@ -470,7 +472,7 @@ export default function Landing() {
       </section>
 
       {/* ---------- FOOTER - with subtle blobs ---------- */}
-      <footer className="relative overflow-hidden border-t border-zinc-200 bg-[#FFFBF7]">
+      <footer className="relative overflow-hidden border-t border-zinc-200 bg-[#F9F9F9]">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -left-[6%] bottom-[-20%] w-[300px] h-[280px] bg-[#F8C5C0]/22 rounded-[60%_40%_50%_50%/50%_60%_40%_50%] opacity-60" />
           <div className="absolute -right-[8%] top-[-10%] w-[320px] h-[320px] bg-[#DDCFF2]/28 rounded-[40%_60%_50%_50%/60%_40%_50%_50%]" />

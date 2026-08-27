@@ -6,12 +6,12 @@ export default function Terms(){
     <div className="min-h-screen bg-white text-zinc-900">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#eab308] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span></Link>
-          <Link to="/signup" className="text-sm font-medium text-[#eab308]">Create Company</Link>
+          <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#004E72] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span></Link>
+          <Link to="/signup" className="text-sm font-medium text-[#004E72]">Create Company</Link>
         </div>
       </header>
       <div className="mx-auto max-w-[800px] px-4 sm:px-6 py-12">
-        <div className="inline-flex items-center gap-2 rounded-full bg-zinc-50 border border-zinc-200 px-3 py-1 text-xs"><FileText className="h-3.5 w-3.5 text-[#eab308]" /> Terms of Service</div>
+        <div className="inline-flex items-center gap-2 rounded-full bg-zinc-50 border border-zinc-200 px-3 py-1 text-xs"><FileText className="h-3.5 w-3.5 text-[#004E72]" /> Terms of Service</div>
         <h1 className="mt-3 text-3xl font-bold tracking-tight">Terms of Service</h1>
         <p className="text-sm text-zinc-500 mt-1">Effective: 22 August 2026</p>
         <div className="mt-8 space-y-6 text-sm leading-relaxed">

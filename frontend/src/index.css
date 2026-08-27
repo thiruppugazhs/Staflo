@@ -1,51 +1,308 @@
-@keyframes toast-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+  /* ========================================================================= */
+  /* THEME 1: DEFAULT (Image 1: Ocean Blue #004E72, Navy #092634, Orange #FF6E42, White #F9F9F9) */
+  /* ========================================================================= */
+  :root, [data-theme="default"] {
+    --theme-bg: #F9F9F9;
+    --theme-primary: #004E72;
+    --theme-primary-hover: #003B57;
+    --theme-primary-fg: #FFFFFF;
+    --theme-secondary: #092634;
+    --theme-accent: #FF6E42;
+    --theme-accent-hover: #E85B30;
+    --theme-accent-fg: #FFFFFF;
+    --theme-border: #E2E8F0;
+    --theme-card: #FFFFFF;
+    --theme-card-foreground: #092634;
+    --theme-muted: #F1F5F9;
+    --theme-muted-fg: #64748B;
+    
+    --background: 0 0% 98%;
+    --foreground: 200 70% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 300 9% 36%;
-    --primary-foreground: 0 0% 98%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 300 9% 36%;
+    --card-foreground: 200 70% 12%;
+    --primary: 199 100% 22%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 14 100% 63%;
+    --accent-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --ring: 199 100% 22%;
     --radius: 0.75rem;
   }
-  .dark {
-    --background: 240 10% 3.9%;
+
+  [data-theme="default"].dark, .dark[data-theme="default"] {
+    --theme-bg: #092634;
+    --theme-primary: #004E72;
+    --theme-primary-hover: #00608C;
+    --theme-primary-fg: #FFFFFF;
+    --theme-secondary: #05161F;
+    --theme-accent: #FF6E42;
+    --theme-accent-hover: #FFA080;
+    --theme-accent-fg: #FFFFFF;
+    --theme-border: #163E52;
+    --theme-card: #0C3142;
+    --theme-card-foreground: #F9F9F9;
+    --theme-muted: #103B50;
+    --theme-muted-fg: #94A3B8;
+
+    --background: 200 70% 12%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 200 68% 15%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 300 9% 36%;
-    --primary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 300 9% 36%;
+    --primary: 199 100% 22%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 14 100% 63%;
+    --accent-foreground: 0 0% 100%;
+    --border: 200 57% 21%;
+    --ring: 14 100% 63%;
+  }
+
+  /* ========================================================================= */
+  /* THEME 2: SAGE & FOREST (Image 2: Soft Sage Mint #E2F0CC, Apple Green #8BC53D, Dark Forest #012F13, Near-Black #011207) */
+  /* ========================================================================= */
+  [data-theme="sage-forest"] {
+    --theme-bg: #F4F9EC;
+    --theme-primary: #8BC53D;
+    --theme-primary-hover: #74AA2E;
+    --theme-primary-fg: #011207;
+    --theme-secondary: #012F13;
+    --theme-accent: #012F13;
+    --theme-accent-hover: #011207;
+    --theme-accent-fg: #FFFFFF;
+    --theme-border: #D3E7B7;
+    --theme-card: #FFFFFF;
+    --theme-card-foreground: #011207;
+    --theme-muted: #E2F0CC;
+    --theme-muted-fg: #3E5A2A;
+
+    --background: 85 45% 95%;
+    --foreground: 143 82% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 143 82% 4%;
+    --primary: 85 55% 51%;
+    --primary-foreground: 143 82% 4%;
+    --accent: 144 96% 10%;
+    --accent-foreground: 0 0% 100%;
+    --border: 85 45% 81%;
+    --ring: 85 55% 51%;
+  }
+
+  [data-theme="sage-forest"].dark, .dark[data-theme="sage-forest"] {
+    --theme-bg: #011207;
+    --theme-primary: #8BC53D;
+    --theme-primary-hover: #9ED454;
+    --theme-primary-fg: #011207;
+    --theme-secondary: #012F13;
+    --theme-accent: #E2F0CC;
+    --theme-accent-hover: #F4F9EC;
+    --theme-accent-fg: #011207;
+    --theme-border: #0B3A1C;
+    --theme-card: #042410;
+    --theme-card-foreground: #E2F0CC;
+    --theme-muted: #073318;
+    --theme-muted-fg: #86A872;
+
+    --background: 143 82% 4%;
+    --foreground: 85 45% 95%;
+    --card: 144 80% 8%;
+    --card-foreground: 85 45% 95%;
+    --primary: 85 55% 51%;
+    --primary-foreground: 143 82% 4%;
+    --accent: 85 55% 87%;
+    --accent-foreground: 143 82% 4%;
+    --border: 144 68% 14%;
+    --ring: 85 55% 51%;
+  }
+
+  /* ========================================================================= */
+  /* THEME 3: PEBBLE & YAM (Image 3: Pebble #EEEEEE, Yam #EA9216, Cadet Blue #3A4750, High Tide #313841) */
+  /* ========================================================================= */
+  [data-theme="pebble-yam"] {
+    --theme-bg: #F5F5F5;
+    --theme-primary: #EA9216;
+    --theme-primary-hover: #D17F0C;
+    --theme-primary-fg: #FFFFFF;
+    --theme-secondary: #3A4750;
+    --theme-accent: #313841;
+    --theme-accent-hover: #23282F;
+    --theme-accent-fg: #FFFFFF;
+    --theme-border: #E0E0E0;
+    --theme-card: #FFFFFF;
+    --theme-card-foreground: #313841;
+    --theme-muted: #EEEEEE;
+    --theme-muted-fg: #6B7280;
+
+    --background: 0 0% 96%;
+    --foreground: 213 14% 22%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 14% 22%;
+    --primary: 35 84% 50%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 205 16% 27%;
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 88%;
+    --ring: 35 84% 50%;
+  }
+
+  [data-theme="pebble-yam"].dark, .dark[data-theme="pebble-yam"] {
+    --theme-bg: #1E2328;
+    --theme-primary: #EA9216;
+    --theme-primary-hover: #F5A32F;
+    --theme-primary-fg: #1E2328;
+    --theme-secondary: #3A4750;
+    --theme-accent: #EEEEEE;
+    --theme-accent-hover: #FFFFFF;
+    --theme-accent-fg: #1E2328;
+    --theme-border: #313841;
+    --theme-card: #272D33;
+    --theme-card-foreground: #EEEEEE;
+    --theme-muted: #313841;
+    --theme-muted-fg: #9CA3AF;
+
+    --background: 210 14% 14%;
+    --foreground: 0 0% 93%;
+    --card: 210 13% 18%;
+    --card-foreground: 0 0% 93%;
+    --primary: 35 84% 50%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 0 0% 93%;
+    --accent-foreground: 210 14% 14%;
+    --border: 213 14% 22%;
+    --ring: 35 84% 50%;
+  }
+
+  /* ========================================================================= */
+  /* THEME 4: CRIMSON & SAND (Image 4: Crimson Depth #710014, Warm Sand #B38F6F, Soft Pearl #F2F1ED, Obsidian #161616) */
+  /* ========================================================================= */
+  [data-theme="crimson-sand"] {
+    --theme-bg: #F7F6F3;
+    --theme-primary: #710014;
+    --theme-primary-hover: #5A0010;
+    --theme-primary-fg: #FFFFFF;
+    --theme-secondary: #161616;
+    --theme-accent: #B38F6F;
+    --theme-accent-hover: #9E7B5C;
+    --theme-accent-fg: #FFFFFF;
+    --theme-border: #E5E0D8;
+    --theme-card: #FFFFFF;
+    --theme-card-foreground: #161616;
+    --theme-muted: #F2F1ED;
+    --theme-muted-fg: #78716C;
+
+    --background: 45 14% 96%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --primary: 349 100% 22%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 28 32% 57%;
+    --accent-foreground: 0 0% 100%;
+    --border: 36 18% 87%;
+    --ring: 349 100% 22%;
+  }
+
+  [data-theme="crimson-sand"].dark, .dark[data-theme="crimson-sand"] {
+    --theme-bg: #161616;
+    --theme-primary: #941328;
+    --theme-primary-hover: #AC1B33;
+    --theme-primary-fg: #FFFFFF;
+    --theme-secondary: #0D0D0D;
+    --theme-accent: #B38F6F;
+    --theme-accent-hover: #C5A486;
+    --theme-accent-fg: #161616;
+    --theme-border: #2A2A2A;
+    --theme-card: #202020;
+    --theme-card-foreground: #F2F1ED;
+    --theme-muted: #292929;
+    --theme-muted-fg: #A8A29E;
+
+    --background: 0 0% 9%;
+    --foreground: 45 14% 96%;
+    --card: 0 0% 13%;
+    --card-foreground: 45 14% 96%;
+    --primary: 350 77% 33%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 28 32% 57%;
+    --accent-foreground: 0 0% 9%;
+    --border: 0 0% 16%;
+    --ring: 350 77% 33%;
+  }
+
+  /* ========================================================================= */
+  /* THEME 5: ALMOND & MATCHA (Image 5: Almond #D6BD98, Matcha Brew #677D6A, Forest Roast #40534C, Eclipse #1A3636) */
+  /* ========================================================================= */
+  [data-theme="almond-matcha"] {
+    --theme-bg: #FAF6EE;
+    --theme-primary: #40534C;
+    --theme-primary-hover: #32423D;
+    --theme-primary-fg: #FFFFFF;
+    --theme-secondary: #1A3636;
+    --theme-accent: #677D6A;
+    --theme-accent-hover: #566958;
+    --theme-accent-fg: #FFFFFF;
+    --theme-border: #E2D7C3;
+    --theme-card: #FFFFFF;
+    --theme-card-foreground: #1A3636;
+    --theme-muted: #F0E6D2;
+    --theme-muted-fg: #5C675E;
+
+    --background: 41 46% 96%;
+    --foreground: 180 35% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 180 35% 16%;
+    --primary: 159 13% 29%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 128 9% 45%;
+    --accent-foreground: 0 0% 100%;
+    --border: 37 31% 83%;
+    --ring: 159 13% 29%;
+  }
+
+  [data-theme="almond-matcha"].dark, .dark[data-theme="almond-matcha"] {
+    --theme-bg: #1A3636;
+    --theme-primary: #677D6A;
+    --theme-primary-hover: #79917D;
+    --theme-primary-fg: #FAF6EE;
+    --theme-secondary: #122525;
+    --theme-accent: #D6BD98;
+    --theme-accent-hover: #E3CFAE;
+    --theme-accent-fg: #1A3636;
+    --theme-border: #2D4E4E;
+    --theme-card: #224343;
+    --theme-card-foreground: #FAF6EE;
+    --theme-muted: #284C4C;
+    --theme-muted-fg: #A0B4A3;
+
+    --background: 180 35% 16%;
+    --foreground: 41 46% 96%;
+    --card: 180 33% 20%;
+    --card-foreground: 41 46% 96%;
+    --primary: 128 9% 45%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 36 43% 72%;
+    --accent-foreground: 180 35% 16%;
+    --border: 180 26% 24%;
+    --ring: 128 9% 45%;
   }
 }
+
 @layer base {
-  * { border-color: hsl(var(--border)); }
-  body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); }
+  * { border-color: var(--theme-border, hsl(var(--border))); }
+  body {
+    background-color: var(--theme-bg, hsl(var(--background)));
+    color: var(--theme-card-foreground, hsl(var(--foreground)));
+  }
 }
-* { border-color: hsl(var(--border)); }
+
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 999px; }
 .dark ::-webkit-scrollbar-thumb { background: #27272a; }

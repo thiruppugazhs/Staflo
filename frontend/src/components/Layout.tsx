@@ -53,7 +53,7 @@ export default function Layout(){
 
   const coreTabs = [
     {label:'Dashboard', path:'/dashboard', icon: LayoutDashboard, active: 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
-    {label:'Employees', path:'/employees', icon: Users, active: 'bg-[#eab308] text-white shadow-md shadow-[#eab308]/20', tint: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300', hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'},
+    {label:'Employees', path:'/employees', icon: Users, active: 'bg-[#004E72] text-white shadow-md shadow-[#004E72]/20', tint: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300', hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'},
     {label:'Attendance', path:'/attendance', icon: Clock, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
     {label:'Time Off', path:'/time-off', icon: CalendarDays, active: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
     {label:'Payroll', path:'/payroll', icon: Wallet, active: 'bg-teal-600 text-white shadow-md shadow-teal-600/20', tint: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-300', hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-300'},
@@ -122,7 +122,7 @@ export default function Layout(){
       <aside className={`hidden md:flex shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50/80 dark:from-zinc-900 dark:to-zinc-900 sticky top-0 h-screen transition-all duration-200 ${collapsed ? 'w-[72px]' : 'w-[260px]'}`}>
         <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
           <Link to="/dashboard" className={`flex items-center gap-2.5 font-bold text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
-            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
+            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
               <img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" />
             </span>
             {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">DailyFlow</span>}
@@ -139,7 +139,7 @@ export default function Layout(){
         <SidebarNav collapsed={collapsed} />
         <div className={`p-3 border-t border-zinc-200 dark:border-zinc-800 ${collapsed ? 'px-2' : ''}`}>
           <Link to="/me" title={collapsed ? `${user?.first_name} ${user?.last_name} • ${user?.employee_id}` : undefined} className={`flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-violet-300 dark:hover:border-zinc-600 transition ${collapsed ? 'justify-center px-1' : ''}`}>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-violet-100 dark:ring-zinc-700">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-violet-100 dark:ring-zinc-700">
               {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
             </div>
             {!collapsed && (
@@ -162,7 +162,7 @@ export default function Layout(){
           <aside className="absolute left-0 top-0 bottom-0 w-[280px] bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xl">
             <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
               <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
-                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> DailyFlow
+                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> DailyFlow
               </Link>
               <button onClick={()=>setMobileOpen(false)} className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <X className="h-5 w-5" />
@@ -171,7 +171,7 @@ export default function Layout(){
             <SidebarNav onNavigate={()=>setMobileOpen(false)} />
             <div className="p-3 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
               <Link to="/me" onClick={()=>setMobileOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0">
                   {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -240,7 +240,7 @@ export default function Layout(){
               </div>
             )}
             <div className="relative">
-              <button onClick={()=>setShowProfile(s=>!s)} className="relative h-8 w-8 rounded-full bg-[#eab308] flex items-center justify-center text-sm font-bold text-white">
+              <button onClick={()=>setShowProfile(s=>!s)} className="relative h-8 w-8 rounded-full bg-[#004E72] flex items-center justify-center text-sm font-bold text-white">
                 {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
                 <span className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white dark:border-[#0a0a0f] ${today?.status==='present' ? 'bg-green-500' : today?.status==='half_day' ? 'bg-amber-500' : today?.status==='leave' ? 'bg-yellow-500' : 'bg-red-500'}`} />
               </button>

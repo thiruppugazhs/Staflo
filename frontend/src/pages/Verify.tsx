@@ -46,9 +46,9 @@ export default function Verify() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1c1917] via-[#78350f] to-[#eab308] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1c1917] via-[#092634] to-[#004E72] p-4">
       <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden">
-        <div className="h-1 bg-gradient-to-r from-[#eab308] via-[#fcd34d] to-[#e0b64c]" />
+        <div className="h-1 bg-gradient-to-r from-[#004E72] via-[#fcd34d] to-[#e0b64c]" />
         <div className="p-8 text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
             <img src="/logo.svg" alt="DailyFlow logo" className="h-9 w-9 rounded-xl" />
@@ -57,7 +57,7 @@ export default function Verify() {
 
           {state === 'verifying' && (
             <>
-              <Loader2 className="h-12 w-12 mx-auto animate-spin text-[#eab308]" />
+              <Loader2 className="h-12 w-12 mx-auto animate-spin text-[#004E72]" />
               <h1 className="mt-4 text-xl font-bold text-zinc-900 dark:text-white">Verifying your email…</h1>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Hang on a second while we confirm your account.</p>
             </>
@@ -72,7 +72,7 @@ export default function Verify() {
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{message}</p>
               <Link
                 to="/login"
-                className="mt-6 inline-flex items-center justify-center w-full h-11 rounded-xl bg-[#eab308] hover:bg-[#5d3d55] text-white text-sm font-semibold transition-colors"
+                className="mt-6 inline-flex items-center justify-center w-full h-11 rounded-xl bg-[#004E72] hover:bg-[#5d3d55] text-white text-sm font-semibold transition-colors"
               >
                 Continue to Sign In
               </Link>
@@ -100,12 +100,12 @@ export default function Verify() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#eab308]/40"
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#004E72]/40"
                   />
                   <button
                     onClick={resend}
                     disabled={!email.trim() || resending}
-                    className="w-full h-10 rounded-xl bg-[#eab308] hover:bg-[#5d3d55] disabled:opacity-50 text-white text-sm font-medium transition-colors"
+                    className="w-full h-10 rounded-xl bg-[#004E72] hover:bg-[#5d3d55] disabled:opacity-50 text-white text-sm font-medium transition-colors"
                   >
                     {resending ? 'Sending…' : 'Resend verification email'}
                   </button>

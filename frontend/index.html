@@ -8,9 +8,17 @@
     <script>
       (function(){
         try{
-          var t = localStorage.getItem('dailyflow-theme');
-          if(t==='dark'){
-            document.documentElement.classList.add('dark');
+          var raw = localStorage.getItem('dailyflow-theme-store');
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.state) {
+              if (parsed.state.themeId) {
+                document.documentElement.setAttribute('data-theme', parsed.state.themeId);
+              }
+              if (parsed.state.isDark) {
+                document.documentElement.classList.add('dark');
+              }
+            }
           }
         }catch(e){}
       })();

@@ -95,7 +95,7 @@ export default function Documents(){
         <h3 className="font-semibold flex items-center gap-2"><Upload className="h-4 w-4"/> Upload Document</h3>
         <p className="text-xs text-zinc-500 mt-1">Any file type • Visible only to you and admins</p>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <label className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-[#eab308] text-white text-sm font-medium cursor-pointer hover:bg-[#d97706] transition">
+          <label className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-[#004E72] text-white text-sm font-medium cursor-pointer hover:bg-[#FF6E42] transition">
             <Upload className="h-4 w-4"/> {uploading ? 'Uploading...' : 'Choose File'}
             <input type="file" onChange={handleUpload} className="hidden" disabled={uploading}/>
           </label>

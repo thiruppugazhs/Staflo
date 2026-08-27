@@ -67,7 +67,7 @@ export default function Company(){
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Building2 className="h-6 w-6 text-[#eab308]"/> Company</h1>
+        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Building2 className="h-6 w-6 text-[#004E72]"/> Company</h1>
         <p className="text-sm text-zinc-500 mt-1">Your organization's profile and branding.</p>
       </div>
 
@@ -78,7 +78,7 @@ export default function Company(){
           {/* Hero card */}
           <Card className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
-              <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-white shadow-md shrink-0 overflow-hidden border border-white/20">
+              <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white shadow-md shrink-0 overflow-hidden border border-white/20">
                 {company.logo_url ? <img src={resolveFileUrl(company.logo_url)} alt="logo" className="h-full w-full object-contain bg-white p-1"/> : <Building2 className="h-10 w-10"/>}
               </div>
               <div className="flex-1 min-w-0">

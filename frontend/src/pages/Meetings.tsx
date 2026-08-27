@@ -221,7 +221,7 @@ export default function Meetings(){
                   <div className="mt-1 max-h-40 overflow-auto rounded-lg border border-zinc-200 dark:border-zinc-800 divide-y divide-zinc-100 dark:divide-zinc-800">
                     {employees.filter(e=>e.id!==user?.id).map(emp=>(
                       <label key={emp.id} className="flex items-center gap-2 px-3 py-1.5 text-sm cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <input type="checkbox" checked={form.attendees.includes(emp.id)} onChange={()=>toggleAttendee(emp.id)} className="accent-[#eab308]"/>
+                        <input type="checkbox" checked={form.attendees.includes(emp.id)} onChange={()=>toggleAttendee(emp.id)} className="accent-[#004E72]"/>
                         <span className="flex-1 truncate">{emp.first_name} {emp.last_name}</span>
                         <span className="text-xs text-zinc-400">{emp.employee_id}</span>
                       </label>

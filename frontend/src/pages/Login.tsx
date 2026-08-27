@@ -35,10 +35,10 @@ export default function Login(){
     <div className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-zinc-950">
       {/* Left — Executive Branding */}
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-[#1c1917] text-white flex-col shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1c1917] via-[#78350f] to-[#eab308]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1c1917] via-[#092634] to-[#004E72]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         <div className="absolute -top-24 -right-24 h-[560px] w-[560px] rounded-full bg-white/[0.06] blur-[90px]" />
-        <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#b45309]/20 blur-[80px]" />
+        <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#092634]/20 blur-[80px]" />
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -81,7 +81,7 @@ export default function Login(){
       <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-zinc-50 dark:bg-zinc-950 lg:bg-white lg:dark:bg-zinc-950 lg:p-4 xl:p-5">
         <div className="lg:hidden h-14 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
           <Link to="/" className="flex items-center gap-2 font-bold"><img src="/logo.svg" alt="DailyFlow logo" className="h-7 w-7 rounded-lg" /> DailyFlow</Link>
-          <Link to="/signup" className="text-sm text-[#eab308] font-medium">Create Company</Link>
+          <Link to="/signup" className="text-sm text-[#004E72] font-medium">Create Company</Link>
         </div>
 
         <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-0 h-full">
@@ -99,7 +99,7 @@ export default function Login(){
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</label>
-                    <button type="button" className="text-xs text-[#eab308] hover:underline" onClick={()=> alert('Please contact your Admin to reset password via invite flow.')}>Forgot?</button>
+                    <button type="button" className="text-xs text-[#004E72] hover:underline" onClick={()=> alert('Please contact your Admin to reset password via invite flow.')}>Forgot?</button>
                   </div>
                   <div className="relative">
                     <Input type={showPw ? 'text' : 'password'} value={password} onChange={e=>setPassword(e.target.value)} required autoComplete="current-password" className="h-11 pr-10" placeholder="••••••••" />
@@ -113,7 +113,7 @@ export default function Login(){
                   <div className="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-3 rounded-xl">
                     <div>{err}</div>
                     {notVerified && !resent && (
-                      <button type="button" onClick={resend} disabled={resending} className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#eab308] dark:text-[#c9a3bd] hover:underline disabled:opacity-60">
+                      <button type="button" onClick={resend} disabled={resending} className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#004E72] dark:text-[#c9a3bd] hover:underline disabled:opacity-60">
                         ↻ {resending ? 'Sending…' : 'Resend verification email'}
                       </button>
                     )}
@@ -130,7 +130,7 @@ export default function Login(){
                   <div className="relative flex justify-center"><span className="bg-white dark:bg-zinc-900 px-2 text-xs text-zinc-500">New to DailyFlow?</span></div>
                 </div>
 
-                <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">No company yet? <Link to="/signup" className="text-[#eab308] font-semibold hover:underline">Create Company — Free</Link></div>
+                <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">No company yet? <Link to="/signup" className="text-[#004E72] font-semibold hover:underline">Create Company — Free</Link></div>
               </form>
 
             <div className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-500 shrink-0">

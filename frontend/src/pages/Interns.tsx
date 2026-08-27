@@ -154,7 +154,7 @@ export default function Interns(){
               <h3 className="font-semibold flex items-center gap-2"><Users className="h-4 w-4"/> Mentor</h3>
               {me.mentor_name ? (
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#eab308] to-[#9B6B8A] text-white flex items-center justify-center text-sm font-bold">{me.mentor_name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#004E72] to-[#9B6B8A] text-white flex items-center justify-center text-sm font-bold">{me.mentor_name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
                   <div className="flex-1">
                     <div className="font-medium">{me.mentor_name}</div>
                     <div className="text-xs text-zinc-500">{me.mentor_email}{me.mentor_phone ? ` • ${me.mentor_phone}` : ''}</div>
@@ -243,7 +243,7 @@ export default function Interns(){
         ) : filtered.map(i=>(
           <Card key={i.id} className="p-4 flex flex-col">
             <div className="flex items-start gap-3">
-              <Link to={`/profile/${i.user_id}`} className="h-11 w-11 rounded-full bg-gradient-to-br from-[#eab308] to-[#9B6B8A] text-white flex items-center justify-center text-sm font-bold shrink-0 overflow-hidden">
+              <Link to={`/profile/${i.user_id}`} className="h-11 w-11 rounded-full bg-gradient-to-br from-[#004E72] to-[#9B6B8A] text-white flex items-center justify-center text-sm font-bold shrink-0 overflow-hidden">
                 {i.avatar_url ? <img src={i.avatar_url} className="h-full w-full object-cover"/> : i.name.split(' ').map(n=>n[0]).slice(0,2).join('')}
               </Link>
               <div className="min-w-0 flex-1">
@@ -341,7 +341,7 @@ export default function Interns(){
             {([['technical','Technical Skills (30%)'],['communication','Communication (20%)'],['teamwork','Teamwork (20%)'],['punctuality','Punctuality (15%)'],['initiative','Initiative (15%)']] as const).map(([field,label])=>(
               <div key={field} className="flex items-center gap-3">
                 <span className="text-sm flex-1">{label}</span>
-                <input type="range" min={1} max={10} value={(evalForm as any)[field]} onChange={e=>setEvalForm(f=>({...f, [field]:parseInt(e.target.value)}))} className="w-32 accent-[#eab308]"/>
+                <input type="range" min={1} max={10} value={(evalForm as any)[field]} onChange={e=>setEvalForm(f=>({...f, [field]:parseInt(e.target.value)}))} className="w-32 accent-[#004E72]"/>
                 <span className="w-10 text-right text-sm font-bold">{(evalForm as any)[field]}/10</span>
               </div>
             ))}

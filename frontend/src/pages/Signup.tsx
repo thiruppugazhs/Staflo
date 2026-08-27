@@ -116,10 +116,10 @@ export default function Signup(){
     <div className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-zinc-950">
       {/* Left — Executive Branding + Stepper */}
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-[#1c1917] text-white flex-col shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1c1917] via-[#78350f] to-[#eab308]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1c1917] via-[#092634] to-[#004E72]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         <div className="absolute -top-24 -right-24 h-[560px] w-[560px] rounded-full bg-white/[0.06] blur-[90px]" />
-        <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#b45309]/20 blur-[80px]" />
+        <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#092634]/20 blur-[80px]" />
         {/* subtle grid texture — matches landing CTA */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:48px_48px] opacity-30" />
         <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:18px_18px]" />
@@ -139,15 +139,15 @@ export default function Signup(){
           {/* Live workspace preview */}
           <div className="mt-6 max-w-[440px] shrink-0">
             <div className="relative overflow-hidden rounded-2xl bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/30 text-zinc-900">
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#eab308] via-[#fcd34d] to-[#e0b64c]" />
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#004E72] via-[#fcd34d] to-[#e0b64c]" />
               <div className="flex items-center gap-3 pt-1">
-                <div className={`h-11 w-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${form.logoPreview ? '' : 'bg-gradient-to-br from-[#eab308] to-[#451a03] shadow-inner'}`}>
+                <div className={`h-11 w-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${form.logoPreview ? '' : 'bg-gradient-to-br from-[#004E72] to-[#451a03] shadow-inner'}`}>
                   {form.logoPreview ? <img src={form.logoPreview} alt="logo" className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5 text-white/90" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold truncate leading-tight">{form.companyName || 'Your Company'}</div>
                   <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${form.industry ? 'bg-[#eab308]/10 border border-[#eab308]/25 text-[#eab308]' : 'bg-zinc-100 border border-zinc-200 text-zinc-400'}`}>{form.industry || 'Industry'}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${form.industry ? 'bg-[#004E72]/10 border border-[#004E72]/25 text-[#004E72]' : 'bg-zinc-100 border border-zinc-200 text-zinc-400'}`}>{form.industry || 'Industry'}</span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${form.companySize ? 'bg-sky-50 border border-sky-200 text-sky-700' : 'bg-zinc-100 border border-zinc-200 text-zinc-400'}`}>{form.companySize || 'Size'}</span>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function Signup(){
               </div>
               {(form.firstName || form.email) && (
                 <div className="mt-3 flex items-center gap-2 text-xs text-zinc-600 border-t border-zinc-100 pt-3">
-                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#eab308] to-[#451a03] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
+                  <div className="h-7 w-7 rounded-full bg-gradient-to-br from-[#004E72] to-[#451a03] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
                   <span className="truncate font-medium">{form.firstName} {form.lastName}</span>
                   <span className="text-zinc-300">•</span>
                   <span className="truncate text-zinc-500">{form.email || 'admin@company.com'}</span>
@@ -215,7 +215,7 @@ export default function Signup(){
         <div className="flex-1 lg:w-[48%] lg:shrink-0 flex flex-col bg-white dark:bg-zinc-900 lg:bg-white lg:dark:bg-zinc-900 lg:overflow-hidden">
         <div className="lg:hidden h-12 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 shrink-0">
           <Link to="/" className="flex items-center gap-2 font-bold text-sm"><img src="/logo.svg" alt="DailyFlow logo" className="h-6 w-6 rounded-lg" /> DailyFlow</Link>
-          <Link to="/login" className="text-xs text-[#eab308] font-medium">Sign In</Link>
+          <Link to="/login" className="text-xs text-[#004E72] font-medium">Sign In</Link>
         </div>
 
         {/* Side Panel Card — flush, no outer gap/border */}
@@ -226,7 +226,7 @@ export default function Signup(){
               <div className="hidden lg:flex items-center gap-2 text-xs">
                 {steps.map((s,i)=>(
                   <div key={s.title} className="flex items-center gap-2">
-                    <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold border ${i===step ? 'bg-[#eab308] text-white border-[#eab308]' : i<step ? 'bg-green-500 text-white border-green-500' : 'bg-white dark:bg-zinc-900 text-zinc-400 border-zinc-200 dark:border-zinc-700'}`}>{i<step ? <Check className="h-3 w-3" /> : i+1}</span>
+                    <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold border ${i===step ? 'bg-[#004E72] text-white border-[#004E72]' : i<step ? 'bg-green-500 text-white border-green-500' : 'bg-white dark:bg-zinc-900 text-zinc-400 border-zinc-200 dark:border-zinc-700'}`}>{i<step ? <Check className="h-3 w-3" /> : i+1}</span>
                     <span className={`text-sm ${i===step ? 'font-semibold text-zinc-900 dark:text-white' : 'text-zinc-500'}`}>{s.title}</span>
                     {i<2 && <span className="ml-2 mr-1 text-zinc-300">—</span>}
                   </div>
@@ -234,7 +234,7 @@ export default function Signup(){
               </div>
               <div className="lg:hidden flex items-center gap-1.5 mb-3">
                 {steps.map((_,i)=>(
-                  <div key={i} className={`h-1 flex-1 rounded-full ${i<=step ? 'bg-[#eab308]' : 'bg-zinc-200 dark:bg-zinc-800'}`} />
+                  <div key={i} className={`h-1 flex-1 rounded-full ${i<=step ? 'bg-[#004E72]' : 'bg-zinc-200 dark:bg-zinc-800'}`} />
                 ))}
               </div>
               <h2 className="mt-5 text-xl font-bold tracking-tight text-zinc-900 dark:text-white leading-snug">
@@ -283,7 +283,7 @@ export default function Signup(){
                 </div>
                 <div className="space-y-2">
                   <label className="text-[13px] font-medium flex items-center gap-1.5"><ImageIcon className="h-3.5 w-3.5" /> Company Logo <span className="text-xs font-normal text-zinc-500">(optional)</span></label>
-                  <div className={`border border-dashed rounded-lg p-3.5 flex items-center gap-4 ${form.logoPreview ? 'border-[#eab308]/30 bg-[#eab308]/5' : 'border-zinc-200 dark:border-zinc-700'}`}>
+                  <div className={`border border-dashed rounded-lg p-3.5 flex items-center gap-4 ${form.logoPreview ? 'border-[#004E72]/30 bg-[#004E72]/5' : 'border-zinc-200 dark:border-zinc-700'}`}>
                     <div className="h-14 w-14 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
                       {form.logoPreview ? <img src={form.logoPreview} alt="preview" className="h-full w-full object-cover" /> : <Building2 className="h-6 w-6 text-zinc-400" />}
                     </div>
@@ -291,7 +291,7 @@ export default function Signup(){
                       <div className="text-sm font-medium truncate">{form.logo ? form.logo.name : 'Upload logo'}</div>
                       <div className="text-xs text-zinc-500 leading-tight mt-0.5">PNG or JPG, up to 5MB</div>
                       <div className="mt-2 flex gap-2">
-                        <label className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#eab308] text-white text-xs font-medium cursor-pointer hover:bg-[#5d3d55] transition-colors">
+                        <label className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#004E72] text-white text-xs font-medium cursor-pointer hover:bg-[#5d3d55] transition-colors">
                           <Upload className="h-3 w-3" /> {form.logo ? 'Change' : 'Choose file'}
                           <input type="file" accept="image/*" className="hidden" onChange={e=>handleLogo(e.target.files?.[0]||null)} />
                         </label>
@@ -340,7 +340,7 @@ export default function Signup(){
                   </div>
                 </div>
                 <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 flex gap-3 items-center">
-                  <div className="h-9 w-9 rounded-full bg-[#eab308] text-white flex items-center justify-center font-bold text-xs shrink-0">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
+                  <div className="h-9 w-9 rounded-full bg-[#004E72] text-white flex items-center justify-center font-bold text-xs shrink-0">{(form.firstName[0]||'A')}{(form.lastName[0]||'A')}</div>
                   <div className="text-xs min-w-0">
                     <div className="font-medium truncate">{form.firstName||'First'} {form.lastName||'Last'}</div>
                     <div className="text-[11px] text-zinc-500 truncate">{form.email||'email@company.com'} • {form.phone||'phone'}</div>
@@ -382,7 +382,7 @@ export default function Signup(){
                 </div>
 
                 <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 space-y-2">
-                  <div className="text-sm font-semibold flex items-center gap-1.5"><Users className="h-4 w-4 text-[#eab308]" /> Review</div>
+                  <div className="text-sm font-semibold flex items-center gap-1.5"><Users className="h-4 w-4 text-[#004E72]" /> Review</div>
                   <div className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 space-y-1">
                     <div><span className="font-medium text-zinc-900 dark:text-white">Company:</span> {form.companyName || '—'} {form.industry && `• ${form.industry}`} {form.companySize && `• ${form.companySize}`}</div>
                     <div><span className="font-medium text-zinc-900 dark:text-white">Admin:</span> {form.firstName} {form.lastName} • {form.email}</div>
@@ -390,8 +390,8 @@ export default function Signup(){
                 </div>
 
                 <label className="flex gap-3 py-3 border-t border-zinc-200 dark:border-zinc-700 cursor-pointer items-start">
-                  <input type="checkbox" checked={form.agree} onChange={e=>update('agree',e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-[#eab308] focus:ring-[#eab308] shrink-0" />
-                  <span className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">I agree to <Link to="/terms" target="_blank" rel="noopener noreferrer" className="underline text-[#eab308]">Terms</Link> and <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="underline text-[#eab308]">Privacy</Link> and confirm I am authorized to create this workspace.</span>
+                  <input type="checkbox" checked={form.agree} onChange={e=>update('agree',e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-[#004E72] focus:ring-[#004E72] shrink-0" />
+                  <span className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">I agree to <Link to="/terms" target="_blank" rel="noopener noreferrer" className="underline text-[#004E72]">Terms</Link> and <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="underline text-[#004E72]">Privacy</Link> and confirm I am authorized to create this workspace.</span>
                 </label>
               </div>
             )}
@@ -418,7 +418,7 @@ export default function Signup(){
             <span>Already have an account?</span>
             <Link
               to="/login"
-              className="inline-flex items-center justify-center h-8 px-4 rounded-md bg-[#eab308] text-white text-xs font-semibold hover:bg-[#d97706] transition-colors shadow"
+              className="inline-flex items-center justify-center h-8 px-4 rounded-md bg-[#004E72] text-white text-xs font-semibold hover:bg-[#FF6E42] transition-colors shadow"
             >
               Sign In
             </Link>
