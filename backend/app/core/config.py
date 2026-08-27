@@ -2,15 +2,15 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/Staflo"
-    SUPABASE_URL: str = ""
-    SUPABASE_SERVICE_KEY: str = ""
-    SUPABASE_ANON_KEY: str = ""
-    SECRET_KEY: str = "dev-secret-change-me-please-32-chars"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:thiruppugazhs@db.epnkoxnepauxkluqewib.supabase.co:5432/postgres"
+    SUPABASE_URL: str = "https://epnkoxnepauxkluqewib.supabase.co"
+    SUPABASE_SERVICE_KEY: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmtveG5lcGF1eGtsdXFld2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTU2NTEsImV4cCI6MjEwMjk3MTY1MX0.bnYLqzTFPrtoQjJjq4tRh2-ETfPymWJR32JBWNJVtnE"
+    SUPABASE_ANON_KEY: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmtveG5lcGF1eGtsdXFld2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTU2NTEsImV4cCI6MjEwMjk3MTY1MX0.bnYLqzTFPrtoQjJjq4tRh2-ETfPymWJR32JBWNJVtnE"
+    SECRET_KEY: str = "9f4a1c6e8b2d5e7f0a3c4b6d8e1f2a3c4e5b6a7d8e9f0a1b2c3d4e5f6a7b8c9d"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://staflo.thiruppugazhs.in,http://staflo.thiruppugazhs.in"
+    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://epnkoxnepauxkluqewib.supabase.co,https://staflo.thiruppugazhs.in,http://staflo.thiruppugazhs.in"
     # Base URL of the frontend — used to build verification / invite links in emails
     FRONTEND_URL: str = "https://staflo.thiruppugazhs.in"
     # Email (Resend REST API primary, SMTP fallback)

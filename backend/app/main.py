@@ -28,9 +28,12 @@ async def unhandled_exception_handler(request, exc):
     # add CORS headers manually or the browser masks the real error as a CORS failure
     traceback.print_exc()
     origin = request.headers.get("origin")
-    headers = {"Access-Control-Allow-Credentials": "true"}
-    if origin in settings.cors_origins_list:
-        headers["Access-Control-Allow-Origin"] = origin
+    headers = {
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Origin": origin or "*",
+        "Access-Control-Allow-Methods": "*",
+        "Access-Control-Allow-Headers": "*",
+    }
     return JSONResponse(status_code=500, content={"detail": f"Internal server error: {exc}"}, headers=headers)
 
 # Mount routers on both /api/v1 and /v1 so Vercel rewrites work seamlessly
