@@ -53,6 +53,10 @@ class Settings(BaseSettings):
         env_file = ".env"
 
     @property
+    def clean_database_url(self) -> str:
+        return "".join(self.DATABASE_URL.strip().split())
+
+    @property
     def cors_origins_list(self) -> List[str]:
         return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
 

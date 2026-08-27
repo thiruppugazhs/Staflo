@@ -7,7 +7,8 @@ from ..core.config import settings
 import re
 
 # Resolve IPv4 Pooler URL to prevent [Errno 99] Cannot assign requested address on Vercel/Lambda
-raw_url = settings.DATABASE_URL
+# Strip all accidental trailing/leading whitespace and spaces in the URL
+raw_url = "".join(settings.DATABASE_URL.strip().split())
 connect_args: dict = {}
 
 # If direct IPv6 host is used (db.epnkoxnepauxkluqewib.supabase.co:5432), convert to IPv4 Pooler
@@ -29,6 +30,8 @@ elif "pooler.supabase.com" in raw_url:
 if "ssl=require" in raw_url or "sslmode=require" in raw_url:
     connect_args["ssl"] = "require"
     raw_url = raw_url.split("?")[0]
+
+raw_url = raw_url.strip()
 
 engine = create_async_engine(
     raw_url,
