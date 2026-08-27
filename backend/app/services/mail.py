@@ -7,15 +7,52 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def _send_via_resend(to_email: str, subject: str, html_body: str, text_body: str | None = None) -> bool:
+    """Send transactional email via Resend REST API."""
+    import httpx
+    try:
+        url = "https://api.resend.com/emails"
+        headers = {
+            "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "from": settings.RESEND_FROM_EMAIL or "Staflo <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_body,
+        }
+        if text_body:
+            payload["text"] = text_body
+        with httpx.Client(timeout=15.0) as client:
+            resp = client.post(url, headers=headers, json=payload)
+            if resp.status_code in (200, 201):
+                logger.info(f"[RESEND SUCCESS] To={to_email} Subject={subject}")
+                print(f"[RESEND SENT] To={to_email} Subject={subject} (id={resp.json().get('id')})")
+                return True
+            else:
+                logger.error(f"[RESEND ERROR] status={resp.status_code} body={resp.text}")
+                print(f"[RESEND ERROR] status={resp.status_code} body={resp.text}")
+                return False
+    except Exception as e:
+        logger.error(f"[RESEND EXCEPTION] {e}")
+        print(f"[RESEND EXCEPTION] {e}")
+        return False
+
 def send_email(to_email: str, subject: str, html_body: str, text_body: str | None = None) -> bool:
     """
-    Send email via Brevo SMTP relay (or any SMTP).
-    Uses SSL on 465 if SMTP_USE_SSL=True, else TLS/STARTTLS.
-    Returns True on success, False on failure (logs error).
-    From: SMTP_FROM_EMAIL
+    Send email via Resend REST API (primary) or SMTP relay (fallback).
     """
+    if settings.RESEND_API_KEY:
+        ok = _send_via_resend(to_email, subject, html_body, text_body)
+        if ok:
+            return True
+        logger.warning("Resend delivery failed, falling back to SMTP if configured...")
+
     if not settings.SMTP_HOST or not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        raise RuntimeError("SMTP not configured: set SMTP_HOST, SMTP_USER, SMTP_PASSWORD in backend/.env")
+        if not settings.RESEND_API_KEY:
+            raise RuntimeError("Email delivery not configured: set RESEND_API_KEY or SMTP_HOST/USER/PASSWORD in backend/.env")
+        return False
 
     msg = MIMEMultipart("alternative")
     msg["From"] = settings.SMTP_FROM_EMAIL

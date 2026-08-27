@@ -13,11 +13,14 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://staflo.thiruppugazhs.in,http://staflo.thiruppugazhs.in"
     # Base URL of the frontend — used to build verification / invite links in emails
     FRONTEND_URL: str = "https://staflo.thiruppugazhs.in"
+    # Email (Resend REST API primary, SMTP fallback)
+    RESEND_API_KEY: str = ""
+    RESEND_FROM_EMAIL: str = "Staflo <onboarding@resend.dev>"
     SMTP_HOST: str = ""
     SMTP_PORT: int = 465
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
-    SMTP_FROM_EMAIL: str = "noreply@Staflo.susindran.in"
+    SMTP_FROM_EMAIL: str = "noreply@staflo.thiruppugazhs.in"
     SMTP_USE_TLS: bool = False
     SMTP_USE_SSL: bool = True
     REQUIRE_EMAIL_VERIFICATION: bool = False
