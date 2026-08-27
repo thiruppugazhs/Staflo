@@ -8,8 +8,14 @@ import re
 
 # Resolve IPv4 Pooler URL to prevent [Errno 99] Cannot assign requested address on Vercel/Lambda
 # Strip all accidental trailing/leading whitespace and spaces in the URL
+from sqlalchemy.pool import NullPool
+
 raw_url = "".join(settings.DATABASE_URL.strip().split())
-connect_args: dict = {}
+connect_args: dict = {
+    "ssl": "require",
+    "statement_cache_size": 0,
+    "prepared_statement_cache_size": 0,
+}
 
 # If direct IPv6 host is used (db.epnkoxnepauxkluqewib.supabase.co:5432), convert to IPv4 Pooler
 match = re.search(r"db\.([a-z0-9]+)\.supabase\.co", raw_url)
@@ -20,26 +26,19 @@ if match:
         raw_url = raw_url.replace("://postgres:", f"://postgres.{ref}:")
     raw_url = raw_url.replace(f"db.{ref}.supabase.co:5432", "aws-0-ap-south-1.pooler.supabase.com:6543")
     raw_url = raw_url.replace(f"db.{ref}.supabase.co", "aws-0-ap-south-1.pooler.supabase.com")
-    connect_args["ssl"] = "require"
-    connect_args["statement_cache_size"] = 0
-elif "pooler.supabase.com" in raw_url:
-    connect_args["ssl"] = "require"
-    if ":6543" in raw_url:
-        connect_args["statement_cache_size"] = 0
 
 if "ssl=require" in raw_url or "sslmode=require" in raw_url:
-    connect_args["ssl"] = "require"
     raw_url = raw_url.split("?")[0]
 
 raw_url = raw_url.strip()
 
+# NullPool is essential for serverless + PgBouncer transaction pooling
 engine = create_async_engine(
     raw_url,
     connect_args=connect_args,
+    poolclass=NullPool,
     echo=False,
     future=True,
-    pool_pre_ping=True,
-    pool_recycle=240,
 )
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
