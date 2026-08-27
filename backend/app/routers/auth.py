@@ -83,13 +83,23 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     await db.commit()
     await db.refresh(user)
 
-    access = create_access_token({"sub": str(user.id), "company_id": str(company.id), "role": user.role})
+    role_str = user.role.value if hasattr(user.role, "value") else str(user.role)
+    access = create_access_token({"sub": str(user.id), "company_id": str(company.id), "role": role_str})
     refresh = create_refresh_token({"sub": str(user.id)})
 
     return TokenResponse(
         access_token=access,
         refresh_token=refresh,
-        user={"id": str(user.id), "employee_id": emp_id, "email": user.email, "role": user.role, "company_id": str(company.id), "company_slug": slug}
+        user={
+            "id": str(user.id),
+            "employee_id": emp_id,
+            "email": user.email,
+            "role": role_str,
+            "company_id": str(company.id),
+            "company_slug": slug,
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        }
     )
 
 @router.post("/login", response_model=TokenResponse)
@@ -109,12 +119,22 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
     company = comp.scalar_one_or_none()
     slug = company.slug if company else ""
 
-    access = create_access_token({"sub": str(user.id), "company_id": str(user.company_id), "role": user.role})
+    role_str = user.role.value if hasattr(user.role, "value") else str(user.role)
+    access = create_access_token({"sub": str(user.id), "company_id": str(user.company_id), "role": role_str})
     refresh = create_refresh_token({"sub": str(user.id)})
     return TokenResponse(
         access_token=access,
         refresh_token=refresh,
-        user={"id": str(user.id), "employee_id": user.employee_id, "email": user.email, "role": user.role, "company_id": str(user.company_id), "company_slug": slug, "first_name": user.first_name, "last_name": user.last_name}
+        user={
+            "id": str(user.id),
+            "employee_id": user.employee_id,
+            "email": user.email,
+            "role": role_str,
+            "company_id": str(user.company_id),
+            "company_slug": slug,
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        }
     )
 
 @router.post("/refresh", response_model=dict)

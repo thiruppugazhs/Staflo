@@ -13,7 +13,7 @@ app = FastAPI(title="Staflo API", version="1.0.0", description="Staflo HRMS - Re
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
-    allow_origin_regex=r"https?://(.*\.)?(thiruppugazhs\.in|vercel\.app)(:\d+)?",
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,7 +36,7 @@ async def unhandled_exception_handler(request, exc):
     }
     return JSONResponse(status_code=500, content={"detail": f"Internal server error: {exc}"}, headers=headers)
 
-# Mount routers on both /api/v1 and /v1 so Vercel rewrites work seamlessly
+# Mount routers on all prefixes so any baseURL configuration in Vercel/Vite works seamlessly
 all_routers = [
     auth.router, users.router, attendance.router, leave.router,
     payroll.router, documents.router, reports.router, companies.router,
@@ -44,7 +44,7 @@ all_routers = [
     interns.router, payments.router
 ]
 
-for prefix in ["/api/v1", "/v1"]:
+for prefix in ["/api/v1", "/v1", ""]:
     for r in all_routers:
         app.include_router(r, prefix=prefix)
 
