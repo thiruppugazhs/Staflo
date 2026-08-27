@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://postgres.epnkoxnepauxkluqewib:thiruppugazhs@aws-0-ap-south-1.pooler.supabase.com:6543/postgres"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres.epnkoxnepauxkluqewib:thiruppugazhs@aws-0-ap-south-1.pooler.supabase.com:5432/postgres"
     SUPABASE_URL: str = "https://epnkoxnepauxkluqewib.supabase.co"
     SUPABASE_SERVICE_KEY: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmtveG5lcGF1eGtsdXFld2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTU2NTEsImV4cCI6MjEwMjk3MTY1MX0.bnYLqzTFPrtoQjJjq4tRh2-ETfPymWJR32JBWNJVtnE"
     SUPABASE_ANON_KEY: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmtveG5lcGF1eGtsdXFld2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTU2NTEsImV4cCI6MjEwMjk3MTY1MX0.bnYLqzTFPrtoQjJjq4tRh2-ETfPymWJR32JBWNJVtnE"
