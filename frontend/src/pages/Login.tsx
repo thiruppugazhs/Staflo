@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input'
 import {
   Eye, EyeOff, ArrowRight, Check, ShieldCheck, Lock
 } from 'lucide-react'
+import StafloLogo, { StafloIcon } from '../components/Logo'
 
 export default function Login(){
   const [email,setEmail]=useState('')
@@ -42,8 +43,8 @@ export default function Login(){
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src="/logo.svg" alt="Staflo logo" className="h-9 w-9 rounded-xl" />
-            <span className="font-bold text-xl tracking-tight">Staflo</span>
+            <StafloIcon size={36} />
+            <span className="font-logo text-2xl tracking-tight text-white">Staflo</span>
           </Link>
 
           <div className="flex-1 flex flex-col justify-center max-w-[480px]">

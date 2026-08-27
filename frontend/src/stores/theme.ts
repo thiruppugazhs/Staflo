@@ -94,6 +94,21 @@ export const useThemeStore = create<ThemeState>()(
   )
 )
 
+export function updateFavicon(primaryColor: string, accentColor: string) {
+  try {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 100 100" fill="none"><path d="M44 14 H68 C71 14 73.5 16 72.5 19 L48 43 C46.5 44.5 44 45 42 45 H30 C27 45 25 42.5 26.5 40 L41 16.5 C42 15 43 14 44 14 Z" fill="${primaryColor}"/><path d="M44 38 L54 44 C56.5 45.5 58 48 58 51 L48 51 C45.5 51 43.5 49 42 47 L36 41 C38 39.5 41 38 44 38 Z" fill="${primaryColor}" opacity="0.85"/><path d="M58 55 H70 C73 55 75 57.5 73.5 60 L59 83.5 C58 85 57 86 56 86 H32 C29 86 26.5 84 27.5 81 L52 57 C53.5 55.5 56 55 58 55 Z" fill="${accentColor}"/></svg>`
+    const encoded = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'icon'
+      document.head.appendChild(link)
+    }
+    link.type = 'image/svg+xml'
+    link.href = encoded
+  } catch (e) {}
+}
+
 export function applyThemeToDOM(themeId: string, isDark: boolean) {
   const root = document.documentElement
   root.setAttribute('data-theme', themeId || 'default')
@@ -102,4 +117,9 @@ export function applyThemeToDOM(themeId: string, isDark: boolean) {
   } else {
     root.classList.remove('dark')
   }
+
+  // Find active palette to update favicon
+  const activePalette = THEME_PALETTES.find((p) => p.id === themeId) || THEME_PALETTES[0]
+  updateFavicon(activePalette.primary, activePalette.accent)
 }
+

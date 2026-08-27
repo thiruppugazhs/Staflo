@@ -7,6 +7,7 @@ import { api } from '../api/client'
 import {
   ArrowRight, ArrowLeft, Upload, Building2, Check, ShieldCheck, Globe, Users, Eye, EyeOff, Image as ImageIcon, X, Lock
 } from 'lucide-react'
+import StafloLogo, { StafloIcon } from '../components/Logo'
 
 type Form = {
   companyName: string
@@ -126,8 +127,8 @@ export default function Signup(){
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src="/logo.svg" alt="Staflo logo" className="h-9 w-9 rounded-xl" />
-            <span className="font-bold text-xl tracking-tight">Staflo</span>
+            <StafloIcon size={36} />
+            <span className="font-logo text-2xl tracking-tight text-white">Staflo</span>
           </Link>
 
           <div className="mt-8 max-w-[440px]">

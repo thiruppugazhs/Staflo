@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
 import Chatbot from './Chatbot'
+import StafloLogo, { StafloIcon } from './Logo'
 import { useToast } from './ui/toast'
 import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video, GraduationCap, LayoutDashboard } from 'lucide-react'
 
@@ -121,11 +122,9 @@ export default function Layout(){
       {/* Desktop sidebar */}
       <aside className={`hidden md:flex shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50/80 dark:from-zinc-900 dark:to-zinc-900 sticky top-0 h-screen transition-all duration-200 ${collapsed ? 'w-[72px]' : 'w-[260px]'}`}>
         <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
-          <Link to="/dashboard" className={`flex items-center gap-2.5 font-bold text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
-            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
-              <img src="/logo.svg" alt="Staflo logo" className="h-5 w-5 rounded-md brightness-0 invert" />
-            </span>
-            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">Staflo</span>}
+          <Link to="/dashboard" className={`flex items-center gap-2.5 ${collapsed ? 'justify-center' : ''}`}>
+            <StafloIcon size={30} className="rounded-lg shadow-xs" />
+            {!collapsed && <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">Staflo</span>}
           </Link>
           <button
             onClick={()=>setCollapsed(v=>!v)}
@@ -139,7 +138,7 @@ export default function Layout(){
         <SidebarNav collapsed={collapsed} />
         <div className={`p-3 border-t border-zinc-200 dark:border-zinc-800 ${collapsed ? 'px-2' : ''}`}>
           <Link to="/me" title={collapsed ? `${user?.first_name} ${user?.last_name} • ${user?.employee_id}` : undefined} className={`flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-violet-300 dark:hover:border-zinc-600 transition ${collapsed ? 'justify-center px-1' : ''}`}>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-violet-100 dark:ring-zinc-700">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-accent)] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-zinc-100 dark:ring-zinc-700">
               {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
             </div>
             {!collapsed && (
@@ -161,8 +160,9 @@ export default function Layout(){
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={()=>setMobileOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-[280px] bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xl">
             <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
-              <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
-                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="Staflo logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> Staflo
+              <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5">
+                <StafloIcon size={28} />
+                <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">Staflo</span>
               </Link>
               <button onClick={()=>setMobileOpen(false)} className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <X className="h-5 w-5" />
@@ -171,7 +171,7 @@ export default function Layout(){
             <SidebarNav onNavigate={()=>setMobileOpen(false)} />
             <div className="p-3 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
               <Link to="/me" onClick={()=>setMobileOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#004E72] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-accent)] flex items-center justify-center text-xs font-bold text-white shrink-0">
                   {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -195,7 +195,10 @@ export default function Layout(){
               <button onClick={()=>setMobileOpen(true)} className="md:hidden h-8 w-8 rounded-md border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <Menu className="h-5 w-5" />
               </button>
-              <span className="md:hidden font-bold flex items-center gap-2"><img src="/logo.svg" alt="Staflo logo" className="h-6 w-6 rounded" /> Staflo</span>
+              <span className="md:hidden flex items-center gap-2">
+                <StafloIcon size={24} />
+                <span className="font-logo text-lg text-zinc-900 dark:text-zinc-100">Staflo</span>
+              </span>
               <span className="hidden md:block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {tabs.find(t=>t.path===loc.pathname)?.label ?? 'Dashboard'}
               </span>

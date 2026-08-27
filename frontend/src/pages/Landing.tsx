@@ -7,9 +7,10 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../stores/auth'
 import ThemeToggle from '../components/ThemeToggle'
+import StafloLogo, { StafloIcon } from '../components/Logo'
 import { openRazorpayCheckout } from '../lib/razorpay'
 
-const BRAND = '#004E72'
+const BRAND = 'var(--theme-primary, #004E72)'
 
 export default function Landing() {
   const { token } = useAuth()
@@ -22,8 +23,8 @@ export default function Landing() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="/logo.svg" alt="Staflo logo" className="h-8 w-8 rounded-lg" />
-              <span className="font-bold text-[18px] tracking-tight text-zinc-900">Staflo</span>
+              <StafloIcon size={32} />
+              <span className="font-logo text-[22px] tracking-tight text-zinc-900 dark:text-zinc-100">Staflo</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-1 text-sm">
               <a href="#features" className="px-3 py-2 text-zinc-600 hover:text-zinc-900 transition">Features</a>
@@ -504,8 +505,12 @@ export default function Landing() {
         <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2"><img src="/logo.svg" alt="Staflo logo" className="h-7 w-7 rounded-lg" /><span className="font-bold text-zinc-900">Staflo</span><span className="text-xs text-zinc-500">Every workday, perfectly aligned.</span></div>
-              <p className="mt-3 text-sm text-zinc-600 max-w-sm">The complete HR platform for modern teams. Secure, reliable, and loved by HR leaders everywhere.</p>
+              <div className="flex items-center gap-2">
+                <StafloIcon size={28} />
+                <span className="font-logo text-lg text-zinc-900 dark:text-zinc-100">Staflo</span>
+                <span className="text-xs text-zinc-500">• Every workday, perfectly aligned.</span>
+              </div>
+              <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400 max-w-sm">The complete HR platform for modern teams. Secure, reliable, and loved by HR leaders everywhere.</p>
               <div className="mt-4 text-xs text-zinc-500">© 2026 Staflo Technologies Pvt. Ltd. All rights reserved.</div>
             </div>
             <div>
