@@ -1,6 +1,6 @@
-# VibeHR — Traceability: 2 References → Implementation
+# DailyFlow — Traceability: 2 References → Implementation
 
-> References: `VibeHR - Human Resource Management System.pdf` + `image.png` (Excalidraw wireframes, link https://link.excalidraw.com/l/65VNwvy7c4X/58RLEJ4oOwh)
+> References: `DailyFlow - Human Resource Management System.pdf` + `image.png` (Excalidraw wireframes, link https://link.excalidraw.com/l/65VNwvy7c4X/58RLEJ4oOwh)
 
 ## Stack as Requested
 - **React** — Vite + TS + Tailwind + shadcn/ui + React Router + TanStack Query + Zustand (frontend/)
@@ -51,7 +51,7 @@
 
 ### Verification (current evidence, 2026-08-22)
 
-- `fastapi.testclient: root {'message':'VibeHR API running'} health {'status':'ok'} paths 43` ✅
+- `fastapi.testclient: root {'message':'DailyFlow API running'} health {'status':'ok'} paths 43` ✅
 - `frontend npm run build: 163 modules, 314.20 kB, gzip 99.38 kB` ✅
 - `pytest tests/test_auth.py: 3 passed` (pwd rules, payroll, ID) ✅
 - No `working tree clean` pending, `git log 5 commits ahead`

@@ -3,14 +3,14 @@ import { Building2, Users, ShieldCheck, Sparkles, ArrowRight, Heart, Target, Eye
 
 export default function About(){
   return (
-    <div className="min-h-screen bg-[#fcfbf9] text-zinc-900 selection:bg-[#eab308]/15">
+    <div className="min-h-screen bg-[#FFFBF7] text-zinc-900 selection:bg-[#eab308]/15">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <span className="h-8 w-8 rounded-xl bg-amber-500 flex items-center justify-center text-stone-950 font-black text-xs">DF</span>
+            <img src="/logo.svg" alt="DailyFlow logo" className="h-8 w-8 rounded-lg" />
             <span className="font-bold text-[18px] tracking-tight">DailyFlow</span>
           </Link>
-          <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#eab308] text-white hover:bg-[#5f4057]">Create Company <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
+          <Link to="/signup"><button className="inline-flex items-center justify-center rounded-full h-8 px-5 text-sm font-medium bg-[#eab308] text-white hover:bg-[#d97706]">Create Company <ArrowRight className="ml-1.5 h-4 w-4" /></button></Link>
         </div>
       </header>
 

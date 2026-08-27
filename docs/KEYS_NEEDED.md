@@ -1,21 +1,18 @@
-# DailyFlow — Active Supabase & DevOps Configuration
+# DailyFlow — Keys & Env Vars Needed (Give These Later)
 
-> Project: `epnkoxnepauxkluqewib` (ap-south-1)
-> Project URL: `https://epnkoxnepauxkluqewib.supabase.co`
-> Database URL: `postgresql+asyncpg://postgres:thiruppugazhs@db.epnkoxnepauxkluqewib.supabase.co:5432/postgres`
-> Database Status: **Active & Schema Migrated (13 tables configured)**
-> Storage Buckets: `logos`, `company-logos`, `avatars`, `documents`, `employee-documents`, `leave-docs`
+> Backend is already running on `postgresql+asyncpg://postgres.axhiwzngefjkerrmimyk:***@aws-0-ap-south-1.pooler.supabase.com:5432/postgres` (pooler).
+> Everything below is **already wired** — paste values into `backend/.env` and `frontend/.env` and restart.
 
-## 1) Supabase (Project `epnkoxnepauxkluqewib`)
-- `SUPABASE_URL` — `https://epnkoxnepauxkluqewib.supabase.co`
-- `SUPABASE_ANON_KEY` — Configured in `backend/.env` & `frontend/.env`
-- `SUPABASE_SERVICE_KEY` — Configured in `backend/.env`
-- `DATABASE_URL` — Configured in `backend/.env`
-- `VITE_SUPABASE_PUBLISHABLE_KEY` — `sb_publishable_K7iZ-nkDLbnhJK9ZaSkQmw_0pKMzzV_`
+## 1) Supabase (Project `axhiwzngefjkerrmimyk`)
+Get from **Supabase Dashboard → Project Settings → API** + **Database**:
 
-Storage buckets are initialized in Supabase Cloud:
-`logos` (public), `company-logos` (public), `avatars` (public), `documents` (private), `employee-documents` (private), `leave-docs` (private)
+- `SUPABASE_URL` — e.g. `https://axhiwzngefjkerrmimyk.supabase.co` (inferred, confirm)
+- `SUPABASE_ANON_KEY` — `anon` public key (for frontend `VITE_SUPABASE_ANON_KEY` + storage public URLs)
+- `SUPABASE_SERVICE_KEY` — `service_role` secret (backend `supabase-py` → buckets `company-logos`, `avatars`, `employee-documents`, `leave-docs` — otherwise local `uploads/` fallback is used)
+- `DATABASE_URL` — **already provided** (pooler 5432). Keep `postgresql+asyncpg://...` prefix in `backend/.env`. For Supavisor `session` vs `transaction` pooler, use `5432` (we use).
 
+Create **Storage buckets** in Supabase → Storage (or they auto-fallback local):
+`company-logos` (public), `avatars` (public), `employee-documents` (private), `leave-docs` (private)
 
 ## 2) SMTP — Brevo (you gave these, but login fails 535 — please regenerate)
 Current `backend/.env` has:
@@ -23,7 +20,7 @@ Current `backend/.env` has:
 - `SMTP_PORT=465`
 - `SMTP_USER=a2301b001@smtp-brevo.com`
 - `SMTP_PASSWORD=<REDACTED>` — please regenerate and re-share
-- `SMTP_FROM_EMAIL=noreply@VibeHR.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
+- `SMTP_FROM_EMAIL=noreply@DailyFlow.susindran.in` (domain must be authenticated in Brevo → Senders & Domains → verify SPF/DKIM or use a verified Brevo sender)
 - `SMTP_USE_TLS=false`
 - `SMTP_USE_SSL=true`
 
@@ -32,16 +29,16 @@ Current `backend/.env` has:
 - `ALGORITHM=HS256`
 - `ACCESS_TOKEN_EXPIRE_MINUTES=60`
 - `REFRESH_TOKEN_EXPIRE_DAYS=7`
-- `CORS_ORIGINS=http://localhost:5173,http://localhost:3000,https://VibeHR.susindran.in`
+- `CORS_ORIGINS=http://localhost:5173,http://localhost:3000,https://DailyFlow.susindran.in`
 
 Optional:
 - `REQUIRE_EMAIL_VERIFICATION=true|false` — if `true`, `POST /auth/login` returns 403 until verified (currently soft banner only)
 
 ## 4) Frontend `frontend/.env`
-- `VITE_API_URL=http://localhost:8000/api/v1` (local) or `https://api.VibeHR.susindran.in/api/v1` (prod)
+- `VITE_API_URL=http://localhost:8000/api/v1` (local) or `https://api.DailyFlow.susindran.in/api/v1` (prod)
 - `VITE_SUPABASE_URL` — same as `SUPABASE_URL` (for `lib/supabase.ts` direct public URL helpers)
 - `VITE_SUPABASE_ANON_KEY` — same as `SUPABASE_ANON_KEY`
-- Optional for verification link: `VITE_APP_URL=https://VibeHR.susindran.in` (used in `verify_url`)
+- Optional for verification link: `VITE_APP_URL=https://DailyFlow.susindran.in` (used in `verify_url`)
 
 ## 5) How to Give Later
 Paste either:
@@ -53,7 +50,7 @@ Paste either:
 
 ## 6) Google Calendar + Meet (real Meet links)
 
-There is no standalone "Meet API" — VibeHR creates a **Google Calendar event** with
+There is no standalone "Meet API" — DailyFlow creates a **Google Calendar event** with
 `conferenceData` and extracts the generated `https://meet.google.com/xxx-yyyy-zzz` link.
 Until credentials below are set, meetings return flagged **demo** links (`source: "mock"`)
 that Meet rejects ("Check your meeting code").

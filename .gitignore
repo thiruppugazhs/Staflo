@@ -1,36 +1,40 @@
-# Dependencies
-node_modules/
-*/node_modules/
-__pycache__/
-*/__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-venv/
-env/
-
-# Production builds
-dist/
-build/
-*/dist/
-uploads/
-
-# Environment and databases
+# Secrets — never commit real keys (Brevo SMTP *, Supabase service_role, etc.)
 .env
-*.env
-.env.local
-.env.*.local
-hrms.db
-hrms.db-journal
-hrms.db-wal
-hrms.db-shm
-server/hrms.db*
-
-# Logs
+.env.*
+!.env.example
+**/.env
+**/.env.*
+*.key
+*.pem
+secrets/
+*secret*
 *.log
-npm-debug.log*
-
-# OS Files
 .DS_Store
 Thumbs.db
 
+# Backend
+backend/__pycache__/
+backend/**/*.pyc
+backend/.venv/
+backend/venv/
+backend/*.db
+backend/alembic/*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env.local
+frontend/.env
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.openchamber/

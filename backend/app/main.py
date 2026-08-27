@@ -8,7 +8,7 @@ from .models import company, user, attendance as att_model, leave as leave_model
 from fastapi.staticfiles import StaticFiles
 import os
 
-app = FastAPI(title="DailyFlow API", version="1.0.0", description="DailyFlow HRMS - React FastAPI Supabase")
+app = FastAPI(title="DailyFlow API", version="1.0.0", description="HRMS - React FastAPI Supabase")
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,7 +52,7 @@ if os.path.exists("uploads"):
 
 @app.get("/")
 async def root():
-    return {"message": "VibeHR API running", "docs": "/docs"}
+    return {"message": "DailyFlow API running", "docs": "/docs"}
 
 @app.get("/health")
 async def health():

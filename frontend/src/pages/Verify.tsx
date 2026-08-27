@@ -48,10 +48,10 @@ export default function Verify() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1c1917] via-[#78350f] to-[#eab308] p-4">
       <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden">
-        <div className="h-1 bg-gradient-to-r from-[#eab308] via-[#b58aa6] to-[#e0b64c]" />
+        <div className="h-1 bg-gradient-to-r from-[#eab308] via-[#fcd34d] to-[#e0b64c]" />
         <div className="p-8 text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <span className="h-9 w-9 rounded-xl bg-amber-500 flex items-center justify-center text-stone-950 font-black text-sm">DF</span>
+            <img src="/logo.svg" alt="DailyFlow logo" className="h-9 w-9 rounded-xl" />
             <span className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">DailyFlow</span>
           </Link>
 

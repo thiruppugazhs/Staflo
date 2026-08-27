@@ -3,7 +3,7 @@ import { Check, Play, Building2, UserPlus, Wallet, ArrowRight, BookOpen, Clock }
 
 export default function GettingStarted(){
   return (
-    <div className="min-h-screen bg-[#fcfbf9] text-zinc-900">
+    <div className="min-h-screen bg-[#FFFBF7] text-zinc-900">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5"><div className="h-8 w-8 rounded-lg bg-[#eab308] flex items-center justify-center font-bold text-sm text-white">DF</div><span className="font-bold">DailyFlow</span><span className="text-xs text-zinc-500 ml-2 hidden sm:inline">Getting Started</span></Link>

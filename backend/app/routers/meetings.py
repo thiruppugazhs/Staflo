@@ -113,11 +113,11 @@ async def create_meeting(
             # fetch company name synchronously not needed - use generic
             html = f"""
             <div style="font-family:sans-serif; max-width:600px; margin:auto; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
-              <h2 style="color:#714B67;">New Meeting: {title}</h2>
+              <h2 style="color:#eab308;">New Meeting: {title}</h2>
               <p><b>Organizer:</b> {current.first_name} {current.last_name} ({current.email})</p>
               <p><b>When:</b> {start_time.strftime('%a, %d %b %Y %H:%M UTC')} → {end_time.strftime('%H:%M UTC')}</p>
               {f'<p>{description}</p>' if description else ''}
-              <a href="{meet_link}" style="display:inline-block; background:#714B67; color:white; padding:12px 24px; border-radius:8px; text-decoration:none; margin-top:12px;">Join Google Meet</a>
+              <a href="{meet_link}" style="display:inline-block; background:#eab308; color:white; padding:12px 24px; border-radius:8px; text-decoration:none; margin-top:12px;">Join Google Meet</a>
               <p style="color:#6b7280; font-size:12px; margin-top:16px;">Meeting ID: {meeting.id}</p>
             </div>
             """

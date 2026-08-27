@@ -199,7 +199,7 @@ async def resend_verification(payload: dict, db: AsyncSession = Depends(get_db))
             from ..services.mail import send_email, verification_email_html
             name = f"{user.first_name or ''} {user.last_name or ''}".strip() or user.employee_id
             html = verification_email_html(name, verify_url, user.employee_id)
-            send_email(user.email, f"Verify your VibeHR account — {company.name if company else 'VibeHR'}", html, f"Verify: {verify_url} | Employee ID: {user.employee_id}")
+            send_email(user.email, f"Verify your DailyFlow account — {company.name if company else 'DailyFlow'}", html, f"Verify: {verify_url} | Employee ID: {user.employee_id}")
             print(f"[MAIL] verification resent to {user.email} ({user.employee_id})")
         except Exception as e:
             print(f"[MAIL] verification resend failed: {e}")
@@ -258,7 +258,7 @@ async def invite_employee(payload: InviteEmployeeRequest, current: User = Depend
         from ..services.mail import send_email, invite_email_html
         login_url = f"{settings.FRONTEND_URL.rstrip('/')}/login"
         html = invite_email_html(f"{payload.firstName} {payload.lastName}", emp_id, payload.email, temp_pw, company.name, login_url, verify_url)
-        send_email(payload.email, f"You're invited to {company.name} on VibeHR — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}\nVerify your email: {verify_url}")
+        send_email(payload.email, f"You're invited to {company.name} on DailyFlow — Employee ID {emp_id}", html, f"Employee ID: {emp_id} Temp Password: {temp_pw} Login: {login_url}\nVerify your email: {verify_url}")
         print(f"[MAIL] Invite sent to {payload.email} ({emp_id})")
     except Exception as e:
         print(f"[MAIL] invite send failed: {e}")

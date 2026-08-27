@@ -6,7 +6,7 @@ import { api } from '../api/client'
 import ThemeToggle from './ThemeToggle'
 import Chatbot from './Chatbot'
 import { useToast } from './ui/toast'
-import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronLeft, ChevronRight, FileText, Bell, Building2, Video, GraduationCap, LayoutDashboard, CheckCircle2 } from 'lucide-react'
+import { Users, Clock, CalendarDays, BarChart3, Settings, Menu, X, LogOut, User, Wallet, ChevronsLeft, ChevronsRight, FileText, Bell, Building2, Video, GraduationCap, LayoutDashboard } from 'lucide-react'
 
 export default function Layout(){
   const { user, logout } = useAuth()
@@ -52,30 +52,30 @@ export default function Layout(){
   }
 
   const coreTabs = [
-    {label:'Dashboard', path:'/dashboard', icon: LayoutDashboard},
-    {label:'Employees', path:'/employees', icon: Users},
-    {label:'Attendance', path:'/attendance', icon: Clock},
-    {label:'Time Off', path:'/time-off', icon: CalendarDays},
-    {label:'Payroll', path:'/payroll', icon: Wallet},
-    {label:'Reports', path:'/reports', icon: BarChart3},
-    {label:'Documents', path:'/documents', icon: FileText},
-    {label:'Notifications', path:'/notifications', icon: Bell},
-    {label:'Company', path:'/company', icon: Building2},
-    {label:'Meetings', path:'/meetings', icon: Video},
-    {label:'Interns', path:'/interns', icon: GraduationCap},
+    {label:'Dashboard', path:'/dashboard', icon: LayoutDashboard, active: 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
+    {label:'Employees', path:'/employees', icon: Users, active: 'bg-[#eab308] text-white shadow-md shadow-[#eab308]/20', tint: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300', hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'},
+    {label:'Attendance', path:'/attendance', icon: Clock, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
+    {label:'Time Off', path:'/time-off', icon: CalendarDays, active: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
+    {label:'Payroll', path:'/payroll', icon: Wallet, active: 'bg-teal-600 text-white shadow-md shadow-teal-600/20', tint: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-300', hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-300'},
+    {label:'Reports', path:'/reports', icon: BarChart3, active: 'bg-sky-600 text-white shadow-md shadow-sky-600/20', tint: 'bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300', hover: 'hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-700 dark:hover:text-sky-300'},
+    {label:'Documents', path:'/documents', icon: FileText, active: 'bg-orange-600 text-white shadow-md shadow-orange-600/20', tint: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-300', hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300'},
+    {label:'Notifications', path:'/notifications', icon: Bell, active: 'bg-amber-600 text-white shadow-md shadow-amber-600/20', tint: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'},
+    {label:'Company', path:'/company', icon: Building2, active: 'bg-zinc-700 text-white shadow-md shadow-zinc-700/20', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
+    {label:'Meetings', path:'/meetings', icon: Video, active: 'bg-fuchsia-600 text-white shadow-md shadow-fuchsia-600/20', tint: 'bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/30 dark:text-fuchsia-300', hover: 'hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/20 hover:text-fuchsia-700 dark:hover:text-fuchsia-300'},
+    {label:'Interns', path:'/interns', icon: GraduationCap, active: 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20', tint: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-300'},
   ]
   const accountTabs = [
-    {label:'My Profile', path:'/me', icon: User},
-    {label:'Settings', path:'/settings', icon: Settings},
+    {label:'My Profile', path:'/me', icon: User, active: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20', tint: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300', hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-700 dark:hover:text-indigo-300'},
+    {label:'Settings', path:'/settings', icon: Settings, active: 'bg-zinc-800 text-white dark:bg-zinc-700 dark:text-white shadow-md', tint: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400', hover: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'},
   ]
   const tabs = [...coreTabs, ...accountTabs]
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(()=>{
-    try { return localStorage.getItem('dailyflow-sidebar-collapsed')==='1' } catch { return false }
+    try { return localStorage.getItem('DailyFlow-sidebar-collapsed')==='1' } catch { return false }
   })
   useEffect(()=>{
-    try { localStorage.setItem('dailyflow-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
+    try { localStorage.setItem('DailyFlow-sidebar-collapsed', collapsed ? '1' : '0') } catch {}
   },[collapsed])
 
   const NavItem = ({t, onNavigate, collapsed: isCollapsed}:{t:any, onNavigate?:()=>void, collapsed?:boolean})=>{
@@ -87,16 +87,14 @@ export default function Layout(){
         to={t.path}
         onClick={onNavigate}
         title={isCollapsed ? t.label : undefined}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-semibold transition-all
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
           ${isCollapsed ? 'justify-center px-2' : ''}
-          ${active
-            ? 'bg-amber-400 text-stone-950 shadow-xs'
-            : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100'}`}
+          ${active ? t.active : `text-zinc-600 dark:text-zinc-400 ${t.hover}`}`}
       >
-        <span className={`h-7 w-7 rounded-xl flex items-center justify-center shrink-0 transition ${active ? 'bg-stone-950/10 text-stone-950' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'}`}>
-          <Icon className="h-4 w-4 shrink-0" />
+        <span className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 transition ${active ? 'bg-white/20' : t.tint}`}>
+          <Icon className="h-[16px] w-[16px] shrink-0" />
         </span>
-        {!isCollapsed && <span className="truncate">{t.label}</span>}
+        {!isCollapsed && t.label}
       </Link>
     )
   }
@@ -104,14 +102,14 @@ export default function Layout(){
   const SidebarNav = ({ onNavigate, collapsed: isCollapsed = false }: { onNavigate?: () => void, collapsed?: boolean }) => (
     <nav className={`flex-1 px-3 py-4 space-y-4 overflow-y-auto ${isCollapsed ? 'px-2' : ''}`}>
       <div>
-        {!isCollapsed && <div className="px-3 mb-1.5 text-[10px] font-bold tracking-wider text-stone-400 uppercase">Workforce</div>}
-        <div className="space-y-1">
+        {!isCollapsed && <div className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">Core</div>}
+        <div className="space-y-1.5">
           {coreTabs.map(t=> <NavItem key={t.path} t={t} onNavigate={onNavigate} collapsed={isCollapsed} />)}
         </div>
       </div>
       <div>
-        {!isCollapsed && <div className="px-3 mb-1.5 text-[10px] font-bold tracking-wider text-stone-400 uppercase">Personal & System</div>}
-        <div className="space-y-1">
+        {!isCollapsed && <div className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">Account</div>}
+        <div className="space-y-1.5">
           {accountTabs.map(t=> <NavItem key={t.path} t={t} onNavigate={onNavigate} collapsed={isCollapsed} />)}
         </div>
       </div>
@@ -119,43 +117,39 @@ export default function Layout(){
   )
 
   return (
-    <div className="min-h-screen bg-[#fcfbf9] dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex font-sans">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex">
       {/* Desktop sidebar */}
-      <aside className={`hidden md:flex shrink-0 flex-col border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 sticky top-0 h-screen transition-all duration-200 select-none z-30 ${collapsed ? 'w-20' : 'w-60'}`}>
-        <div className={`h-16 flex items-center border-b border-stone-100 dark:border-stone-800/80 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-4'}`}>
-          <Link to="/dashboard" className={`flex items-center gap-2 font-black text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
-            <span className="h-8 w-8 rounded-xl bg-amber-500 flex items-center justify-center text-stone-950 font-black shadow-xs shrink-0 text-sm">
-              DF
+      <aside className={`hidden md:flex shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50/80 dark:from-zinc-900 dark:to-zinc-900 sticky top-0 h-screen transition-all duration-200 ${collapsed ? 'w-[72px]' : 'w-[260px]'}`}>
+        <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
+          <Link to="/dashboard" className={`flex items-center gap-2.5 font-bold text-lg tracking-tight ${collapsed ? 'justify-center' : ''}`}>
+            <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-white shadow-sm shrink-0">
+              <img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" />
             </span>
-            {!collapsed && (
-              <span className="text-stone-900 dark:text-white font-extrabold tracking-tight">
-                Daily<span className="text-amber-500 font-black">Flow</span>
-              </span>
-            )}
+            {!collapsed && <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent">DailyFlow</span>}
           </Link>
           <button
             onClick={()=>setCollapsed(v=>!v)}
             title={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
             aria-label={collapsed ? 'Expand sidebar' : 'Minimize sidebar'}
-            className="w-7 h-7 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 flex items-center justify-center hover:bg-stone-100 dark:hover:bg-stone-700 transition cursor-pointer shrink-0 shadow-2xs"
+            className="h-7 w-7 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-700 transition shrink-0"
           >
-            {collapsed ? <ChevronRight className="h-4 w-4 text-stone-600 dark:text-stone-300" /> : <ChevronLeft className="h-4 w-4 text-stone-600 dark:text-stone-300" />}
+            {collapsed ? <ChevronsRight className="h-4 w-4 text-zinc-600 dark:text-zinc-300" /> : <ChevronsLeft className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />}
           </button>
         </div>
         <SidebarNav collapsed={collapsed} />
-        <div className={`p-3 border-t border-stone-100 dark:border-stone-800 ${collapsed ? 'px-2' : ''}`}>
-          <Link to="/me" title={collapsed ? `${user?.first_name} ${user?.last_name} • ${user?.employee_id}` : undefined} className={`flex items-center gap-2.5 px-2.5 py-2 rounded-2xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 shadow-2xs hover:border-amber-400 transition ${collapsed ? 'justify-center px-1' : ''}`}>
-            <div className="h-8 w-8 rounded-xl bg-amber-500 flex items-center justify-center text-xs font-bold text-stone-950 shrink-0 shadow-2xs">
+        <div className={`p-3 border-t border-zinc-200 dark:border-zinc-800 ${collapsed ? 'px-2' : ''}`}>
+          <Link to="/me" title={collapsed ? `${user?.first_name} ${user?.last_name} • ${user?.employee_id}` : undefined} className={`flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-violet-300 dark:hover:border-zinc-600 transition ${collapsed ? 'justify-center px-1' : ''}`}>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-violet-100 dark:ring-zinc-700">
               {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold truncate leading-tight text-stone-900 dark:text-white">{user?.first_name} {user?.last_name}</div>
-                <div className="text-[10px] text-stone-400 truncate mt-0.5">{user?.employee_id} • <span className="capitalize text-amber-600 dark:text-amber-400 font-semibold">{user?.role}</span></div>
+                <div className="text-sm font-medium truncate leading-none">{user?.first_name} {user?.last_name}</div>
+                <div className="text-xs text-zinc-500 truncate">{user?.employee_id} • <span className="capitalize text-violet-600 dark:text-violet-300">{user?.role}</span></div>
               </div>
             )}
           </Link>
-          <button onClick={()=>{logout(); nav('/login')}} title={collapsed ? 'Log Out' : undefined} className={`mt-2 w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-2xl transition cursor-pointer ${collapsed ? 'justify-center px-1' : ''}`}>
+          <button onClick={()=>{logout(); nav('/login')}} title={collapsed ? 'Log Out' : undefined} className={`mt-2 w-full flex items-center gap-2 px-2.5 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition ${collapsed ? 'justify-center px-1' : ''}`}>
             <LogOut className="h-4 w-4 shrink-0" /> {!collapsed && 'Log Out'}
           </button>
         </div>
@@ -164,29 +158,28 @@ export default function Layout(){
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-xs" onClick={()=>setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 flex flex-col shadow-2xl">
-            <div className="h-16 flex items-center justify-between px-4 border-b border-stone-100 dark:border-stone-800">
-              <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2 font-extrabold text-base tracking-tight">
-                <span className="h-8 w-8 rounded-xl bg-amber-500 flex items-center justify-center text-stone-950 font-black">DF</span>
-                <span>Daily<span className="text-amber-500 font-black">Flow</span></span>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={()=>setMobileOpen(false)} />
+          <aside className="absolute left-0 top-0 bottom-0 w-[280px] bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xl">
+            <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
+              <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5 font-bold text-lg tracking-tight">
+                <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-white"><img src="/logo.svg" alt="DailyFlow logo" className="h-5 w-5 rounded-md brightness-0 invert" /></span> DailyFlow
               </Link>
-              <button onClick={()=>setMobileOpen(false)} className="w-8 h-8 rounded-full border border-stone-200 dark:border-stone-700 flex items-center justify-center hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer">
-                <X className="h-4 w-4" />
+              <button onClick={()=>setMobileOpen(false)} className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                <X className="h-5 w-5" />
               </button>
             </div>
             <SidebarNav onNavigate={()=>setMobileOpen(false)} />
-            <div className="p-3 border-t border-stone-100 dark:border-stone-800 space-y-2">
-              <Link to="/me" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5 px-3 py-2 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 shadow-2xs">
-                <div className="h-8 w-8 rounded-xl bg-amber-500 flex items-center justify-center text-xs font-bold text-stone-950 shrink-0">
+            <div className="p-3 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
+              <Link to="/me" onClick={()=>setMobileOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#eab308] to-[#9B6B8A] flex items-center justify-center text-xs font-bold text-white shrink-0">
                   {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs font-bold truncate leading-tight">{user?.first_name} {user?.last_name}</div>
-                  <div className="text-[10px] text-stone-400 truncate">{user?.employee_id} • <span className="capitalize text-amber-600 dark:text-amber-400 font-semibold">{user?.role}</span></div>
+                  <div className="text-sm font-medium truncate leading-none">{user?.first_name} {user?.last_name}</div>
+                  <div className="text-xs text-zinc-500 truncate">{user?.employee_id} • <span className="capitalize text-violet-600 dark:text-violet-300">{user?.role}</span></div>
                 </div>
               </Link>
-              <button onClick={()=>{logout(); nav('/login')}} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold text-rose-600 rounded-full border border-rose-200 hover:bg-rose-50 cursor-pointer">
+              <button onClick={()=>{logout(); nav('/login')}} className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <LogOut className="h-4 w-4" /> Log Out
               </button>
             </div>
@@ -196,118 +189,88 @@ export default function Layout(){
 
       {/* Main column */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 border-b bg-white/90 dark:bg-stone-900/90 backdrop-blur border-stone-200 dark:border-stone-800 shadow-2xs">
-          <div className="px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-30 border-b bg-white/80 dark:bg-zinc-900/80 backdrop-blur border-zinc-200 dark:border-zinc-800">
+          <div className="px-4 h-14 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <button onClick={()=>setMobileOpen(true)} className="md:hidden p-2 rounded-xl border border-stone-200 dark:border-stone-800 flex items-center justify-center hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer">
-                <Menu className="h-4 w-4" />
+              <button onClick={()=>setMobileOpen(true)} className="md:hidden h-8 w-8 rounded-md border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                <Menu className="h-5 w-5" />
               </button>
-              <span className="md:hidden font-extrabold flex items-center gap-1.5 text-sm">
-                Daily<span className="text-amber-500 font-black">Flow</span>
-              </span>
-              <span className="hidden md:block text-sm font-bold text-stone-800 dark:text-stone-200">
+              <span className="md:hidden font-bold flex items-center gap-2"><img src="/logo.svg" alt="DailyFlow logo" className="h-6 w-6 rounded" /> DailyFlow</span>
+              <span className="hidden md:block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {tabs.find(t=>t.path===loc.pathname)?.label ?? 'Dashboard'}
               </span>
             </div>
-
-            <div className="flex items-center gap-2 sm:gap-3">
-              <ThemeToggle />
-
-              {/* Attendance Quick Punch Widget */}
-              <div className="flex items-center">
-                {!today?.checked_in ? (
-                  <Button size="sm" disabled={checking} onClick={()=>handleCheck('in')} className="flex items-center gap-1.5 font-bold shadow-xs">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{checking ? 'Punching…' : 'Punch In'}</span>
-                  </Button>
-                ) : !today?.checked_out ? (
-                  <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 pl-3 pr-1 py-1 rounded-xl">
-                    <span className="text-xs font-semibold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      In: <b className="font-mono font-bold">{today.check_in_time || 'Logged'}</b>
-                    </span>
-                    <button
-                      onClick={()=>handleCheck('out')}
-                      disabled={checking}
-                      className="px-2.5 py-1 text-xs font-bold rounded-lg bg-stone-900 hover:bg-stone-800 text-white dark:bg-amber-500 dark:text-stone-950 dark:hover:bg-amber-400 transition cursor-pointer"
-                    >
-                      {checking ? '…' : 'Punch Out'}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="hidden sm:flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Logged ({today?.working_hours ?? '-'}h)</span>
-                  </div>
-                )}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
+            <div className="relative">
+              <button onClick={()=>setShowNotifs(s=>!s)} className="relative h-8 w-8 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-xs">🔔{notifs.length>0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] flex items-center justify-center text-white">{notifs.length}</span>}</button>
+              {showNotifs && (
+                <div className="absolute right-0 mt-2 w-80 rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 p-3 shadow-xl max-h-80 overflow-auto">
+                  <div className="font-medium text-sm mb-2 flex items-center justify-between">Notifications & Email Alerts <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="text-xs font-normal text-violet-600 dark:text-violet-400 hover:underline">View All →</Link></div>
+                  {notifs.length===0 ? <div className="text-xs text-zinc-500">No alerts — invite/leave actions appear here (emails sent via Brevo SMTP)</div> :
+                    notifs.map(n=>(
+                      <div key={n.id} className="border-t border-zinc-200 dark:border-zinc-800 py-2">
+                        <div className="text-xs font-medium">{n.title} <span className="text-zinc-500">• {new Date(n.created_at).toLocaleString()}</span></div>
+                        <div className="text-xs text-zinc-500 dark:text-zinc-400">{n.message}</div>
+                      </div>
+                    ))}
+                  <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="mt-2 block text-center text-xs py-1.5 rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90">Open Notifications Page</Link>
+                </div>
+              )}
+            </div>
+            {!today?.checked_in ? (
+              <Button size="sm" disabled={checking} onClick={()=>handleCheck('in')}>Check In</Button>
+            ) : !today?.checked_out ? (
+              <Button size="sm" variant="outline" disabled={checking} onClick={()=>handleCheck('out')}>Check Out</Button>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2 text-xs text-zinc-500">
+                <span>{today?.working_hours ?? '-'}h</span>
+                <select
+                  value={today?.status ?? 'absent'}
+                  disabled={settingStatus}
+                  onChange={(e)=>handleSetStatus(e.target.value)}
+                  title="Set status"
+                  className="capitalize rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:border-violet-300 dark:hover:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-violet-400 transition disabled:opacity-50"
+                >
+                  <option value="present">Present</option>
+                  <option value="break">Break</option>
+                  <option value="absent">Absent</option>
+                  {!['present','break','absent'].includes(today?.status) && <option value={today?.status}>{today?.status}</option>}
+                </select>
               </div>
-
-              {/* Notifications Popover */}
-              <div className="relative">
-                <button onClick={()=>setShowNotifs(s=>!s)} className="relative h-9 w-9 rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-center text-stone-700 dark:text-stone-300 hover:bg-stone-100 cursor-pointer transition">
-                  <Bell className="h-4 w-4" />
-                  {notifs.length>0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-amber-500 text-stone-950 font-black text-[9px] flex items-center justify-center shadow-xs">{notifs.length}</span>}
-                </button>
-                {showNotifs && (
-                  <div className="absolute right-0 mt-2 w-80 rounded-2xl border bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 p-3 shadow-xl max-h-80 overflow-auto z-50">
-                    <div className="font-bold text-xs mb-2 flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
-                      <span>Notifications & Alerts</span>
-                      <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline">View All →</Link>
-                    </div>
-                    {notifs.length===0 ? <div className="text-xs text-stone-400 py-4 text-center">No unread alerts</div> :
-                      notifs.map(n=>(
-                        <div key={n.id} className="border-t border-stone-100 dark:border-stone-800 py-2">
-                          <div className="text-xs font-bold text-stone-900 dark:text-stone-100">{n.title} <span className="text-stone-400 font-normal text-[10px]">• {new Date(n.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
-                          <div className="text-xs text-stone-600 dark:text-stone-400 mt-0.5">{n.message}</div>
-                        </div>
-                      ))}
-                    <Link to="/notifications" onClick={()=>setShowNotifs(false)} className="mt-2 block text-center text-xs font-bold py-2 rounded-xl bg-amber-500 text-stone-950 hover:bg-amber-600 transition">Open Notifications Page</Link>
-                  </div>
-                )}
-              </div>
-
-              {/* User Avatar */}
-              <div className="relative">
-                <button onClick={()=>setShowProfile(s=>!s)} className="relative h-9 w-9 rounded-xl bg-amber-500 flex items-center justify-center text-xs font-bold text-stone-950 cursor-pointer shadow-2xs">
-                  {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
-                  <span className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white dark:border-stone-900 ${today?.status==='present' ? 'bg-emerald-500' : today?.status==='half_day' ? 'bg-amber-500' : today?.status==='leave' ? 'bg-yellow-500' : 'bg-red-500'}`} />
-                </button>
-                {showProfile && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-2xl border bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 p-2 shadow-xl z-50">
-                    <div className="px-3 py-2 border-b border-stone-100 dark:border-stone-800">
-                      <div className="text-xs font-bold text-stone-900 dark:text-stone-100 leading-tight">{user?.first_name} {user?.last_name}</div>
-                      <div className="text-[11px] text-stone-400 truncate mt-0.5">{user?.email}</div>
-                      <span className="inline-block mt-1.5 text-[9px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 uppercase">
-                        {user?.role} • {user?.employee_id}
-                      </span>
-                    </div>
-                    <div className="py-1">
-                      <Link to="/me" onClick={()=>setShowProfile(false)} className="block px-3 py-2 text-xs font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-xl transition">My Profile</Link>
-                      <Link to="/reports" onClick={()=>setShowProfile(false)} className="block px-3 py-2 text-xs font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-xl transition">Reports & Slips</Link>
-                    </div>
-                    <div className="pt-1 border-t border-stone-100 dark:border-stone-800">
-                      <button onClick={()=>{logout(); nav('/login')}} className="w-full text-left px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition cursor-pointer">Log Out</button>
-                    </div>
-                  </div>
-                )}
-              </div>
+            )}
+            <div className="relative">
+              <button onClick={()=>setShowProfile(s=>!s)} className="relative h-8 w-8 rounded-full bg-[#eab308] flex items-center justify-center text-sm font-bold text-white">
+                {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
+                <span className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white dark:border-[#0a0a0f] ${today?.status==='present' ? 'bg-green-500' : today?.status==='half_day' ? 'bg-amber-500' : today?.status==='leave' ? 'bg-yellow-500' : 'bg-red-500'}`} />
+              </button>
+              {showProfile && (
+                <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 p-2 shadow-xl">
+                  <div className="px-2 py-1 text-xs text-zinc-500">{user?.employee_id} • {user?.role}</div>
+                  <div className="px-2 py-1 text-sm font-medium">{user?.first_name} {user?.last_name}</div>
+                  <div className="px-2 text-xs text-zinc-500 truncate">{user?.email}</div>
+                  <div className="my-2 border-t border-zinc-200 dark:border-zinc-800"/>
+                  <Link to="/me" onClick={()=>setShowProfile(false)} className="block px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">My Profile</Link>
+                  <Link to="/reports" onClick={()=>setShowProfile(false)} className="block px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">Reports</Link>
+                  <button onClick={()=>{logout(); nav('/login')}} className="w-full text-left px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">Log Out</button>
+                </div>
+              )}
             </div>
           </div>
-        </header>
-
-        {(user as any)?.email_verified===false && (
-          <div className="bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs px-4 sm:px-6 py-2 flex justify-between gap-4 items-center">
-            <span>Email verification notice — check your welcome email or verify credentials via the invite flow.</span>
-            <button onClick={async()=>{ try{ const t=await api.get(`/auth/verify-token/${user?.id}`); await api.post('/auth/verify-email',{token:t.data.token}); toast.success('Email verified ✓'); window.location.reload() }catch(e:any){ toast.error(e.response?.data?.detail || 'Verification failed') }}} className="underline shrink-0 font-bold cursor-pointer">Verify Now</button>
-          </div>
-        )}
-
-        <main className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 py-6 flex-1">
-          <Outlet/>
-        </main>
-        <Chatbot/>
-      </div>
+        </div>
+      </header>
+      {(user as any)?.email_verified===false && (
+        <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs px-4 py-2 flex justify-between gap-4">
+          <span>Email verification required — check your invite email or fetch token via API /auth/verify-token/{user?.id}</span>
+          <button onClick={async()=>{ try{ const t=await api.get(`/auth/verify-token/${user?.id}`); await api.post('/auth/verify-email',{token:t.data.token}); toast.success('Email verified ✓'); window.location.reload() }catch(e:any){ toast.error(e.response?.data?.detail || 'Verification failed') }}} className="underline shrink-0">Verify Now (mock)</button>
+        </div>
+      )}
+      <main className="w-full max-w-[1400px] mx-auto px-4 py-6 flex-1">
+        <Outlet/>
+      </main>
+      {/* AI HR Chatbot — floats on all pages (Add ons.md Integration 2) */}
+      <Chatbot/>
     </div>
+  </div>
   )
 }
-

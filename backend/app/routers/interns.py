@@ -174,7 +174,7 @@ async def create_internship(payload: dict, db: AsyncSession = Depends(get_db), c
             add_notification(current.company_id, "Mentor Assigned",
                              f"You are the mentor for {user.first_name} {user.last_name} — see My Interns", "info",
                              to_emails=mentor.email if mentor else None)
-        send_email(user.email, "Welcome as Intern — VibeHR",
+        send_email(user.email, "Welcome as Intern — DailyFlow",
                    f"<p>Hi {user.first_name},</p><p>Your internship ({start} → {end}) is active. Stipend ₹{stipend}/month.</p>",
                    f"Internship {start} - {end}, stipend {stipend}")
     except Exception as e:
@@ -484,7 +484,7 @@ async def certificate(intern_id: str, db: AsyncSession = Depends(get_db), curren
     comp_res = await db.execute(select(Company).where(Company.id == current.company_id))
     company = comp_res.scalar_one_or_none()
     pdf = certificate_pdf(
-        company_name=company.name if company else "VibeHR",
+        company_name=company.name if company else "DailyFlow",
         intern_name=f"{user.first_name} {user.last_name}" if user else "Intern",
         employee_id=user.employee_id if user else "",
         department=d.department or "—",
