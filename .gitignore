@@ -1,15 +1,25 @@
 # Dependencies
 node_modules/
 */node_modules/
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
 
 # Production builds
 dist/
 build/
 */dist/
+uploads/
 
 # Environment and databases
 .env
 *.env
+.env.local
+.env.*.local
 hrms.db
 hrms.db-journal
 hrms.db-wal
@@ -23,3 +33,4 @@ npm-debug.log*
 # OS Files
 .DS_Store
 Thumbs.db
+

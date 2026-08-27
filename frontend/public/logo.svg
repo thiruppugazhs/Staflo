@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="VibeHR logo">
+  <!-- VibeHR — abstract D built from flowing strokes -->
+  <rect width="64" height="64" rx="15" fill="#714B67"/>
+  <!-- stem -->
+  <path d="M20 14 V50" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+  <!-- bowl, upper flow -->
+  <path d="M20 14 C33 14, 42.5 19, 44.5 27" fill="none" stroke="#DDCFF2" stroke-width="9" stroke-linecap="round"/>
+  <!-- bowl, lower flow -->
+  <path d="M43.5 39 C41 47, 31 50, 20 50" fill="none" stroke="#C2E9DF" stroke-width="9" stroke-linecap="round"/>
+</svg>
