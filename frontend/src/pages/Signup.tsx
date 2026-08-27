@@ -41,39 +41,96 @@ export default function Signup(){
   const [showPw,setShowPw]=useState(false)
   const [err,setErr]=useState('')
   const [loading,setLoading]=useState(false)
-  const { signupCompany } = useAuth()
+  const [otp, setOtp] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
+  const [verifying, setVerifying] = useState(false)
+  const { signupCompany, verifyOtp } = useAuth()
   const nav = useNavigate()
   const update=(k:string,v:any)=> setForm(s=>({...s,[k]:v}))
 
-  const passwordChecks = useMemo(()=>{
-    const p=form.password
+  const handleLogo = (file: File | null) => {
+    if (!file) {
+      update('logo', null)
+      update('logoPreview', null)
+      return
+    }
+    update('logo', file)
+    update('logoPreview', URL.createObjectURL(file))
+  }
+
+  const passwordChecks = useMemo(() => {
+    const p = form.password || ''
     return {
-      len: p.length>=8,
+      length: p.length >= 8,
       upper: /[A-Z]/.test(p),
       lower: /[a-z]/.test(p),
-      num: /[0-9]/.test(p),
+      number: /[0-9]/.test(p),
       special: /[^A-Za-z0-9]/.test(p),
+      match: p.length > 0 && p === form.confirm,
     }
-  },[form.password])
-  const pwScore = Object.values(passwordChecks).filter(Boolean).length
-  const canStep0 = form.companyName.trim().length>=2
-  const canStep1 = form.firstName.trim() && form.lastName.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
-  const canStep2 = pwScore===5 && form.password===form.confirm && form.agree
+  }, [form.password, form.confirm])
 
-  const handleLogo = (f: File | null)=>{
-    if(!f){ update('logo',null); update('logoPreview',null); return }
-    update('logo',f)
-    const url = URL.createObjectURL(f)
-    update('logoPreview',url)
+  const pwScore = useMemo(() => {
+    const checks = [passwordChecks.length, passwordChecks.upper, passwordChecks.lower, passwordChecks.number, passwordChecks.special]
+    return checks.filter(Boolean).length
+  }, [passwordChecks])
+
+  const canStep0 = !!(form.companyName.trim() && form.companySize && form.industry)
+  const canStep1 = !!(form.firstName.trim() && form.lastName.trim() && form.email.trim())
+  const canStep2 = !!(form.password && passwordChecks.length && passwordChecks.match && form.agree)
+
+  const next = () => {
+    if (step === 0 && canStep0) setStep(1)
+    else if (step === 1 && canStep1) setStep(2)
   }
 
-  const next = ()=>{
+  const back = () => {
+    if (step > 0) setStep(step - 1)
+  }
+
+  const startResendTimer = () => {
+    setResendCooldown(60)
+    const interval = setInterval(() => {
+      setResendCooldown(prev => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return
     setErr('')
-    if(step===0 && !canStep0) return setErr('Company name must be at least 2 characters.')
-    if(step===1 && !canStep1) return setErr('Please provide a valid first name, last name, and work email.')
-    setStep(s=>Math.min(2, s+1))
+    try {
+      await api.post('/auth/resend-otp', { email: form.email.trim(), purpose: 'Account Verification' })
+      startResendTimer()
+    } catch (e: any) {
+      setErr(e.response?.data?.detail || 'Failed to resend OTP. Please try again.')
+    }
   }
-  const back = ()=> { setErr(''); setStep(s=>Math.max(0, s-1)) }
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!otp || otp.length < 6) return setErr('Please enter the 6-digit code sent to your email.')
+    setErr('')
+    setVerifying(true)
+    try {
+      await verifyOtp(form.email.trim(), otp.trim())
+      if (form.logo) {
+        const fd = new FormData()
+        fd.append('file', form.logo)
+        try { await api.post('/companies/logo', fd) } catch (e) { console.warn('logo upload failed', e) }
+      }
+      nav('/dashboard')
+    } catch (ex: any) {
+      setErr(ex.response?.data?.detail || 'Invalid or expired OTP. Please check your code.')
+    } finally {
+      setVerifying(false)
+    }
+  }
 
   const submit = async(e:React.FormEvent)=>{
     e.preventDefault()
@@ -81,7 +138,7 @@ export default function Signup(){
     setErr('')
     setLoading(true)
     try{
-      await signupCompany({
+      const res = await signupCompany({
         companyName: form.companyName.trim(),
         name: form.companyName.trim(),
         adminFirstName: form.firstName.trim(),
@@ -99,12 +156,17 @@ export default function Signup(){
         address: form.address.trim() || undefined,
         agreeTerms: form.agree
       })
-      if(form.logo){
-        const fd = new FormData()
-        fd.append('file', form.logo)
-        try{ await api.post('/companies/logo', fd)} catch(e){ console.warn('logo upload failed', e)}
+      if (res?.requires_otp) {
+        setStep(3)
+        startResendTimer()
+      } else {
+        if(form.logo){
+          const fd = new FormData()
+          fd.append('file', form.logo)
+          try{ await api.post('/companies/logo', fd)} catch(e){ console.warn('logo upload failed', e)}
+        }
+        nav('/dashboard')
       }
-      nav('/dashboard')
     }catch(ex:any){
       const detail = ex.response?.data?.detail
       if (Array.isArray(detail)) {
@@ -121,6 +183,7 @@ export default function Signup(){
     {title:'Company', desc:'Your workspace'},
     {title:'Administrator', desc:'Your leadership profile'},
     {title:'Security', desc:'Protect access'},
+    {title:'Verification', desc:'Email 6-digit OTP'},
   ]
 
   return (
@@ -219,7 +282,7 @@ export default function Signup(){
               <div key={s.title} className="flex items-center gap-2">
                 <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold border ${i===step ? 'bg-[#004E72] text-white border-[#004E72]' : i<step ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border-zinc-200 dark:border-zinc-700'}`}>{i<step ? <Check className="h-3 w-3" /> : i+1}</span>
                 <span className={`text-xs ${i===step ? 'font-semibold text-zinc-900 dark:text-white' : 'text-zinc-500'}`}>{s.title}</span>
-                {i<2 && <span className="ml-2 text-zinc-300 dark:text-zinc-700">—</span>}
+                {i<3 && <span className="ml-2 text-zinc-300 dark:text-zinc-700">—</span>}
               </div>
             ))}
           </div>
@@ -232,11 +295,13 @@ export default function Signup(){
               {step===0 && 'Tell us about your company'}
               {step===1 && 'Create administrator profile'}
               {step===2 && 'Secure your workspace'}
+              {step===3 && 'Verify your email'}
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
               {step===0 && 'This creates your organization workspace on Staflo.'}
               {step===1 && 'You will be the primary administrator with full access.'}
               {step===2 && 'Set a strong password — you can update it anytime.'}
+              {step===3 && 'Enter the 6-digit verification code to activate your account and unlock the dashboard.'}
             </p>
           </div>
 
@@ -388,6 +453,48 @@ export default function Signup(){
               </div>
             )}
 
+            {/* Step 3: OTP Verification */}
+            {step===3 && (
+              <div className="space-y-5">
+                <div className="p-4 rounded-xl border border-sky-200 dark:border-sky-900/60 bg-sky-50/50 dark:bg-sky-950/30 space-y-2 text-center">
+                  <div className="h-12 w-12 mx-auto rounded-full bg-[#004E72] text-white flex items-center justify-center text-xl font-bold shadow-md">
+                    ✉️
+                  </div>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white">Verify Registered Email</h3>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto">
+                    We've dispatched a 6-digit verification code to <span className="font-semibold text-zinc-900 dark:text-white">{form.email}</span>.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 text-center block">Enter 6-Digit OTP Code</label>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    placeholder="1 2 3 4 5 6"
+                    value={otp}
+                    onChange={e=>setOtp(e.target.value.replace(/\D/g,''))}
+                    autoFocus
+                    className="h-14 text-center text-2xl tracking-[0.4em] font-mono font-bold border-2 border-zinc-300 dark:border-zinc-700 focus:border-[#004E72]"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <span className="text-zinc-500">Didn't receive code?</span>
+                  <button
+                    type="button"
+                    disabled={resendCooldown > 0}
+                    onClick={handleResendOtp}
+                    className="font-medium text-[#004E72] hover:underline disabled:opacity-50 disabled:no-underline"
+                  >
+                    {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend OTP'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {err && (
               <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs">
                 {err}
@@ -396,18 +503,22 @@ export default function Signup(){
 
             {/* Navigation & Submit Buttons */}
             <div className="flex items-center gap-3 pt-3">
-              {step>0 && (
+              {step > 0 && step < 3 && (
                 <Button type="button" variant="outline" onClick={back} className="h-10 px-4 text-xs font-medium">
                   <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back
                 </Button>
               )}
-              {step<2 ? (
+              {step < 2 ? (
                 <Button type="button" onClick={next} className="flex-1 h-10 text-xs font-medium">
                   Continue <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
-              ) : (
+              ) : step === 2 ? (
                 <Button type="submit" disabled={loading || !canStep2} className="flex-1 h-10 text-xs font-medium">
-                  {loading ? 'Creating Workspace…' : 'Create Company Workspace'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  {loading ? 'Sending OTP…' : 'Create Workspace & Send OTP'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </Button>
+              ) : (
+                <Button type="button" onClick={handleVerifyOtp} disabled={verifying || otp.length < 6} className="flex-1 h-10 text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white">
+                  {verifying ? 'Verifying OTP…' : 'Verify & Go to Dashboard'} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               )}
             </div>

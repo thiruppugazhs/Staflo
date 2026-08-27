@@ -90,30 +90,58 @@ export default function Meetings(){
   const filtered = meetings.filter(m=> !search || m.title.toLowerCase().includes(search.toLowerCase()))
   const nameOf = (id:string)=>{ const e=employees.find(x=>x.id===id); return e ? `${e.first_name} ${e.last_name}` : id.slice(0,8) }
 
+  const getGoogleCalendarUrl = (m: Meeting) => {
+    try {
+      const start = new Date(m.start_time).toISOString().replace(/-|:|\.\d+/g, '')
+      const end = new Date(m.end_time).toISOString().replace(/-|:|\.\d+/g, '')
+      const title = encodeURIComponent(m.title)
+      const details = encodeURIComponent(`${m.description || ''}\n\nJoin Google Meet: ${m.meet_link || ''}`)
+      const loc = encodeURIComponent(m.meet_link || '')
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${loc}`
+    } catch {
+      return 'https://calendar.google.com'
+    }
+  }
+
+  const startGMeetNow = () => {
+    window.open('https://meet.google.com/new', '_blank')
+    toast.success('Launching Google Meet in new tab…')
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Video className="h-6 w-6 text-violet-600"/> Meetings</h1>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><Video className="h-6 w-6 text-[#004E72]"/> Meetings & Video Calls</h1>
+          <p className="text-sm text-zinc-500 mt-1">Google Meet & Google Calendar Integration • API Key Connected</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={instantMeet} className="gap-2"><Radio className="h-4 w-4"/> Instant Meet</Button>
-          {isAdmin && <Button onClick={()=>setShowSchedule(true)} className="gap-2"><CalendarPlus className="h-4 w-4"/> Schedule Meeting</Button>}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button onClick={startGMeetNow} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
+            <Radio className="h-4 w-4"/> Start Google Meet
+          </Button>
+          <Button variant="outline" size="sm" onClick={instantMeet} className="gap-2 text-xs">
+            <Video className="h-4 w-4"/> Instant Room
+          </Button>
+          {isAdmin && (
+            <Button onClick={()=>setShowSchedule(true)} className="gap-2 text-xs bg-[#004E72] hover:bg-[#092634] text-white">
+              <CalendarPlus className="h-4 w-4"/> Schedule Meeting
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex items-center gap-2">
         {(['upcoming','all'] as const).map(t=>(
-          <button key={t} onClick={()=>setTab(t)} className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize border transition ${tab===t ? 'bg-violet-600 text-white border-violet-600' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-violet-300'}`}>{t}</button>
+          <button key={t} onClick={()=>setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize border transition ${tab===t ? 'bg-[#004E72] text-white border-[#004E72]' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300'}`}>{t}</button>
         ))}
         <div className="relative ml-auto">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400"/>
-          <Input placeholder="Search..." value={search} onChange={e=>setSearch(e.target.value)} className="pl-8 w-48 bg-white dark:bg-zinc-900"/>
+          <Input placeholder="Search..." value={search} onChange={e=>setSearch(e.target.value)} className="pl-8 w-48 bg-white dark:bg-zinc-900 text-xs h-9"/>
         </div>
       </div>
 
-      {msg && <div className="text-sm p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 text-violet-800 dark:text-violet-200 break-all">{msg}</div>}
+      {msg && <div className="text-sm p-3 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-sky-800 dark:text-sky-200 break-all">{msg}</div>}
 
       {/* Meeting list */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -121,44 +149,58 @@ export default function Meetings(){
           <Card className="p-12 col-span-full text-center">
             <Video className="h-10 w-10 mx-auto text-zinc-300 dark:text-zinc-700"/>
             <div className="mt-3 font-medium">No {tab} meetings</div>
-            <div className="text-sm text-zinc-500">{isAdmin ? 'Schedule one or create an Instant Meet.' : 'You will see meetings you are invited to here.'}</div>
+            <div className="text-sm text-zinc-500">{isAdmin ? 'Schedule one or click "Start Google Meet" above.' : 'You will see meetings you are invited to here.'}</div>
           </Card>
         ) : filtered.map(m=>{
           const isLive = m.is_live || (new Date(m.start_time) <= new Date() && new Date() <= new Date(m.end_time))
+          const calUrl = getGoogleCalendarUrl(m)
           return (
-            <Card key={m.id} className={`p-4 relative ${isLive ? 'border-red-400 dark:border-red-700 ring-1 ring-red-300/50' : ''}`}>
-              {isLive && (
-                <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white"/> LIVE
-                </span>
-              )}
-              <h3 className="font-semibold truncate pr-14">{m.title}</h3>
-              {m.description && <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{m.description}</p>}
-              <div className="mt-2 flex items-center gap-1.5 text-xs text-zinc-500"><CalendarClock className="h-3.5 w-3.5"/> {fmt(m.start_time)} → {fmt(m.end_time)}</div>
-              <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">
-                <Users className="h-3.5 w-3.5"/> {m.attendee_count ?? m.attendee_ids?.length ?? 0} attendee(s)
-                {m.attendee_ids?.length>0 && m.attendee_ids.length<=3 && <span className="truncate">• {m.attendee_ids.map(nameOf).join(', ')}</span>}
+            <Card key={m.id} className={`p-4 relative flex flex-col justify-between ${isLive ? 'border-red-400 dark:border-red-700 ring-1 ring-red-300/50' : ''}`}>
+              <div>
+                {isLive && (
+                  <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white"/> LIVE
+                  </span>
+                )}
+                <h3 className="font-semibold truncate pr-14 text-sm text-zinc-900 dark:text-white">{m.title}</h3>
+                {m.description && <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{m.description}</p>}
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-zinc-500"><CalendarClock className="h-3.5 w-3.5"/> {fmt(m.start_time)} → {fmt(m.end_time)}</div>
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">
+                  <Users className="h-3.5 w-3.5"/> {m.attendee_count ?? m.attendee_ids?.length ?? 0} attendee(s)
+                  {m.attendee_ids?.length>0 && m.attendee_ids.length<=3 && <span className="truncate">• {m.attendee_ids.map(nameOf).join(', ')}</span>}
+                </div>
               </div>
-              <div className="mt-3 flex items-center gap-2">
-                {isLive ? (
-                  <a href={m.meet_link} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-md bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition">
-                    Join Now <ExternalLink className="h-3.5 w-3.5"/>
+
+              <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-2">
+                <div className="flex items-center gap-2">
+                  <a
+                    href={m.meet_link || 'https://meet.google.com/new'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-md text-xs font-semibold transition ${isLive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-[#004E72] hover:bg-[#092634] text-white'}`}
+                  >
+                    {isLive ? 'Join Live Meet' : 'Join Google Meet'} <ExternalLink className="h-3 w-3"/>
                   </a>
-                ) : (
-                  <a href={m.meet_link} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 h-8 rounded-md bg-violet-600 hover:bg-violet-700 text-white text-xs font-medium transition">
-                    Join <ExternalLink className="h-3.5 w-3.5"/>
-                  </a>
-                )}
-                {m.meet_link && (
-                  <button onClick={()=>copy(m.meet_link!)} title="Copy link" className="h-8 px-2 rounded-md border border-zinc-200 dark:border-zinc-700 flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">
-                    {copied ? <Check className="h-3.5 w-3.5 text-emerald-500"/> : <Copy className="h-3.5 w-3.5"/>}
-                  </button>
-                )}
-                {isAdmin && m.status==='scheduled' && (
-                  <button onClick={()=>cancelMeeting(m.id)} title="Cancel meeting" className="h-8 px-2 rounded-md border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
-                    <Trash2 className="h-3.5 w-3.5"/>
-                  </button>
-                )}
+                  {m.meet_link && (
+                    <button onClick={()=>copy(m.meet_link!)} title="Copy link" className="h-8 px-2.5 rounded-md border border-zinc-200 dark:border-zinc-700 flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">
+                      {copied ? <Check className="h-3.5 w-3.5 text-emerald-500"/> : <Copy className="h-3.5 w-3.5 text-zinc-500"/>}
+                    </button>
+                  )}
+                  {isAdmin && m.status==='scheduled' && (
+                    <button onClick={()=>cancelMeeting(m.id)} title="Cancel meeting" className="h-8 px-2 rounded-md border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                      <Trash2 className="h-3.5 w-3.5"/>
+                    </button>
+                  )}
+                </div>
+
+                <a
+                  href={calUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full text-center py-1 rounded-md bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-[11px] font-medium text-zinc-600 dark:text-zinc-400 flex items-center justify-center gap-1.5 transition"
+                >
+                  📅 Add to Google Calendar
+                </a>
               </div>
             </Card>
           )

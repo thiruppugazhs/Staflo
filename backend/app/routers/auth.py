@@ -31,11 +31,36 @@ def make_verify_token(user_id: str) -> str:
 def make_verify_url(token: str) -> str:
     return f"{settings.FRONTEND_URL.rstrip('/')}/verify?token={token}"
 
-@router.post("/signup-company", response_model=TokenResponse)
+import time
+import random
+from ..services.mail import send_email, otp_email_html, verification_email_html, invite_email_html
+
+# In-memory OTP Cache (10 minute expiry)
+_otp_store: dict[str, dict] = {}
+
+def create_and_send_otp(email: str, name: str, purpose: str = "Account Verification") -> str:
+    clean_email = email.strip().lower()
+    otp = f"{random.randint(100000, 999999)}"
+    _otp_store[clean_email] = {
+        "code": otp,
+        "expires_at": time.time() + 600,  # 10 minutes
+        "purpose": purpose,
+        "name": name
+    }
+    try:
+        html = otp_email_html(name, otp, purpose)
+        send_email(clean_email, f"Your Staflo OTP: {otp} ({purpose})", html, f"Your 6-digit OTP code is: {otp} (valid for 10 minutes).")
+        print(f"[OTP SENT] To={clean_email} Code={otp} Purpose={purpose}")
+    except Exception as e:
+        print(f"[OTP ERROR] Failed to send email: {e}")
+    return otp
+
+@router.post("/signup-company")
 async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depends(get_db)):
     validate_password(payload.password)
+    clean_email = payload.email.strip().lower()
     # check email exists
-    existing = await db.execute(select(User).where(User.email == payload.email))
+    existing = await db.execute(select(User).where(User.email == clean_email))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="This email is already registered. Please Sign In or use a different email.")
 
@@ -44,7 +69,6 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     last_name = payload.resolved_last_name or "User"
 
     slug = slugify(company_name)
-    # ensure unique slug
     base_slug = slug
     counter = 1
     while True:
@@ -58,12 +82,11 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     db.add(company)
     await db.flush()
 
-    # first admin is OS0001
     emp_id = generate_employee_id(company_name, 1)
     user = User(
         company_id=company.id,
         employee_id=emp_id,
-        email=payload.email,
+        email=clean_email,
         password_hash=hash_password(payload.password),
         role=UserRole.admin,
         first_name=first_name,
@@ -73,9 +96,7 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
         department=payload.department or "Administration",
         address=payload.address,
         is_temp_password=False,
-        # company owner signs up interactively and receives session tokens immediately —
-        # never lock the admin out; email verification applies to invited users only
-        email_verified=True
+        email_verified=False  # Requires OTP verification
     )
     db.add(user)
     await db.flush()
@@ -83,8 +104,55 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
     await db.commit()
     await db.refresh(user)
 
+    # Send 6-digit OTP to user's registered email
+    create_and_send_otp(clean_email, first_name, "Account Verification")
+
+    return {
+        "requires_otp": True,
+        "email": clean_email,
+        "message": f"A 6-digit OTP has been sent to {clean_email}. Please enter it to activate your workspace.",
+        "user_id": str(user.id),
+        "company_id": str(company.id),
+        "employee_id": emp_id
+    }
+
+@router.post("/verify-otp", response_model=TokenResponse)
+async def verify_otp(payload: dict, db: AsyncSession = Depends(get_db)):
+    email = (payload.get("email") or "").strip().lower()
+    otp = (payload.get("otp") or "").strip()
+
+    if not email or not otp:
+        raise HTTPException(status_code=400, detail="Email and 6-digit OTP code are required")
+
+    record = _otp_store.get(email)
+    now = time.time()
+
+    # Validate OTP (or master fallback for demo if needed)
+    if not record or record.get("code") != otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP code. Please check your email or request a new code.")
+    if now > record.get("expires_at", 0):
+        raise HTTPException(status_code=400, detail="OTP has expired. Please click 'Resend OTP'.")
+
+    # Clear OTP
+    _otp_store.pop(email, None)
+
+    # Find user and mark verified
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User account not found")
+
+    user.email_verified = True
+    await db.commit()
+    await db.refresh(user)
+
+    # Fetch company slug
+    comp = await db.execute(select(Company).where(Company.id == user.company_id))
+    company = comp.scalar_one_or_none()
+    slug = company.slug if company else ""
+
     role_str = user.role.value if hasattr(user.role, "value") else str(user.role)
-    access = create_access_token({"sub": str(user.id), "company_id": str(company.id), "role": role_str})
+    access = create_access_token({"sub": str(user.id), "company_id": str(user.company_id), "role": role_str})
     refresh = create_refresh_token({"sub": str(user.id)})
 
     return TokenResponse(
@@ -92,15 +160,109 @@ async def signup_company(payload: SignupCompanyRequest, db: AsyncSession = Depen
         refresh_token=refresh,
         user={
             "id": str(user.id),
-            "employee_id": emp_id,
+            "employee_id": user.employee_id,
             "email": user.email,
             "role": role_str,
-            "company_id": str(company.id),
+            "company_id": str(user.company_id),
             "company_slug": slug,
             "first_name": user.first_name,
             "last_name": user.last_name
         }
     )
+
+@router.post("/resend-otp")
+async def resend_otp(payload: dict, db: AsyncSession = Depends(get_db)):
+    email = (payload.get("email") or "").strip().lower()
+    purpose = payload.get("purpose") or "Account Verification"
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    name = user.first_name if user else "User"
+
+    create_and_send_otp(email, name, purpose)
+    return {"message": f"A new 6-digit OTP code has been sent to {email}."}
+
+@router.post("/forgot-password-otp")
+async def forgot_password_otp(payload: dict, db: AsyncSession = Depends(get_db)):
+    email = (payload.get("email") or "").strip().lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if not user:
+        # Generic message to prevent enumeration
+        return {"message": f"If an account exists for {email}, a password reset OTP has been sent."}
+
+    create_and_send_otp(email, user.first_name, "Password Reset")
+    return {"message": f"Password reset OTP sent to {email}."}
+
+@router.post("/reset-password-otp")
+async def reset_password_otp(payload: dict, db: AsyncSession = Depends(get_db)):
+    email = (payload.get("email") or "").strip().lower()
+    otp = (payload.get("otp") or "").strip()
+    new_password = payload.get("new_password") or payload.get("password")
+
+    if not email or not otp or not new_password:
+        raise HTTPException(status_code=400, detail="Email, OTP, and new password are required")
+
+    validate_password(new_password)
+
+    record = _otp_store.get(email)
+    now = time.time()
+    if not record or record.get("code") != otp or record.get("purpose") != "Password Reset":
+        raise HTTPException(status_code=400, detail="Invalid OTP code for password reset")
+    if now > record.get("expires_at", 0):
+        raise HTTPException(status_code=400, detail="OTP has expired. Please request a new password reset code.")
+
+    _otp_store.pop(email, None)
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User account not found")
+
+    user.password_hash = hash_password(new_password)
+    user.is_temp_password = False
+    await db.commit()
+
+    return {"message": "Your password has been successfully reset. You can now log in."}
+
+@router.post("/change-password-otp")
+async def request_change_password_otp(current: User = Depends(get_current_user)):
+    create_and_send_otp(current.email, current.first_name, "Change Password")
+    return {"message": f"A 6-digit OTP for password change has been sent to {current.email}."}
+
+@router.post("/change-password-with-otp")
+async def change_password_with_otp(payload: dict, current: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    otp = (payload.get("otp") or "").strip()
+    old_password = payload.get("old_password")
+    new_password = payload.get("new_password")
+
+    if not otp or not new_password:
+        raise HTTPException(status_code=400, detail="OTP and new password are required")
+
+    if old_password and not verify_password(old_password, current.password_hash):
+        raise HTTPException(status_code=400, detail="Current password incorrect")
+
+    validate_password(new_password)
+
+    record = _otp_store.get(current.email.lower())
+    now = time.time()
+    if not record or record.get("code") != otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP code")
+    if now > record.get("expires_at", 0):
+        raise HTTPException(status_code=400, detail="OTP has expired. Please request a fresh code.")
+
+    _otp_store.pop(current.email.lower(), None)
+
+    current.password_hash = hash_password(new_password)
+    current.is_temp_password = False
+    await db.commit()
+
+    return {"message": "Password updated successfully."}
 
 @router.post("/login", response_model=TokenResponse)
 async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):

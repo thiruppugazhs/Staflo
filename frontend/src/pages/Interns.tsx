@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { api } from '../api/client'
 import { Card } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -8,7 +8,8 @@ import { useToast } from '../components/ui/toast'
 import { Link } from 'react-router-dom'
 import {
   GraduationCap, UserPlus, X, Award, CalendarClock, Wallet, TrendingUp,
-  UserCheck, CalendarPlus, Square, FileDown, ClipboardCheck, Users
+  UserCheck, CalendarPlus, Square, FileDown, ClipboardCheck, Users,
+  FileSpreadsheet, Download, Upload, FileText, CheckCircle2
 } from 'lucide-react'
 
 type Intern = {
@@ -18,7 +19,7 @@ type Intern = {
   project_title?: string, institute?: string, evaluation_score?: number | null,
   day: number, total_days: number, percent: number, midterm_due: boolean,
   final_due: boolean, days_remaining: number, conversion_status: string,
-  evaluations: any[], avatar_url?: string | null
+  evaluations: any[], avatar_url?: string | null, resume_url?: string | null
 }
 
 const statusColor: Record<string,string> = {
@@ -53,6 +54,20 @@ export default function Interns(){
   const [evalForm, setEvalForm] = useState({evaluation_type:'midterm', technical:7, communication:7, teamwork:7, punctuality:7, initiative:7, strengths:'', improvements:'', recommendation:''})
   const [extendEnd, setExtendEnd] = useState('')
 
+  // Bulk import state
+  const [showBulk, setShowBulk] = useState(false)
+  const [bulkData, setBulkData] = useState<any[]>([])
+  const [bulkLoading, setBulkLoading] = useState(false)
+  const [bulkResult, setBulkResult] = useState<any>(null)
+  const [bulkErr, setBulkErr] = useState('')
+
+  // Resume upload modal state for admin
+  const [resumeUploadFor, setResumeUploadFor] = useState<Intern | null>(null)
+  const [resumeUploading, setResumeUploading] = useState(false)
+
+  const selfResumeInputRef = useRef<HTMLInputElement>(null)
+  const adminResumeInputRef = useRef<HTMLInputElement>(null)
+
   const load = async()=>{
     if(isAdmin){
       try{ const {data}=await api.get('/interns'); setInterns(data) }catch{}
@@ -65,6 +80,104 @@ export default function Interns(){
     }
   }
   useEffect(()=>{ load() },[])
+
+  const downloadInternTemplate = () => {
+    const csv = "first_name,last_name,email,phone,department,start_date,end_date,stipend,institute,project_title\nRohan,Gupta,rohan.gupta@example.com,+919876543220,Engineering,2026-06-01,2026-11-30,18000,IIT Madras,DayFlow Mobile App\nAnanya,Singh,ananya.singh@example.com,+919876543221,Design,2026-06-15,2026-12-15,15000,NID Ahmedabad,Design System & UI Components\n"
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', 'staflo_intern_import_template.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const parseInternCsvFile = (file: File) => {
+    setBulkErr('')
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0)
+        if (lines.length <= 1) {
+          setBulkErr('CSV file is empty or missing data rows.')
+          return
+        }
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[\s_-]+/g, '_'))
+        const rows: any[] = []
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim())
+          if (values.length < 2) continue
+          const row: any = {}
+          headers.forEach((h, idx) => {
+            row[h] = values[idx] || ''
+          })
+          if (row.first_name && row.email) {
+            rows.push(row)
+          }
+        }
+        if (rows.length === 0) {
+          setBulkErr('No valid intern rows parsed. Ensure first_name and email columns are present.')
+        } else {
+          setBulkData(rows)
+        }
+      } catch (err: any) {
+        setBulkErr('Error parsing CSV file: ' + err.message)
+      }
+    }
+    reader.readAsText(file)
+  }
+
+  const submitInternBulkImport = async () => {
+    if (bulkData.length === 0) return
+    setBulkLoading(true)
+    setBulkErr('')
+    try {
+      const { data } = await api.post('/interns/bulk-import', { interns: bulkData })
+      setBulkResult(data)
+      load()
+    } catch (ex: any) {
+      setBulkErr(ex.response?.data?.detail || 'Bulk import failed.')
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleSelfResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+      const { data } = await api.post('/interns/my-resume', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      toast.success(data.message || 'Resume uploaded successfully!')
+      load()
+    } catch (ex: any) {
+      toast.error(ex.response?.data?.detail || 'Failed to upload resume')
+    }
+  }
+
+  const handleAdminResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !resumeUploadFor) return
+    setResumeUploading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+      const { data } = await api.post(`/interns/${resumeUploadFor.user_id}/resume`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      toast.success(data.message || 'Resume attached to intern profile!')
+      setResumeUploadFor(null)
+      load()
+    } catch (ex: any) {
+      toast.error(ex.response?.data?.detail || 'Failed to upload resume')
+    } finally {
+      setResumeUploading(false)
+    }
+  }
 
   const create = async(e:React.FormEvent)=>{
     e.preventDefault(); setMsg('')
@@ -117,9 +230,38 @@ export default function Interns(){
     const me = interns[0]
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><GraduationCap className="h-6 w-6 text-emerald-600"/> My Internship</h1>
-          <p className="text-sm text-zinc-500 mt-1">Progress • Mentor • Stipend • Evaluations</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><GraduationCap className="h-6 w-6 text-emerald-600"/> My Internship Portal</h1>
+            <p className="text-sm text-zinc-500 mt-1">Progress • Mentor • Stipend • Resume • Evaluations</p>
+          </div>
+          {me && (
+            <div className="flex items-center gap-2">
+              <input
+                ref={selfResumeInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.png,.jpg"
+                onChange={handleSelfResumeUpload}
+                className="hidden"
+              />
+              <Button
+                onClick={() => selfResumeInputRef.current?.click()}
+                className="gap-2 bg-[#004E72] hover:bg-[#092634] text-white text-xs"
+              >
+                <Upload className="h-4 w-4"/> {me.resume_url ? 'Update My Resume' : 'Upload My Resume'}
+              </Button>
+              {me.resume_url && (
+                <a
+                  href={`${(import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api/v1')}/interns/my-resume`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-md border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                >
+                  <FileText className="h-4 w-4 text-emerald-600"/> View My Resume
+                </a>
+              )}
+            </div>
+          )}
         </div>
         {!me ? (
           <Card className="p-12 text-center"><GraduationCap className="h-10 w-10 mx-auto text-zinc-300 dark:text-zinc-700"/><div className="mt-3 font-medium">No internship record yet</div><div className="text-sm text-zinc-500">Ask your admin to onboard you via Intern Management.</div></Card>
@@ -198,9 +340,18 @@ export default function Interns(){
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2"><GraduationCap className="h-6 w-6 text-emerald-600"/> Intern Management</h1>
-          <p className="text-sm text-zinc-500 mt-1">Lifecycle: onboarding → progress → midterm/final evaluation → convert/extend/end {isAdmin ? '(Add ons.md Feature 4)' : '— interns assigned to you'}</p>
+          <p className="text-sm text-zinc-500 mt-1">Lifecycle: onboarding → progress → midterm/final evaluation → convert/extend/end</p>
         </div>
-        {isAdmin && <Button onClick={()=>setShowCreate(true)} className="gap-2"><UserPlus className="h-4 w-4"/> New Internship</Button>}
+        {isAdmin && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button variant="outline" onClick={() => { setShowBulk(true); setBulkData([]); setBulkResult(null); setBulkErr('') }} className="gap-1.5 text-xs">
+              <FileSpreadsheet className="h-4 w-4 text-emerald-600"/> Bulk Import Interns
+            </Button>
+            <Button onClick={()=>setShowCreate(true)} className="gap-2 text-xs bg-[#004E72] hover:bg-[#092634] text-white">
+              <UserPlus className="h-4 w-4"/> New Internship
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Stats */}
@@ -278,8 +429,16 @@ export default function Interns(){
 
             {/* Actions */}
             <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex flex-wrap gap-1.5">
+              {isAdmin && (
+                <button
+                  onClick={() => setResumeUploadFor(i)}
+                  className="inline-flex items-center gap-1 h-7 px-2.5 rounded-md border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                >
+                  <FileText className="h-3 w-3 text-emerald-600"/> {i.resume_url ? 'View/Update Resume' : 'Attach Resume'}
+                </button>
+              )}
               {(isMentorOf(i) || isAdmin) && i.status!=='converted' && i.status!=='completed' && (
-                <button onClick={()=>setEvaluateFor(i)} className="inline-flex items-center gap-1 h-7 px-2.5 rounded-md bg-violet-600 text-white text-xs font-medium hover:bg-violet-700"><ClipboardCheck className="h-3 w-3"/> Evaluate</button>
+                <button onClick={()=>setEvaluateFor(i)} className="inline-flex items-center gap-1 h-7 px-2.5 rounded-md bg-[#004E72] text-white text-xs font-medium hover:bg-[#092634]"><ClipboardCheck className="h-3 w-3"/> Evaluate</button>
               )}
               {isAdmin && i.status!=='converted' && (
                 <>
@@ -375,6 +534,155 @@ export default function Interns(){
             <Button type="submit" className="w-full">Extend Internship</Button>
           </form>
         </Modal>
+      )}
+
+      {/* Bulk Import Interns Modal */}
+      {showBulk && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <Card className="w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-auto space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-lg flex items-center gap-2"><FileSpreadsheet className="h-5 w-5 text-emerald-600"/> Bulk Import Interns (Excel / CSV)</h3>
+              <button onClick={() => setShowBulk(false)} className="h-7 w-7 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-400">✕</button>
+            </div>
+
+            {bulkResult ? (
+              <div className="space-y-4 text-center py-4">
+                <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center mx-auto text-emerald-600">
+                  <CheckCircle2 className="h-7 w-7"/>
+                </div>
+                <h4 className="font-bold text-base">Interns Imported Successfully</h4>
+                <p className="text-xs text-zinc-500">
+                  Imported <span className="font-bold text-emerald-600">{bulkResult.imported_count}</span> interns ({bulkResult.skipped_count} skipped).
+                </p>
+                <div className="max-h-48 overflow-auto border border-zinc-200 dark:border-zinc-800 rounded-lg text-left text-xs">
+                  {bulkResult.imported?.map((u: any) => (
+                    <div key={u.id} className="p-2 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                      <div><span className="font-semibold">{u.name}</span> ({u.email})</div>
+                      <span className="font-mono text-zinc-500 text-[11px]">{u.employee_id}</span>
+                    </div>
+                  ))}
+                </div>
+                <Button onClick={() => setShowBulk(false)} className="w-full bg-[#004E72] text-white">Done</Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs">
+                  <div>
+                    <div className="font-semibold">Step 1: Download Intern Template</div>
+                    <div className="text-zinc-500 text-[11px]">Formatted with start_date, end_date, stipend & project_title</div>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={downloadInternTemplate} className="gap-1.5 text-xs">
+                    <Download className="h-3.5 w-3.5"/> Download CSV Template
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="font-semibold text-xs text-zinc-700 dark:text-zinc-300">Step 2: Upload CSV / Excel File</label>
+                  <label className="border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-emerald-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition bg-zinc-50/50 dark:bg-zinc-900/50">
+                    <Upload className="h-8 w-8 text-zinc-400 mb-2"/>
+                    <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Click or drag & drop intern spreadsheet</span>
+                    <span className="text-[11px] text-zinc-400 mt-0.5">Supports .csv, .txt format</span>
+                    <input type="file" accept=".csv,.txt" onChange={e => e.target.files?.[0] && parseInternCsvFile(e.target.files[0])} className="hidden" />
+                  </label>
+                </div>
+
+                {bulkErr && <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-xs">{bulkErr}</div>}
+
+                {bulkData.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="font-semibold text-xs flex items-center justify-between">
+                      <span>Preview ({bulkData.length} records detected)</span>
+                      <span className="text-emerald-600 font-normal">Ready to import</span>
+                    </div>
+                    <div className="max-h-48 overflow-auto border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-zinc-100 dark:bg-zinc-800 sticky top-0 text-[11px]">
+                          <tr>
+                            <th className="p-2">Name</th>
+                            <th className="p-2">Email</th>
+                            <th className="p-2">Dept</th>
+                            <th className="p-2">Dates</th>
+                            <th className="p-2">Stipend</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bulkData.slice(0, 10).map((r, i) => (
+                            <tr key={i} className="border-t border-zinc-100 dark:border-zinc-800">
+                              <td className="p-2 font-medium">{r.first_name} {r.last_name}</td>
+                              <td className="p-2 text-zinc-500">{r.email}</td>
+                              <td className="p-2">{r.department || '—'}</td>
+                              <td className="p-2 text-[11px]">{r.start_date || '—'} → {r.end_date || '—'}</td>
+                              <td className="p-2 font-mono">₹{r.stipend || '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                  <Button type="button" variant="outline" onClick={() => setShowBulk(false)} className="h-9 text-xs">Cancel</Button>
+                  <Button type="button" onClick={submitInternBulkImport} disabled={bulkLoading || bulkData.length === 0} className="h-9 text-xs bg-emerald-600 hover:bg-emerald-700 text-white">
+                    {bulkLoading ? 'Importing…' : `Import ${bulkData.length} Interns`}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Card>
+        </div>
+      )}
+
+      {/* Admin Resume Upload / View Modal */}
+      {resumeUploadFor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <Card className="w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-base flex items-center gap-2">
+                <FileText className="h-5 w-5 text-[#004E72]"/> Resume — {resumeUploadFor.name}
+              </h3>
+              <button onClick={() => setResumeUploadFor(null)} className="h-7 w-7 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-400">✕</button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              {resumeUploadFor.resume_url ? (
+                <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 space-y-2">
+                  <div className="font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4"/> Resume Attached
+                  </div>
+                  <a
+                    href={`${(import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api/v1')}/interns/${resumeUploadFor.user_id}/resume`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-medium text-xs hover:bg-emerald-700 transition"
+                  >
+                    <Download className="h-3.5 w-3.5"/> View / Download Resume
+                  </a>
+                </div>
+              ) : (
+                <p className="text-zinc-500">No resume attached for this intern yet.</p>
+              )}
+
+              <div className="space-y-1.5 pt-2">
+                <label className="font-semibold text-zinc-700 dark:text-zinc-300">Upload New Resume (.pdf, .doc, .docx)</label>
+                <input
+                  ref={adminResumeInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.png,.jpg"
+                  onChange={handleAdminResumeUpload}
+                  disabled={resumeUploading}
+                  className="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#004E72] file:text-white hover:file:bg-[#092634] file:cursor-pointer cursor-pointer border border-zinc-200 dark:border-zinc-800 rounded-lg p-2"
+                />
+              </div>
+
+              {resumeUploading && <p className="text-xs text-zinc-500 animate-pulse">Uploading and saving resume…</p>}
+            </div>
+
+            <div className="flex justify-end pt-2 border-t border-zinc-100 dark:border-zinc-800">
+              <Button variant="outline" size="sm" onClick={() => setResumeUploadFor(null)} className="h-8 text-xs">Close</Button>
+            </div>
+          </Card>
+        </div>
       )}
     </div>
   )

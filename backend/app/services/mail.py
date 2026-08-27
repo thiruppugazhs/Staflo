@@ -129,6 +129,46 @@ def invite_email_html(name: str, employee_id: str, email: str, temp_password: st
     </div>
     """
 
+def otp_email_html(name: str, otp: str, purpose: str = "Account Verification") -> str:
+    return f"""
+    <div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 550px; margin: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; background: #ffffff;\">
+      <div style=\"text-align: center; margin-bottom: 24px;\">
+        <h1 style=\"color: #0284c7; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;\">staflo</h1>
+        <p style=\"color: #64748b; font-size: 13px; margin-top: 4px;\">Every workday, perfectly aligned.</p>
+      </div>
+      <div style=\"background: #f8fafc; border-radius: 10px; padding: 24px; text-align: center; border: 1px solid #edf2f7;\">
+        <h3 style=\"color: #1e293b; margin: 0 0 8px 0; font-size: 18px;\">{purpose}</h3>
+        <p style=\"color: #475569; font-size: 14px; margin: 0 0 20px 0;\">Hi {name}, use the one-time password below to verify your request:</p>
+        <div style=\"font-family: 'Courier New', monospace; font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #0284c7; background: #ffffff; padding: 14px 24px; border-radius: 8px; border: 2px dashed #0284c7; display: inline-block; margin: 8px 0;\">
+          {otp}
+        </div>
+        <p style=\"color: #94a3b8; font-size: 12px; margin-top: 16px;\">This OTP is valid for <b>10 minutes</b>. Never share this code with anyone.</p>
+      </div>
+      <p style=\"color: #64748b; font-size: 13px; margin-top: 24px; text-align: center;\">If you did not make this request, you can safely ignore this email.</p>
+      <hr style=\"border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;\" />
+      <p style=\"color: #94a3b8; font-size: 11px; text-align: center;\">&copy; 2026 Staflo HRMS. All rights reserved.</p>
+    </div>
+    """
+
+def notification_email_html(name: str, title: str, message: str, priority: str = "normal") -> str:
+    color = "#dc2626" if priority == "urgent" else "#0284c7"
+    badge = f"<span style='background:#fee2e2; color:#dc2626; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:bold;'>URGENT</span>" if priority == "urgent" else ""
+    return f"""
+    <div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 550px; margin: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; background: #ffffff;\">
+      <div style=\"text-align: center; margin-bottom: 24px;\">
+        <h1 style=\"color: #0284c7; margin: 0; font-size: 28px; font-weight: 700;\">staflo</h1>
+        <p style=\"color: #64748b; font-size: 13px; margin-top: 4px;\">Company Broadcast</p>
+      </div>
+      <div style=\"border-left: 4px solid {color}; padding-left: 16px; margin: 20px 0;\">
+        <h2 style=\"color: #0f172a; margin: 0 0 8px 0; font-size: 20px;\">{title} {badge}</h2>
+        <p style=\"color: #334155; font-size: 15px; line-height: 1.6; margin: 0;\">{message}</p>
+      </div>
+      <p style=\"color: #64748b; font-size: 13px; margin-top: 24px;\">Dear {name}, this notification was sent to you by the HR / Administration team.</p>
+      <hr style=\"border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;\" />
+      <p style=\"color: #94a3b8; font-size: 11px; text-align: center;\">&copy; 2026 Staflo HRMS.</p>
+    </div>
+    """
+
 def leave_status_html(name: str, typ: str, start: str, end: str, status: str, comment: str | None) -> str:
     color = "#16a34a" if status=="approved" else "#dc2626" if status=="rejected" else "#d97706"
     comment_html = f"<p><b>Comment:</b> {comment}</p>" if comment else ""

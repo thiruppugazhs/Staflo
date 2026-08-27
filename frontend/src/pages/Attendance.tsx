@@ -4,6 +4,8 @@ import { Card } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button'
 import { useAuth } from '../stores/auth'
+import { UserX, Calendar, Phone, Mail, MessageSquare, AlertCircle, Clock } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Attendance(){
   const { user } = useAuth()
@@ -11,8 +13,11 @@ export default function Attendance(){
   const [from,setFrom]=useState('')
   const [to,setTo]=useState('')
   const [filterUser,setFilterUser]=useState('')
-  const [view,setView]=useState<'day'|'week'>('day')
+  const [view,setView]=useState<'day'|'week'|'absent'>('day')
   const [weekData,setWeekData]=useState<any>(null)
+  const [absentees, setAbsentees] = useState<any[]>([])
+  const [absentDate, setAbsentDate] = useState(new Date().toISOString().slice(0, 10))
+  const [absentLoading, setAbsentLoading] = useState(false)
 
   const load = async()=>{
     const params:any={}
@@ -23,6 +28,7 @@ export default function Attendance(){
     const {data}=await api.get('/attendance', {params})
     setRows(data)
   }
+
   const loadWeek = async()=>{
     const params:any={}
     if(from) params.start = from
@@ -33,26 +39,130 @@ export default function Attendance(){
       setWeekData(data)
     }catch{}
   }
-  useEffect(()=>{ if(view==='day') load(); else loadWeek() },[view])
+
+  const loadAbsentees = async()=>{
+    setAbsentLoading(true)
+    try {
+      const { data } = await api.get('/attendance/absentees', { params: { target_date: absentDate } })
+      setAbsentees(data.absentees || [])
+    } catch {
+      setAbsentees([])
+    } finally {
+      setAbsentLoading(false)
+    }
+  }
+
+  useEffect(()=>{
+    if(view==='day') load()
+    else if(view==='week') loadWeek()
+    else if(view==='absent') loadAbsentees()
+  },[view, absentDate])
+
   useEffect(()=>{ if(view==='week') loadWeek() },[from, filterUser])
 
   const display = rows
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Attendance — List View (Admin/HR vs Employee)</h1>
-      <p className="text-xs text-zinc-500">Daily and weekly views • check-in/out • status: Present/Absent/Half-day/Leave (spec 3.4). Employees own only, admin all. Attendance as basis for payroll.</p>
-      <Card className="p-4 flex flex-wrap gap-3 items-end">
-        <div className="flex gap-2">
-          <Button size="sm" variant={view==='day'?'default':'outline'} onClick={()=>setView('day')}>Day View</Button>
-          <Button size="sm" variant={view==='week'?'default':'outline'} onClick={()=>setView('week')}>Week View (ISO Mon-Sun)</Button>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Attendance & Absenteeism</h1>
+          <p className="text-xs text-zinc-500 mt-0.5">Daily time logs, weekly payroll hours & absent employee roster</p>
         </div>
-        <div><label className="text-xs text-zinc-500">From</label><Input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></div>
-        <div><label className="text-xs text-zinc-500">To (day view)</label><Input type="date" value={to} onChange={e=>setTo(e.target.value)}/></div>
-        {(user?.role==='admin'||user?.role==='hr') && <div><label className="text-xs text-zinc-500">User ID (blank = all)</label><Input placeholder="Filter user" value={filterUser} onChange={e=>setFilterUser(e.target.value)}/></div>}
-        <Button onClick={()=> view==='day'?load():loadWeek()}>Filter</Button>
-        <div className="ml-auto text-xs text-zinc-500">{view==='week' && weekData ? `Week ${weekData.monday} → ${weekData.sunday}` : `${display.length} records`}</div>
+      </div>
+
+      <Card className="p-3.5 flex flex-wrap gap-2.5 items-end">
+        <div className="flex gap-1.5 bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg">
+          <Button size="sm" variant={view==='day'?'default':'ghost'} onClick={()=>setView('day')} className="h-8 text-xs">Day Logs</Button>
+          <Button size="sm" variant={view==='week'?'default':'ghost'} onClick={()=>setView('week')} className="h-8 text-xs">Week View</Button>
+          {(user?.role==='admin'||user?.role==='hr') && (
+            <Button size="sm" variant={view==='absent'?'default':'ghost'} onClick={()=>setView('absent')} className="h-8 text-xs gap-1.5">
+              <UserX className="h-3.5 w-3.5 text-red-500"/> Absent List
+            </Button>
+          )}
+        </div>
+
+        {view !== 'absent' ? (
+          <>
+            <div><label className="text-[11px] font-semibold text-zinc-500 block">From Date</label><Input type="date" value={from} onChange={e=>setFrom(e.target.value)} className="h-8 text-xs"/></div>
+            <div><label className="text-[11px] font-semibold text-zinc-500 block">To Date</label><Input type="date" value={to} onChange={e=>setTo(e.target.value)} className="h-8 text-xs"/></div>
+            {(user?.role==='admin'||user?.role==='hr') && <div><label className="text-[11px] font-semibold text-zinc-500 block">User Filter</label><Input placeholder="User ID" value={filterUser} onChange={e=>setFilterUser(e.target.value)} className="h-8 text-xs"/></div>}
+            <Button size="sm" onClick={()=> view==='day'?load():loadWeek()} className="h-8 text-xs bg-[#004E72] hover:bg-[#092634] text-white">Filter</Button>
+          </>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div>
+              <label className="text-[11px] font-semibold text-zinc-500 block">Select Date</label>
+              <Input type="date" value={absentDate} onChange={e=>setAbsentDate(e.target.value)} className="h-8 text-xs"/>
+            </div>
+            <Button size="sm" onClick={loadAbsentees} className="h-8 text-xs mt-4 bg-[#004E72] text-white">Refresh List</Button>
+          </div>
+        )}
+
+        <div className="ml-auto text-xs text-zinc-500 font-medium self-center">
+          {view==='week' && weekData ? `Week ${weekData.monday} → ${weekData.sunday}` : view==='absent' ? `${absentees.length} Absent Employees` : `${display.length} records`}
+        </div>
       </Card>
+
+      {/* Absent Employees Roster View */}
+      {view==='absent' && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-xs text-zinc-500 px-1">
+            <span>Showing employees absent or on leave for <b>{absentDate}</b></span>
+            <span className="text-red-600 font-semibold">{absentees.length} not present</span>
+          </div>
+
+          {absentees.length === 0 ? (
+            <Card className="p-8 text-center text-zinc-500 space-y-2">
+              <div className="h-12 w-12 rounded-full bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center mx-auto text-emerald-600">✓</div>
+              <h3 className="font-semibold text-zinc-800 dark:text-zinc-200">Full Attendance!</h3>
+              <p className="text-xs text-zinc-400">All registered employees are marked present or checked in for this date.</p>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {absentees.map(emp => (
+                <Card key={emp.user_id} className="p-4 border-l-4 border-l-red-500 space-y-3 hover:shadow-md transition">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 flex items-center justify-center font-bold text-xs shrink-0">
+                        {emp.first_name[0]}{emp.last_name[0]}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-sm text-zinc-900 dark:text-white flex items-center gap-1.5">
+                          {emp.name}
+                        </div>
+                        <div className="text-xs text-zinc-500 font-mono">{emp.employee_id} • {emp.department}</div>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${emp.is_on_leave ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300' : 'bg-red-100 text-red-800 dark:bg-red-950/50 dark:text-red-300'}`}>
+                      {emp.is_on_leave ? `On Leave (${emp.leave_type})` : 'Absent'}
+                    </span>
+                  </div>
+
+                  <div className="text-xs space-y-1 text-zinc-600 dark:text-zinc-400 border-t border-zinc-100 dark:border-zinc-800 pt-2.5">
+                    <div className="flex items-center gap-2 truncate"><Mail className="h-3.5 w-3.5 text-zinc-400"/> {emp.email}</div>
+                    <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-zinc-400"/> {emp.phone}</div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 pt-1">
+                    {emp.phone && emp.phone !== '—' && (
+                      <a href={`tel:${emp.phone}`} className="flex-1 text-center py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 text-zinc-700 dark:text-zinc-300 text-[11px] font-medium transition flex items-center justify-center gap-1">
+                        <Phone className="h-3 w-3"/> Call
+                      </a>
+                    )}
+                    <a href={`mailto:${emp.email}?subject=Attendance%20Follow-up%20for%20${absentDate}`} className="flex-1 text-center py-1.5 rounded-md bg-sky-50 dark:bg-sky-950/50 hover:bg-sky-100 text-sky-700 dark:text-sky-300 text-[11px] font-medium transition flex items-center justify-center gap-1">
+                      <Mail className="h-3 w-3"/> Email
+                    </a>
+                    <Link to={`/profile/${emp.user_id}`} className="px-2 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 text-[11px] font-medium">
+                      Profile →
+                    </Link>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {view==='week' && weekData && (
         <Card className="p-4">
@@ -68,7 +178,7 @@ export default function Attendance(){
               </div>
             ))}
           </div>
-          <div className="text-xs text-zinc-500 mt-2">Half-day counts as 0.5 payable day for payroll (spec 3.4 note). Use Day view for date range filters.</div>
+          <div className="text-xs text-zinc-500 mt-2">Half-day counts as 0.5 payable day for payroll. Use Day view for date range filters.</div>
         </Card>
       )}
 

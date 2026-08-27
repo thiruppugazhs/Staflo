@@ -222,3 +222,12 @@ async def delete_calendar_event(calendar_event_id: str | None) -> bool:
     except Exception as e:
         print(f"[MEET] Failed to delete calendar event {calendar_event_id}: {e}")
         return False
+
+def get_google_calendar_url(title: str, description: str, start_time: datetime, end_time: datetime, meet_link: str = "") -> str:
+    """Generate 1-click Google Calendar web creation URL with embedded Meet link."""
+    from urllib.parse import quote_plus
+    start_iso = start_time.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    end_iso = end_time.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    details = f"{description}\n\nJoin Google Meet: {meet_link}" if meet_link else description
+    return f"https://calendar.google.com/calendar/render?action=TEMPLATE&text={quote_plus(title)}&dates={start_iso}/{end_iso}&details={quote_plus(details)}&location={quote_plus(meet_link)}"
+

@@ -43,6 +43,8 @@ def _progress(d: InternshipDetail) -> dict:
     }
 
 
+_intern_resumes: dict[str, dict] = {}
+
 async def _serialize(db: AsyncSession, d: InternshipDetail, include_private: bool = True) -> dict:
     u = await db.execute(select(User).where(User.id == d.user_id))
     user = u.scalar_one_or_none()
@@ -56,6 +58,7 @@ async def _serialize(db: AsyncSession, d: InternshipDetail, include_private: boo
             mentor_phone = mentor.phone
     evals = await db.execute(select(InternEvaluation).where(InternEvaluation.intern_id == d.user_id))
     evaluations = evals.scalars().all()
+    resume_info = _intern_resumes.get(str(d.user_id))
     return {
         "id": str(d.id),
         "user_id": str(d.user_id),
@@ -78,6 +81,8 @@ async def _serialize(db: AsyncSession, d: InternshipDetail, include_private: boo
         "evaluation_score": d.evaluation_score,
         "conversion_status": str(d.conversion_status),
         "conversion_date": d.conversion_date.isoformat() if d.conversion_date else None,
+        "has_resume": bool(resume_info),
+        "resume_filename": resume_info.get("filename") if resume_info else None,
         **_progress(d),
         "evaluations": [
             {
@@ -498,3 +503,199 @@ async def certificate(intern_id: str, db: AsyncSession = Depends(get_db), curren
     return Response(content=pdf, media_type="application/pdf", headers={
         "Content-Disposition": f'attachment; filename="{fname}"'
     })
+
+@router.post("/bulk-import")
+async def bulk_import_interns(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(require_admin)):
+    interns_list = payload.get("interns") or []
+    if not interns_list or not isinstance(interns_list, list):
+        raise HTTPException(status_code=400, detail="List of 'interns' required")
+
+    comp_res = await db.execute(select(Company).where(Company.id == current.company_id))
+    company = comp_res.scalar_one_or_none()
+    company_name = company.name if company else "Staflo"
+
+    count_res = await db.execute(select(User).where(User.company_id == current.company_id))
+    existing_users = count_res.scalars().all()
+    count = len(existing_users)
+    existing_emails = {u.email.lower() for u in existing_users}
+
+    from ..core.security import hash_password
+    from ..services.id_generator import generate_employee_id, generate_temp_password
+    from ..services.mail import send_email, invite_email_html
+    from ..core.config import settings
+
+    imported = []
+    skipped = []
+
+    for idx, item in enumerate(interns_list):
+        first_name = (item.get("first_name") or item.get("firstName") or "").strip()
+        last_name = (item.get("last_name") or item.get("lastName") or "").strip()
+        email = (item.get("email") or "").strip().lower()
+
+        if not email or not first_name:
+            skipped.append({"row": idx + 1, "reason": "Missing email or first name", "data": item})
+            continue
+
+        if email in existing_emails:
+            skipped.append({"row": idx + 1, "reason": f"Email '{email}' is already registered", "data": item})
+            continue
+
+        start_str = item.get("start_date") or date.today().isoformat()
+        end_str = item.get("end_date") or (date.today() + __import__("datetime").timedelta(days=90)).isoformat()
+        try:
+            start_d = date.fromisoformat(str(start_str)[:10])
+            end_d = date.fromisoformat(str(end_str)[:10])
+        except Exception:
+            start_d = date.today()
+            end_d = date.today() + __import__("datetime").timedelta(days=90)
+
+        stipend = float(item.get("stipend") or 0)
+        mentor_id = None
+        if item.get("mentor_id"):
+            try:
+                mentor_id = uuid.UUID(str(item["mentor_id"]))
+            except Exception:
+                mentor_id = None
+
+        count += 1
+        emp_id = generate_employee_id(company_name, count)
+        temp_pw = generate_temp_password(10)
+
+        user = User(
+            company_id=current.company_id,
+            employee_id=emp_id,
+            email=email,
+            password_hash=hash_password(temp_pw),
+            role=UserRole.intern,
+            first_name=first_name,
+            last_name=last_name,
+            phone=item.get("phone"),
+            department=item.get("department") or "Engineering",
+            job_title="Intern",
+            date_of_joining=start_d,
+            is_temp_password=True,
+            email_verified=True
+        )
+        db.add(user)
+        await db.flush()
+
+        # Create InternshipDetail
+        d = InternshipDetail(
+            user_id=user.id,
+            company_id=current.company_id,
+            mentor_id=mentor_id,
+            department=item.get("department") or "Engineering",
+            start_date=start_d,
+            end_date=end_d,
+            stipend=stipend,
+            project_title=item.get("project_title"),
+            institute=item.get("institute"),
+        )
+        db.add(d)
+
+        # Store resume if provided in item
+        if item.get("resume_data"):
+            _intern_resumes[str(user.id)] = {
+                "filename": item.get("resume_filename") or f"{first_name}_resume.pdf",
+                "file_data": item["resume_data"],
+                "uploaded_at": datetime.now(timezone.utc).isoformat(),
+                "uploaded_by": "bulk_import"
+            }
+
+        # Leave balance
+        db.add(LeaveBalance(
+            user_id=user.id,
+            company_id=current.company_id,
+            year=start_d.year,
+            paid_remaining=INTERN_PAID,
+            sick_remaining=INTERN_SICK
+        ))
+
+        existing_emails.add(email)
+        imported.append({
+            "id": str(user.id),
+            "employee_id": emp_id,
+            "name": f"{first_name} {last_name}".strip(),
+            "email": email,
+            "temp_password": temp_pw
+        })
+
+        try:
+            login_url = f"{settings.FRONTEND_URL.rstrip('/')}/login"
+            html = invite_email_html(f"{first_name} {last_name}".strip(), emp_id, email, temp_pw, company_name, login_url)
+            send_email(email, f"Welcome to {company_name} Internship — ID {emp_id}", html, f"Employee ID: {emp_id} | Password: {temp_pw}")
+        except Exception as e:
+            print(f"[MAIL] Intern invite failed: {e}")
+
+    await db.commit()
+    return {
+        "success": True,
+        "imported_count": len(imported),
+        "skipped_count": len(skipped),
+        "imported": imported,
+        "skipped": skipped
+    }
+
+@router.post("/{intern_id}/resume")
+async def upload_intern_resume(intern_id: str, payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    try:
+        iuuid = uuid.UUID(intern_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid id")
+
+    is_self = str(current.id) == intern_id
+    is_admin = current.role in ("admin", "hr")
+    if not (is_self or is_admin):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    file_data = payload.get("file_data")
+    filename = payload.get("filename", "resume.pdf")
+    if not file_data:
+        raise HTTPException(status_code=400, detail="file_data required (base64 encoded or data URL)")
+
+    _intern_resumes[intern_id] = {
+        "filename": filename,
+        "file_data": file_data,
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        "uploaded_by": f"{current.first_name} {current.last_name}"
+    }
+
+    return {"success": True, "filename": filename, "message": "Resume uploaded successfully."}
+
+@router.post("/my-resume")
+async def upload_my_resume(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    file_data = payload.get("file_data")
+    filename = payload.get("filename", "my_resume.pdf")
+    if not file_data:
+        raise HTTPException(status_code=400, detail="file_data required")
+
+    _intern_resumes[str(current.id)] = {
+        "filename": filename,
+        "file_data": file_data,
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        "uploaded_by": f"{current.first_name} {current.last_name}"
+    }
+
+    return {"success": True, "filename": filename, "message": "Your resume has been uploaded successfully."}
+
+@router.get("/{intern_id}/resume")
+async def get_intern_resume(intern_id: str, current: User = Depends(get_current_user)):
+    is_self = str(current.id) == intern_id
+    is_admin = current.role in ("admin", "hr")
+    if not (is_self or is_admin):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    resume = _intern_resumes.get(intern_id)
+    if not resume:
+        raise HTTPException(status_code=404, detail="No resume uploaded for this intern")
+
+    return resume
+
+@router.get("/my-resume")
+async def get_my_resume(current: User = Depends(get_current_user)):
+    resume = _intern_resumes.get(str(current.id))
+    if not resume:
+        raise HTTPException(status_code=404, detail="No resume uploaded")
+
+    return resume
+

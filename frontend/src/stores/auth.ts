@@ -10,13 +10,15 @@ type User = {
   company_slug?: string
   first_name?: string
   last_name?: string
+  avatar_url?: string
 }
 
 type AuthState = {
   user: User | null
   token: string | null
   login: (email: string, password: string) => Promise<void>
-  signupCompany: (data: any) => Promise<void>
+  signupCompany: (data: any) => Promise<any>
+  verifyOtp: (email: string, otp: string) => Promise<any>
   logout: () => void
   fetchMe: () => Promise<void>
   setUser: (u: User | null) => void
@@ -35,10 +37,21 @@ export const useAuth = create<AuthState>((set) => ({
   },
   signupCompany: async (payload) => {
     const { data } = await api.post('/auth/signup-company', payload)
+    if (data.access_token) {
+      localStorage.setItem('access_token', data.access_token)
+      localStorage.setItem('refresh_token', data.refresh_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      set({ token: data.access_token, user: data.user })
+    }
+    return data
+  },
+  verifyOtp: async (email: string, otp: string) => {
+    const { data } = await api.post('/auth/verify-otp', { email, otp })
     localStorage.setItem('access_token', data.access_token)
     localStorage.setItem('refresh_token', data.refresh_token)
     localStorage.setItem('user', JSON.stringify(data.user))
     set({ token: data.access_token, user: data.user })
+    return data
   },
   logout: () => {
     localStorage.removeItem('access_token')

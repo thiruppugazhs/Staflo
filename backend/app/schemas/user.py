@@ -33,3 +33,4 @@ class UserUpdate(BaseModel):
     avatar_url: Optional[str] = None
     role: Optional[str] = None
     is_active: Optional[bool] = None
+    date_of_joining: Optional[date] = None

@@ -120,13 +120,45 @@ export default function Profile(){
     }catch(e:any){ toast.error(e.response?.data?.detail || 'Failed to update profile') }
   }
 
-  const changePwd = async()=>{
-    if(pwd.next !== pwd.confirm) return setMsg('New passwords mismatch')
+  const [pwdOtpSent, setPwdOtpSent] = useState(false)
+  const [pwdOtp, setPwdOtp] = useState('')
+  const [pwdLoading, setPwdLoading] = useState(false)
+
+  const requestPasswordOtp = async()=>{
+    setPwdLoading(true)
+    setMsg('')
     try{
-      await api.post('/auth/change-password', {old_password: pwd.old, new_password: pwd.next})
-      setMsg('Password changed — re-login recommended')
+      const { data } = await api.post('/auth/change-password-otp')
+      setPwdOtpSent(true)
+      toast.success(data.message || '6-digit OTP sent to your registered email!')
+    }catch(e:any){
+      setMsg(e.response?.data?.detail || 'Failed to send OTP')
+    }finally{
+      setPwdLoading(false)
+    }
+  }
+
+  const changePwdWithOtp = async()=>{
+    if(!pwd.next || pwd.next.length < 6) return setMsg('Password must be at least 6 characters')
+    if(pwd.next !== pwd.confirm) return setMsg('New passwords mismatch')
+    if(!pwdOtp || pwdOtp.length !== 6) return setMsg('Please enter the 6-digit OTP code')
+    setPwdLoading(true)
+    setMsg('')
+    try{
+      const { data } = await api.post('/auth/change-password-with-otp', {
+        old_password: pwd.old,
+        new_password: pwd.next,
+        otp_code: pwdOtp
+      })
+      toast.success(data.message || 'Password changed successfully!')
       setPwd({old:'', next:'', confirm:''})
-    }catch(e:any){ setMsg(e.response?.data?.detail || 'Failed')}
+      setPwdOtp('')
+      setPwdOtpSent(false)
+    }catch(e:any){
+      setMsg(e.response?.data?.detail || 'Failed to update password')
+    }finally{
+      setPwdLoading(false)
+    }
   }
 
   const uploadAvatar = async(e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -137,7 +169,7 @@ export default function Profile(){
     try{
       await api.post(`/users/${id}/avatar`, fd, {headers:{'Content-Type':'multipart/form-data'}})
       load()
-      toast.success('Avatar updated ✓')
+      toast.success('Profile picture updated ✓')
     }catch(ex:any){ toast.error(ex.response?.data?.detail || 'Avatar upload failed') }
   }
 
@@ -243,15 +275,40 @@ export default function Profile(){
           </div>
 
           <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 space-y-3">
-            <h4 className="font-medium">Change Password {user.is_temp_password && <span className="text-amber-400 text-xs">— temp password, change required</span>}</h4>
-            <div className="grid md:grid-cols-3 gap-3">
-              <Input type="password" placeholder="Current" value={pwd.old} onChange={e=>setPwd({...pwd, old:e.target.value})}/>
-              <Input type="password" placeholder="New (8+ U/l, num, special)" value={pwd.next} onChange={e=>setPwd({...pwd, next:e.target.value})}/>
-              <Input type="password" placeholder="Confirm new" value={pwd.confirm} onChange={e=>setPwd({...pwd, confirm:e.target.value})}/>
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-sm">Change Password {user.is_temp_password && <span className="text-amber-500 text-xs">— temp password, change required</span>}</h4>
+              <span className="text-[11px] text-zinc-500">Requires 6-Digit Email OTP</span>
             </div>
-            <Button size="sm" variant="outline" onClick={changePwd}>Change Password</Button>
+
+            {!pwdOtpSent ? (
+              <div className="space-y-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <p className="text-xs text-zinc-500">To protect your account security, changing your password requires verifying a 6-digit OTP sent to <span className="font-medium text-zinc-800 dark:text-zinc-200">{user.email}</span>.</p>
+                <Button size="sm" onClick={requestPasswordOtp} disabled={pwdLoading} className="bg-[#004E72] hover:bg-[#092634] text-white text-xs">
+                  {pwdLoading ? 'Sending OTP…' : 'Send 6-Digit Verification OTP'}
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3 p-4 rounded-xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-800">
+                <div className="text-xs text-sky-800 dark:text-sky-200 flex items-center justify-between">
+                  <span>Enter Current Password, New Password, and the 6-Digit OTP sent to your email:</span>
+                  <button type="button" onClick={requestPasswordOtp} disabled={pwdLoading} className="underline text-[11px] hover:text-sky-600">Resend OTP</button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+                  <Input type="password" placeholder="Current Password" value={pwd.old} onChange={e=>setPwd({...pwd, old:e.target.value})} className="h-9 text-xs"/>
+                  <Input type="password" placeholder="New Password" value={pwd.next} onChange={e=>setPwd({...pwd, next:e.target.value})} className="h-9 text-xs"/>
+                  <Input type="password" placeholder="Confirm New" value={pwd.confirm} onChange={e=>setPwd({...pwd, confirm:e.target.value})} className="h-9 text-xs"/>
+                  <Input placeholder="6-Digit OTP" maxLength={6} value={pwdOtp} onChange={e=>setPwdOtp(e.target.value.replace(/\D/g,''))} className="h-9 text-xs font-mono font-bold tracking-widest text-center"/>
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={changePwdWithOtp} disabled={pwdLoading} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
+                    {pwdLoading ? 'Verifying…' : 'Verify OTP & Change Password'}
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setPwdOtpSent(false)} className="text-xs">Cancel</Button>
+                </div>
+              </div>
+            )}
           </div>
-          {msg && <div className="text-sm p-2 rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">{msg}</div>}
+          {msg && <div className="text-xs p-2.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300">{msg}</div>}
         </Card>
       )}
 

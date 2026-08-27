@@ -32,8 +32,95 @@ export default function Login(){
     catch{ setErr('Could not resend verification email — please try again') }
     finally{ setResending(false)}
   }
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotStep, setForgotStep] = useState(1) // 1: Email, 2: OTP + New Password
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotOtp, setForgotOtp] = useState('')
+  const [forgotNewPw, setForgotNewPw] = useState('')
+  const [forgotLoading, setForgotLoading] = useState(false)
+  const [forgotMsg, setForgotMsg] = useState('')
+  const [forgotErr, setForgotErr] = useState('')
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setForgotErr(''); setForgotMsg('')
+    setForgotLoading(true)
+    try {
+      if (forgotStep === 1) {
+        if (!forgotEmail) throw new Error('Email is required')
+        const { data } = await api.post('/auth/forgot-password-otp', { email: forgotEmail.trim() })
+        setForgotMsg(data.message || '6-digit reset OTP sent to your email.')
+        setForgotStep(2)
+      } else {
+        if (!forgotOtp || forgotOtp.length < 6) throw new Error('Enter 6-digit OTP code')
+        if (!forgotNewPw || forgotNewPw.length < 8) throw new Error('New password must be at least 8 characters')
+        const { data } = await api.post('/auth/reset-password-otp', {
+          email: forgotEmail.trim(),
+          otp: forgotOtp.trim(),
+          new_password: forgotNewPw
+        })
+        setForgotMsg(data.message || 'Password reset successfully! You can now sign in.')
+        setTimeout(() => {
+          setShowForgot(false)
+          setForgotStep(1)
+          setEmail(forgotEmail)
+        }, 2000)
+      }
+    } catch (ex: any) {
+      setForgotErr(ex.response?.data?.detail || ex.message || 'Failed to process request.')
+    } finally {
+      setForgotLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-zinc-950">
+      {/* Forgot Password OTP Modal */}
+      {showForgot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Reset Password with OTP</h3>
+              <button onClick={() => { setShowForgot(false); setForgotStep(1); setForgotErr(''); setForgotMsg('') }} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200">✕</button>
+            </div>
+            
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              {forgotStep === 1 ? 'Enter your registered email address. We will send a 6-digit verification code.' : 'Enter the 6-digit OTP code received in your email and set your new password.'}
+            </p>
+
+            <form onSubmit={handleForgotSubmit} className="space-y-3">
+              {forgotStep === 1 ? (
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Registered Email</label>
+                  <Input type="email" placeholder="name@company.com" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required autoFocus className="h-10 text-sm" />
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">6-Digit OTP Code</label>
+                    <Input type="text" maxLength={6} placeholder="123456" value={forgotOtp} onChange={e => setForgotOtp(e.target.value.replace(/\D/g, ''))} required autoFocus className="h-11 text-center font-mono font-bold text-xl tracking-[0.3em]" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">New Password (8+ characters)</label>
+                    <Input type="password" placeholder="••••••••" value={forgotNewPw} onChange={e => setForgotNewPw(e.target.value)} required className="h-10 text-sm" />
+                  </div>
+                </>
+              )}
+
+              {forgotErr && <div className="p-2.5 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-xs">{forgotErr}</div>}
+              {forgotMsg && <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-medium">{forgotMsg}</div>}
+
+              <div className="flex items-center gap-2 pt-2">
+                <Button type="button" variant="outline" onClick={() => { setShowForgot(false); setForgotStep(1) }} className="flex-1 h-10 text-xs">Cancel</Button>
+                <Button type="submit" disabled={forgotLoading} className="flex-1 h-10 text-xs bg-[#004E72] hover:bg-[#092634] text-white">
+                  {forgotLoading ? 'Processing…' : forgotStep === 1 ? 'Send Reset OTP' : 'Reset Password'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Left — Executive Branding */}
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-[#1c1917] text-white flex-col shrink-0">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1c1917] via-[#092634] to-[#004E72]" />
@@ -100,7 +187,7 @@ export default function Login(){
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</label>
-                    <button type="button" className="text-xs text-[#004E72] hover:underline" onClick={()=> alert('Please contact your Admin to reset password via invite flow.')}>Forgot?</button>
+                    <button type="button" className="text-xs text-[#004E72] hover:underline font-medium" onClick={() => { setShowForgot(true); setForgotEmail(email); }}>Forgot password?</button>
                   </div>
                   <div className="relative">
                     <Input type={showPw ? 'text' : 'password'} value={password} onChange={e=>setPassword(e.target.value)} required autoComplete="current-password" className="h-11 pr-10" placeholder="••••••••" />

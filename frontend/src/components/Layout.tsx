@@ -138,9 +138,13 @@ export default function Layout(){
         <SidebarNav collapsed={collapsed} />
         <div className={`p-3 border-t border-zinc-200 dark:border-zinc-800 ${collapsed ? 'px-2' : ''}`}>
           <Link to="/me" title={collapsed ? `${user?.first_name} ${user?.last_name} • ${user?.employee_id}` : undefined} className={`flex items-center gap-3 px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-violet-300 dark:hover:border-zinc-600 transition ${collapsed ? 'justify-center px-1' : ''}`}>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-accent)] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-zinc-100 dark:ring-zinc-700">
-              {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
-            </div>
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover shrink-0 ring-2 ring-zinc-100 dark:ring-zinc-700" />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-accent)] flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-zinc-100 dark:ring-zinc-700">
+                {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
+              </div>
+            )}
             {!collapsed && (
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium truncate leading-none">{user?.first_name} {user?.last_name}</div>
@@ -204,7 +208,6 @@ export default function Layout(){
               </span>
             </div>
           <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeToggle />
             <div className="relative">
               <button onClick={()=>setShowNotifs(s=>!s)} className="relative h-8 w-8 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-xs">🔔{notifs.length>0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] flex items-center justify-center text-white">{notifs.length}</span>}</button>
               {showNotifs && (
@@ -243,8 +246,12 @@ export default function Layout(){
               </div>
             )}
             <div className="relative">
-              <button onClick={()=>setShowProfile(s=>!s)} className="relative h-8 w-8 rounded-full bg-[#004E72] flex items-center justify-center text-sm font-bold text-white">
-                {(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}
+              <button onClick={()=>setShowProfile(s=>!s)} className="relative h-8 w-8 rounded-full overflow-hidden bg-[#004E72] flex items-center justify-center text-sm font-bold text-white">
+                {user?.avatar_url ? (
+                  <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span>{(user?.first_name?.[0]||'U')}{(user?.last_name?.[0]||'')}</span>
+                )}
                 <span className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white dark:border-[#0a0a0f] ${today?.status==='present' ? 'bg-green-500' : today?.status==='half_day' ? 'bg-amber-500' : today?.status==='leave' ? 'bg-yellow-500' : 'bg-red-500'}`} />
               </button>
               {showProfile && (

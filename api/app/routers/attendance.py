@@ -178,3 +178,60 @@ async def week_view(start: date | None = None, user_id: uuid.UUID | None = None,
     # payroll basis: half_day 0.5, absent 0, present 1, leave 1
     payable = sum(0 if d["status"]=="absent" else 0.5 if d["status"]=="half_day" else 1 for d in days)
     return {"monday": monday.isoformat(), "sunday": sunday.isoformat(), "days": days, "total_hours": round(total_hrs,2), "payable_days": payable}
+
+@router.get("/absentees")
+async def get_absentees(target_date: date | None = None, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    from ..models.leave import LeaveRequest
+    ref_date = target_date or date.today()
+
+    # 1. Fetch all active employees in company
+    users_res = await db.execute(select(User).where(User.company_id == current.company_id, User.is_active == True))
+    all_users = users_res.scalars().all()
+
+    # 2. Fetch all attendance records for ref_date
+    att_res = await db.execute(select(AttendanceRecord).where(AttendanceRecord.company_id == current.company_id, AttendanceRecord.date == ref_date))
+    att_map = {str(r.user_id): r for r in att_res.scalars().all()}
+
+    # 3. Fetch approved leaves covering ref_date
+    leave_res = await db.execute(select(LeaveRequest).where(
+        LeaveRequest.company_id == current.company_id,
+        LeaveRequest.status == "approved",
+        LeaveRequest.start_date <= ref_date,
+        LeaveRequest.end_date >= ref_date
+    ))
+    leave_map = {str(l.user_id): l for l in leave_res.scalars().all()}
+
+    absentees = []
+    for u in all_users:
+        uid = str(u.id)
+        att = att_map.get(uid)
+        leave = leave_map.get(uid)
+
+        is_present = att and att.status in ("present", "half_day", "break") and att.check_in is not None
+        if not is_present:
+            leave_name = str(leave.type).capitalize() if leave else None
+            status_label = "on_leave" if leave else "absent"
+            absentees.append({
+                "user_id": uid,
+                "employee_id": u.employee_id,
+                "name": f"{u.first_name} {u.last_name}".strip(),
+                "first_name": u.first_name,
+                "last_name": u.last_name,
+                "email": u.email,
+                "phone": u.phone or "—",
+                "department": u.department or "General",
+                "job_title": u.job_title or "Employee",
+                "avatar_url": u.avatar_url,
+                "role": str(u.role),
+                "status": status_label,
+                "is_on_leave": bool(leave),
+                "leave_type": leave_name,
+                "date": ref_date.isoformat()
+            })
+
+    return {
+        "date": ref_date.isoformat(),
+        "total_employees": len(all_users),
+        "absent_count": len(absentees),
+        "absentees": absentees
+    }
