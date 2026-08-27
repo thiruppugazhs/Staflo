@@ -10,9 +10,9 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
+    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://staflo.thiruppugazhs.in,http://staflo.thiruppugazhs.in"
     # Base URL of the frontend — used to build verification / invite links in emails
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "https://staflo.thiruppugazhs.in"
     SMTP_HOST: str = ""
     SMTP_PORT: int = 465
     SMTP_USER: str = ""
