@@ -7,9 +7,13 @@ from ..core.config import settings
 # 500s on serverless/warm-lambda deployments (Vercel + Supabase pooler)
 import re
 
-# Resolve IPv4 Pooler URL to prevent [Errno 99] Cannot assign requested address on Vercel/Lambda
-# Strip all accidental trailing/leading whitespace and spaces in the URL
 raw_url = "".join(settings.DATABASE_URL.strip().split())
+
+# Ensure asyncpg driver is specified for create_async_engine
+if raw_url.startswith("postgresql://"):
+    raw_url = raw_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+elif raw_url.startswith("postgres://"):
+    raw_url = raw_url.replace("postgres://", "postgresql+asyncpg://", 1)
 
 # Convert direct IPv6 host to IPv4 Pooler (Session mode port 5432)
 match = re.search(r"db\.([a-z0-9]+)\.supabase\.co", raw_url)
