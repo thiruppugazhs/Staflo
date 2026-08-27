@@ -44,7 +44,7 @@ export default function Login(){
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <StafloIcon size={36} />
-            <span className="font-logo text-2xl tracking-tight text-white">Staflo</span>
+            <span className="font-logo text-3xl tracking-tighter text-white">staflo</span>
           </Link>
 
           <div className="flex-1 flex flex-col justify-center max-w-[480px]">

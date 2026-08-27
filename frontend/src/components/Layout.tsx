@@ -124,7 +124,7 @@ export default function Layout(){
         <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
           <Link to="/dashboard" className={`flex items-center gap-2.5 ${collapsed ? 'justify-center' : ''}`}>
             <StafloIcon size={30} className="rounded-lg shadow-xs" />
-            {!collapsed && <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">Staflo</span>}
+            {!collapsed && <span className="font-logo text-2xl text-zinc-900 dark:text-zinc-100">staflo</span>}
           </Link>
           <button
             onClick={()=>setCollapsed(v=>!v)}
@@ -162,7 +162,7 @@ export default function Layout(){
             <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
               <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5">
                 <StafloIcon size={28} />
-                <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">Staflo</span>
+                <span className="font-logo text-2xl text-zinc-900 dark:text-zinc-100">staflo</span>
               </Link>
               <button onClick={()=>setMobileOpen(false)} className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <X className="h-5 w-5" />
@@ -197,7 +197,7 @@ export default function Layout(){
               </button>
               <span className="md:hidden flex items-center gap-2">
                 <StafloIcon size={24} />
-                <span className="font-logo text-lg text-zinc-900 dark:text-zinc-100">Staflo</span>
+                <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">staflo</span>
               </span>
               <span className="hidden md:block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {tabs.find(t=>t.path===loc.pathname)?.label ?? 'Dashboard'}

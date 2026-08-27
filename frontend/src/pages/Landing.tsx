@@ -23,7 +23,7 @@ export default function Landing() {
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
               <StafloIcon size={32} />
-              <span className="font-logo text-[22px] tracking-tight text-zinc-900 dark:text-zinc-100">Staflo</span>
+              <span className="font-logo text-[24px] tracking-tighter text-zinc-900 dark:text-zinc-100">staflo</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-1 text-sm">
               <a href="#features" className="px-3 py-2 text-zinc-600 hover:text-zinc-900 transition">Features</a>
@@ -505,7 +505,7 @@ export default function Landing() {
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2">
                 <StafloIcon size={28} />
-                <span className="font-logo text-lg text-zinc-900 dark:text-zinc-100">Staflo</span>
+                <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">staflo</span>
                 <span className="text-xs text-zinc-500">• Every workday, perfectly aligned.</span>
               </div>
               <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400 max-w-sm">The complete HR platform for modern teams. Secure, reliable, and loved by HR leaders everywhere.</p>
