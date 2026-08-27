@@ -37,13 +37,13 @@ raw_url = raw_url.strip()
 connect_args = {
     "ssl": "require",
     "statement_cache_size": 0,
+    "prepared_statement_cache_size": 0,
 }
 
 # NullPool is essential for serverless execution
 engine = create_async_engine(
     raw_url,
     connect_args=connect_args,
-    prepared_statement_cache_size=0,
     poolclass=NullPool,
     echo=False,
     future=True,
