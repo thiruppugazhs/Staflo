@@ -53,12 +53,16 @@ if os.path.exists("uploads"):
     app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")
+@app.get("/api")
+@app.get("/api/v1")
 async def root():
     return {"message": "Staflo API running", "docs": "/docs"}
 
 @app.get("/health")
+@app.get("/api/health")
+@app.get("/api/v1/health")
 async def health():
-    return {"status": "ok"}
+    return {"status": "ok", "app": "Staflo API"}
 
 @app.on_event("startup")
 async def on_startup():

@@ -1,6 +1,12 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
+// Smart API URL resolution:
+// 1. Explicit VITE_API_URL if set in env
+// 2. Relative '/api/v1' in production / custom domain (handled seamlessly by Vercel rewrites)
+// 3. 'http://localhost:8000/api/v1' when developing locally on localhost
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const defaultUrl = isLocal ? 'http://localhost:8000/api/v1' : '/api/v1'
+const API_URL = (import.meta.env.VITE_API_URL as string) || defaultUrl
 
 export const api = axios.create({ baseURL: API_URL })
 
