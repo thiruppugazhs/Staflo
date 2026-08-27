@@ -66,13 +66,7 @@ async def health():
 
 @app.on_event("startup")
 async def on_startup():
-    try:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-            # existing DBs: add 'break' label to attendancestatus enum (idempotent, PG 10+)
-            from sqlalchemy import text
-            await conn.execute(text("ALTER TYPE attendancestatus ADD VALUE IF NOT EXISTS 'break'"))
-    except Exception as e:
-        print(f"[startup] DB auto-create skipped (configure DATABASE_URL): {e}")
+    # Database tables are managed via Supabase / Alembic migrations
+    pass
 
 # For local dev: uvicorn app.main:app --reload
