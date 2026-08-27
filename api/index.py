@@ -1,18 +1,24 @@
 import sys
 import os
 
-# Add the backend directory to sys.path
-backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "backend")
-if os.path.exists(backend_dir):
-    sys.path.insert(0, os.path.abspath(backend_dir))
+curr = os.path.dirname(os.path.abspath(__file__))
+parent = os.path.dirname(curr)
+grandparent = os.path.dirname(parent)
 
-# Also add backend/app
-app_dir = os.path.join(backend_dir, "app")
-if os.path.exists(app_dir):
-    sys.path.insert(0, os.path.abspath(app_dir))
+for p in [curr, parent, grandparent, os.path.join(parent, "backend"), os.path.join(parent, "app"), os.path.join(parent, "api", "app"), os.path.join(grandparent, "backend")]:
+    if p and os.path.exists(p) and p not in sys.path:
+        sys.path.insert(0, p)
 
-from app.main import app
+try:
+    from app.main import app
+except ImportError:
+    try:
+        from backend.app.main import app
+    except ImportError:
+        try:
+            from api.app.main import app
+        except ImportError:
+            from main import app
 
-# Export for Vercel serverless function
 handler = app
 app = app
