@@ -122,7 +122,7 @@ export default function Layout(){
       {/* Desktop sidebar */}
       <aside className={`hidden md:flex shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50/80 dark:from-zinc-900 dark:to-zinc-900 sticky top-0 h-screen transition-all duration-200 ${collapsed ? 'w-[72px]' : 'w-[260px]'}`}>
         <div className={`h-14 flex items-center border-b border-zinc-200 dark:border-zinc-800 shrink-0 ${collapsed ? 'justify-center px-2' : 'justify-between gap-2.5 px-3'}`}>
-          <Link to="/dashboard" className={`flex items-center gap-2.5 ${collapsed ? 'justify-center' : ''}`}>
+          <Link to="/dashboard" className={`flex items-center gap-1.5 ${collapsed ? 'justify-center' : ''}`}>
             <StafloIcon size={30} className="rounded-lg shadow-xs" />
             {!collapsed && <span className="font-logo text-2xl text-zinc-900 dark:text-zinc-100">staflo</span>}
           </Link>
@@ -160,7 +160,7 @@ export default function Layout(){
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={()=>setMobileOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-[280px] bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xl">
             <div className="h-14 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800">
-              <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2.5">
+              <Link to="/dashboard" onClick={()=>setMobileOpen(false)} className="flex items-center gap-1.5">
                 <StafloIcon size={28} />
                 <span className="font-logo text-2xl text-zinc-900 dark:text-zinc-100">staflo</span>
               </Link>
@@ -195,7 +195,7 @@ export default function Layout(){
               <button onClick={()=>setMobileOpen(true)} className="md:hidden h-8 w-8 rounded-md border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800">
                 <Menu className="h-5 w-5" />
               </button>
-              <span className="md:hidden flex items-center gap-2">
+              <span className="md:hidden flex items-center gap-1.5">
                 <StafloIcon size={24} />
                 <span className="font-logo text-xl text-zinc-900 dark:text-zinc-100">staflo</span>
               </span>

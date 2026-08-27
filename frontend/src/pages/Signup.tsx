@@ -131,7 +131,7 @@ export default function Signup(){
         <div className="absolute -top-24 -right-24 h-[480px] w-[480px] rounded-full bg-[#004E72]/20 blur-[90px] pointer-events-none" />
 
         <div className="relative z-10 space-y-8">
-          <Link to="/" className="inline-flex items-center gap-3">
+          <Link to="/" className="inline-flex items-center gap-1.5">
             <StafloIcon size={34} />
             <span className="font-logo text-2xl text-white">staflo</span>
           </Link>

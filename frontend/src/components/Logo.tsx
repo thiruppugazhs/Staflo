@@ -125,7 +125,7 @@ export default function StafloLogo({
   const activePalette = THEME_PALETTES.find((p) => p.id === themeId) || THEME_PALETTES[0]
 
   return (
-    <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
+    <div className={`inline-flex items-center gap-1.5 select-none ${className}`}>
       <StafloIcon
         size={size}
         primaryColor={primaryColor}

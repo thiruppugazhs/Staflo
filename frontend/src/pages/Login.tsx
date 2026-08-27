@@ -42,7 +42,7 @@ export default function Login(){
         <div className="absolute -bottom-32 -left-32 h-[520px] w-[520px] rounded-full bg-[#092634]/20 blur-[80px]" />
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-8">
-          <Link to="/" className="flex items-center gap-3 shrink-0">
+          <Link to="/" className="flex items-center gap-1.5 shrink-0">
             <StafloIcon size={36} />
             <span className="font-logo text-3xl tracking-tighter text-white">staflo</span>
           </Link>

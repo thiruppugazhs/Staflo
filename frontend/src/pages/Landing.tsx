@@ -21,7 +21,7 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-1.5">
               <StafloIcon size={32} />
               <span className="font-logo text-[24px] tracking-tighter text-zinc-900 dark:text-zinc-100">staflo</span>
             </Link>
