@@ -52,6 +52,56 @@ export default function Attendance(){
     }
   }
 
+  const [todayStatus, setTodayStatus] = useState<any>(null)
+  const [checking, setChecking] = useState(false)
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString())
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date().toLocaleTimeString()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const fetchTodayStatus = async() => {
+    try {
+      const { data } = await api.get('/attendance/today')
+      setTodayStatus(data)
+    } catch {}
+  }
+
+  const handlePunch = async (type: 'in' | 'out') => {
+    setChecking(true)
+    try {
+      let payload: any = {}
+      try {
+        if (typeof navigator !== 'undefined' && navigator.geolocation) {
+          const pos = await new Promise<GeolocationPosition>((res, rej) => {
+            navigator.geolocation.getCurrentPosition(res, rej, { timeout: 2000, enableHighAccuracy: false })
+          })
+          if (pos && pos.coords) {
+            payload = { lat: pos.coords.latitude, lng: pos.coords.longitude }
+          }
+        }
+      } catch {}
+
+      if (type === 'in') {
+        await api.post('/attendance/check-in', payload)
+      } else {
+        await api.post('/attendance/check-out', payload)
+      }
+      await fetchTodayStatus()
+      if (view === 'day') load()
+      else if (view === 'week') loadWeek()
+    } catch (e: any) {
+      alert(e.response?.data?.detail || e.message || 'Action failed')
+    } finally {
+      setChecking(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchTodayStatus()
+  }, [])
+
   useEffect(()=>{
     if(view==='day') load()
     else if(view==='week') loadWeek()
@@ -64,6 +114,59 @@ export default function Attendance(){
 
   return (
     <div className="space-y-4">
+      {/* Punch In / Out Card */}
+      <Card className="p-4 bg-gradient-to-r from-zinc-50 to-white dark:from-zinc-900 dark:to-zinc-950 border border-zinc-200 dark:border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-xl bg-[var(--theme-primary)] text-white flex items-center justify-center shadow-xs">
+              <Clock className="h-6 w-6"/>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-base text-zinc-900 dark:text-white">Live Attendance Punch</span>
+                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{currentTime}</span>
+              </div>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                {todayStatus?.checked_in ? (
+                  todayStatus?.checked_out ? (
+                    <>Checked out for today • Worked <b>{todayStatus.working_hours ?? '—'}h</b></>
+                  ) : (
+                    <>Checked in at <b>{todayStatus.check_in ? new Date(todayStatus.check_in).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '—'}</b></>
+                  )
+                ) : (
+                  <>Not checked in yet today</>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {!todayStatus?.checked_in ? (
+              <Button
+                disabled={checking}
+                onClick={() => handlePunch('in')}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 px-5 font-semibold"
+              >
+                {checking ? 'Checking In…' : '✓ Check In Now'}
+              </Button>
+            ) : !todayStatus?.checked_out ? (
+              <Button
+                disabled={checking}
+                variant="outline"
+                onClick={() => handlePunch('out')}
+                className="border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs h-9 px-5 font-semibold"
+              >
+                {checking ? 'Checking Out…' : 'Check Out'}
+              </Button>
+            ) : (
+              <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300">
+                ✓ Shift Completed ({todayStatus?.working_hours ?? '—'}h)
+              </span>
+            )}
+          </div>
+        </div>
+      </Card>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Attendance & Absenteeism</h1>

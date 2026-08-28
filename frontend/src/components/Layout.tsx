@@ -30,16 +30,33 @@ export default function Layout(){
   const handleCheck = async(type:'in'|'out')=>{
     setChecking(true)
     try{
-      const pos = await new Promise<GeolocationPosition>((res, rej)=>{
-        if(!navigator.geolocation) return rej('no geo')
-        navigator.geolocation.getCurrentPosition(res, rej, {timeout: 5000})
-      }).catch(()=> null as any)
-      const payload = pos ? {lat: pos.coords.latitude, lng: pos.coords.longitude} : {}
-      if(type==='in'){ await api.post('/attendance/check-in', payload); toast.success(`Checked in at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓`) }
-      else { await api.post('/attendance/check-out', payload); toast.success(`Checked out at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓`) }
+      let payload: any = {}
+      try {
+        if (typeof navigator !== 'undefined' && navigator.geolocation) {
+          const pos = await new Promise<GeolocationPosition>((res, rej)=>{
+            navigator.geolocation.getCurrentPosition(res, rej, {timeout: 2000, enableHighAccuracy: false})
+          })
+          if (pos && pos.coords) {
+            payload = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+          }
+        }
+      } catch {
+        // Geolocation optional / fallback
+      }
+
+      if(type==='in'){
+        await api.post('/attendance/check-in', payload)
+        toast.success(`Checked in at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓`)
+      } else {
+        await api.post('/attendance/check-out', payload)
+        toast.success(`Checked out at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓`)
+      }
       await fetchToday()
-    } catch(e:any){ toast.error(e.response?.data?.detail || e.message || 'Failed')}
-    finally{ setChecking(false)}
+    } catch(e:any){
+      toast.error(e.response?.data?.detail || e.message || 'Check-in failed')
+    } finally{
+      setChecking(false)
+    }
   }
 
   const handleSetStatus = async(status:string)=>{

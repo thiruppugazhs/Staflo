@@ -12,7 +12,8 @@ import uuid
 router = APIRouter(prefix="/attendance", tags=["attendance"])
 
 @router.post("/check-in")
-async def check_in(payload: dict, request: Request, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+async def check_in(payload: dict | None = None, request: Request = None, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    payload = payload or {}
     today = date.today()
     existing = await db.execute(select(AttendanceRecord).where(AttendanceRecord.user_id==current.id, AttendanceRecord.date==today))
     rec = existing.scalar_one_or_none()
@@ -21,7 +22,7 @@ async def check_in(payload: dict, request: Request, db: AsyncSession = Depends(g
     lat = payload.get("lat")
     lng = payload.get("lng")
     loc_in = {"lat": lat, "lng": lng} if lat is not None else None
-    ip = request.client.host if request.client else None
+    ip = request.client.host if (request and request.client) else None
     now = datetime.now(timezone.utc)
     if rec is None:
         rec = AttendanceRecord(
@@ -41,10 +42,18 @@ async def check_in(payload: dict, request: Request, db: AsyncSession = Depends(g
         rec.status = "present"
     await db.commit()
     await db.refresh(rec)
-    return {"message":"Checked in","record": {"id": str(rec.id), "check_in": rec.check_in, "status": rec.status}}
+    return {
+        "message": "Checked in successfully",
+        "record": {
+            "id": str(rec.id),
+            "check_in": rec.check_in.isoformat() if rec.check_in else None,
+            "status": rec.status
+        }
+    }
 
 @router.post("/check-out")
-async def check_out(payload: dict, request: Request, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+async def check_out(payload: dict | None = None, request: Request = None, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
+    payload = payload or {}
     today = date.today()
     res = await db.execute(select(AttendanceRecord).where(AttendanceRecord.user_id==current.id, AttendanceRecord.date==today))
     rec = res.scalar_one_or_none()
@@ -63,7 +72,15 @@ async def check_out(payload: dict, request: Request, db: AsyncSession = Depends(
     rec.status = determine_status(wh)
     await db.commit()
     await db.refresh(rec)
-    return {"message":"Checked out","record": {"id": str(rec.id), "check_out": rec.check_out, "working_hours": wh, "status": rec.status}}
+    return {
+        "message": "Checked out successfully",
+        "record": {
+            "id": str(rec.id),
+            "check_out": rec.check_out.isoformat() if rec.check_out else None,
+            "working_hours": wh,
+            "status": rec.status
+        }
+    }
 
 @router.post("/status")
 async def set_status(payload: dict, db: AsyncSession = Depends(get_db), current: User = Depends(get_current_user)):
